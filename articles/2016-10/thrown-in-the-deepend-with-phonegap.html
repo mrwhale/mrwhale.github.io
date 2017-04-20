@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2016-10/thrown-in-the-deepend-with-phonegap">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>building phonegap app for Android and iOS - Mrwhal3’s Blog</title>
+<meta property="og:title" content="building phonegap app for Android and iOS" />
+<meta name="description" content="So I had the pleasure of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too So I had downloaded the repo, installed all the dependacies, but now I was getting this error ERROR in ./src/routes/index.jsx Module not found: Error: Cannot resolve &#39;file&#39; or &#39;directory&#39; ./searchByKeyword in /home/harry/Documents/work/repositories/ita-app/src/routes Spent some time looking at Google, when I came across this suggestion to use webpack to display more verbose errors webpack --display-error-details. Genius. This gave some more verbose output and told me that it was searching for the file, but could not find it in some directories, this helped me realise it was case sensative. The file it was looking for had a capital S, but it was looking for lower case s. Changing the name of the file to lowercase and rebuild And another error, but on index.jsx file this time. Not sure why it only errored on these 2 files, probably something in the config files but I didn’t rally want to be looking through config files all day (there were alot!) Do the same and rename to lower. And now we get a successful build! Yay! The previous dev had done this on OSX but not sure why this was an issue on Linux(can understand if it was done on windows, for example) So now we have an Android apk, but to upload it to the store it needs to be signed (and later on it told me it also has to be zipaligned) Here is how to do that with command line #Sign the app with jarsigner (should have been installed along with android studio) jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore android-x86-release-unsigned.apk myapp Uh oh, another error jarsigner: Certificate chain not found for: myapp. myapp must reference a valid KeyStore key entry containing a private key and corresponding public key certificate chain. Turns out you have to specify the exact alias that is found inside the keystore with the jarsigner command. To get that, run keytool -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore -l That will display something similar to this, where you can see the alias name. Now re run jarsigner with the correct alias and you will have a great time Keystore type: JKS Keystore provider: SUN Your keystore contains 1 entry Alias name: myapp-release ...... Now we have a signed apk, but on uplaoding to the store, it errors and tells me its not zip aligned. Luckily this one was easy. /home/george/Android/Sdk/build-tools/24.0.3/zipalign -v 4 android-x86-release-signed.apk android-release-signed-aligned.apk NOTE only zip align after you have signed Android down, iOS to go!" />
+<meta property="og:description" content="So I had the pleasure of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too So I had downloaded the repo, installed all the dependacies, but now I was getting this error ERROR in ./src/routes/index.jsx Module not found: Error: Cannot resolve &#39;file&#39; or &#39;directory&#39; ./searchByKeyword in /home/harry/Documents/work/repositories/ita-app/src/routes Spent some time looking at Google, when I came across this suggestion to use webpack to display more verbose errors webpack --display-error-details. Genius. This gave some more verbose output and told me that it was searching for the file, but could not find it in some directories, this helped me realise it was case sensative. The file it was looking for had a capital S, but it was looking for lower case s. Changing the name of the file to lowercase and rebuild And another error, but on index.jsx file this time. Not sure why it only errored on these 2 files, probably something in the config files but I didn’t rally want to be looking through config files all day (there were alot!) Do the same and rename to lower. And now we get a successful build! Yay! The previous dev had done this on OSX but not sure why this was an issue on Linux(can understand if it was done on windows, for example) So now we have an Android apk, but to upload it to the store it needs to be signed (and later on it told me it also has to be zipaligned) Here is how to do that with command line #Sign the app with jarsigner (should have been installed along with android studio) jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore android-x86-release-unsigned.apk myapp Uh oh, another error jarsigner: Certificate chain not found for: myapp. myapp must reference a valid KeyStore key entry containing a private key and corresponding public key certificate chain. Turns out you have to specify the exact alias that is found inside the keystore with the jarsigner command. To get that, run keytool -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore -l That will display something similar to this, where you can see the alias name. Now re run jarsigner with the correct alias and you will have a great time Keystore type: JKS Keystore provider: SUN Your keystore contains 1 entry Alias name: myapp-release ...... Now we have a signed apk, but on uplaoding to the store, it errors and tells me its not zip aligned. Luckily this one was easy. /home/george/Android/Sdk/build-tools/24.0.3/zipalign -v 4 android-x86-release-signed.apk android-release-signed-aligned.apk NOTE only zip align after you have signed Android down, iOS to go!" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-10-13T10:00:00+11:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "building phonegap app for Android and iOS",
+"datePublished": "2016-10-13T10:00:00+11:00",
+"description": "So I had the pleasure of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too So I had downloaded the repo, installed all the dependacies, but now I was getting this error ERROR in ./src/routes/index.jsx Module not found: Error: Cannot resolve &#39;file&#39; or &#39;directory&#39; ./searchByKeyword in /home/harry/Documents/work/repositories/ita-app/src/routes Spent some time looking at Google, when I came across this suggestion to use webpack to display more verbose errors webpack --display-error-details. Genius. This gave some more verbose output and told me that it was searching for the file, but could not find it in some directories, this helped me realise it was case sensative. The file it was looking for had a capital S, but it was looking for lower case s. Changing the name of the file to lowercase and rebuild And another error, but on index.jsx file this time. Not sure why it only errored on these 2 files, probably something in the config files but I didn’t rally want to be looking through config files all day (there were alot!) Do the same and rename to lower. And now we get a successful build! Yay! The previous dev had done this on OSX but not sure why this was an issue on Linux(can understand if it was done on windows, for example) So now we have an Android apk, but to upload it to the store it needs to be signed (and later on it told me it also has to be zipaligned) Here is how to do that with command line #Sign the app with jarsigner (should have been installed along with android studio) jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore android-x86-release-unsigned.apk myapp Uh oh, another error jarsigner: Certificate chain not found for: myapp. myapp must reference a valid KeyStore key entry containing a private key and corresponding public key certificate chain. Turns out you have to specify the exact alias that is found inside the keystore with the jarsigner command. To get that, run keytool -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore -l That will display something similar to this, where you can see the alias name. Now re run jarsigner with the correct alias and you will have a great time Keystore type: JKS Keystore provider: SUN Your keystore contains 1 entry Alias name: myapp-release ...... Now we have a signed apk, but on uplaoding to the store, it errors and tells me its not zip aligned. Luckily this one was easy. /home/george/Android/Sdk/build-tools/24.0.3/zipalign -v 4 android-x86-release-signed.apk android-release-signed-aligned.apk NOTE only zip align after you have signed Android down, iOS to go!",
+"url": "http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="building phonegap app for Android and iOS">building phonegap app for Android and iOS</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        13 OCT 2016
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>So I had the <del>pleasure</del> of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too</p>
+
+<p>So I had downloaded the repo, installed all the dependacies, but now I was getting this error</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ERROR <span class="k">in</span> ./src/routes/index.jsx
+ 
+Module not found: Error: Cannot resolve <span class="s1">'file'</span> or <span class="s1">'directory'</span> ./searchByKeyword <span class="k">in</span> /home/harry/Documents/work/repositories/ita-app/src/routes</code></pre></figure>
+
+<p>Spent some time looking at Google, when I came across this suggestion to use webpack to display more verbose errors <code class="highlighter-rouge">webpack --display-error-details</code>. Genius.</p>
+
+<p>This gave some more verbose output and told me that it was searching for the file, but could not find it in some directories, this helped me realise it was case sensative. The file it was looking for had a capital <code class="highlighter-rouge">S</code>, but it was looking for lower case <code class="highlighter-rouge">s</code>. Changing the name of the file to lowercase and rebuild</p>
+
+<p>And another error, but on index.jsx file this time.  Not sure why it only errored on these 2 files, probably something in the config files but I didn’t rally want to be looking through config files all day (there were alot!)
+Do the same and rename to lower. And now we get a successful build! Yay!</p>
+
+<p>The previous dev had done this on OSX but not sure why this was an issue on Linux(can understand if it was done on windows, for example)</p>
+
+<p>So now we have an Android apk, but to upload it to the store it needs to be signed (and later on it told me it also has to be zipaligned)</p>
+
+<p>Here is how to do that with command line</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#Sign the app with jarsigner (should have been installed along with android studio)</span>
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore android-x86-release-unsigned.apk myapp</code></pre></figure>
+
+<p>Uh oh, another error</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>jarsigner: Certificate chain not found for: myapp.  myapp must reference a valid KeyStore key entry containing a private key and corresponding public key certificate chain.
+</code></pre>
+</div>
+
+<p>Turns out you have to specify the exact alias that is found inside the keystore with the jarsigner command. To get that, run</p>
+
+<p><code class="highlighter-rouge">keytool -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore -l</code></p>
+
+<p>That will display something similar to this, where you can see the alias name. Now re run <code class="highlighter-rouge">jarsigner</code> with the correct alias and you will have a great time</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+Alias name: myapp-release
+......
+</code></pre>
+</div>
+
+<p>Now we have a signed apk, but on uplaoding to the store, it errors and tells me its not zip aligned. Luckily this one was easy.
+<code class="highlighter-rouge">/home/george/Android/Sdk/build-tools/24.0.3/zipalign -v 4 android-x86-release-signed.apk android-release-signed-aligned.apk</code></p>
+
+<p><em>NOTE</em> only zip align after you have signed</p>
+
+<p>Android down, iOS to go!</p>
+
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2016-10/thrown-in-the-deepend-with-phonegap" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

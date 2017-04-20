@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2014-10/delving-into-android-apps">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>delving into android apps - Mrwhal3’s Blog</title>
+<meta property="og:title" content="delving into android apps" />
+<meta name="description" content="My attempt at helping develop an android app" />
+<meta property="og:description" content="My attempt at helping develop an android app" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-10-15T11:57:00+11:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "delving into android apps",
+"datePublished": "2014-10-15T11:57:00+11:00",
+"description": "My attempt at helping develop an android app",
+"url": "http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="delving into android apps">delving into android apps</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        15 OCT 2014
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>This one’s a bit off topic..</p>
+
+<p>But from my last post, about LimitlessLED’s. The android app that they tell you to use from the play store (https://play.google.com/store/apps/details?id=com.lierda.wificontroller&amp;hl=en) is functional, but terribly slow at starting up, and giving you access to your light. More often then not, my wife an I would find ourselves just using the physical light switch instead.</p>
+
+<p>So Finally I found a pretty awesome app for controlling LED lights, (https://play.google.com/store/apps/details?id=tv.piratemedia.lightcontroler&amp;hl=en) and Eliot, being a good bloke, as made his code open source. This app is awesome as it starts up instantly AND is has a widget you can put on your lockscreen or on a page! Although, his app, out of the box, only controls the RGBW lights, but because I have both in my home (RGBW and dual white) I decided to have a go at developing an app that suits my need (well not so much developing, more just copying and editing other code :P )</p>
+
+<p>I took Eliot’s app code and, so far, I have modified it to control the white lights instead! I plan to make the app do both, but It wont be for another few weeks now, as I am in the final weeks of study at Uni.</p>
+
+<p>Let me know if anyone’s interested in the app, and I’ll post the .apk and source code up on github, and if I’m really keen, put it up on the play store.</p>
+
+<p>But big thanks to Eliot for making his code open source!</p>
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2014-10/delving-into-android-apps" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

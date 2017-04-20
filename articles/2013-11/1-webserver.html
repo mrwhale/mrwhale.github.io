@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2013-11/1-webserver">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>1. Webserver - Mrwhal3’s Blog</title>
+<meta property="og:title" content="1. Webserver" />
+<meta name="description" content="Step 1. Basic web server on your raspberrypi" />
+<meta property="og:description" content="Step 1. Basic web server on your raspberrypi" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2013-11/1-webserver" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2013-11/1-webserver" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-11-01T10:07:00+11:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "1. Webserver",
+"datePublished": "2013-11-01T10:07:00+11:00",
+"description": "Step 1. Basic web server on your raspberrypi",
+"url": "http://www.mrwhal3.com/articles/2013-11/1-webserver"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="1. Webserver">1. Webserver</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        1 NOV 2013
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>So the first thing I did was use <a href="http://www.penguintutor.com/linux/raspberrypi-webserver">this</a> very helpful guide to help setup my pi as a LAMP server. I didn’t follow the whole thing, just the bits I needed.So following is the basics..firstly install apache</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install apache2</code></pre></figure>
+
+<p>and then mysql</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install mysql-server</code></pre></figure>
+
+<p>And finally PHP</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install php5
+sudo apt-get install php5-mysql</code></pre></figure>
+
+<p>Once this is done go to your pi’s IP address to make sure apache works</p>
+
+<p>Because I didn’t get a static IP from my ISP, it changes all the time (which is annoying) so I decided to get a dynamic DNS name for myself. I used www.noip.com and just got a free one.</p>
+
+<p>They also provide something called a DUC(dynamic update client) so your pi can talk to their servers and update the dns record if your ip address changesI found that on the pi it didn’t work with the apt-get install commands so follow the instructions half way down <a href="https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client-on-ubuntu/">this</a> webpage to manually install it, once set up it will run in the background and tell the noip.com servers if you public IP address has changed</p>
+
+<p>Now for those who don’t want their pi to be linked to a url, I also wrote a small bash script that you can run with cron at whatever interval you want, that checks the current public IP to the previous IP and then emails you of it has changed. This is how I implemented it, with help from <a href="http://www.sbprojects.com/projects/raspberrypi/exim4.php">this</a> website to set up mail on the pi and link it with your gmail account. I used the SSMTP setup on that page.</p>
+
+<p>Once this is set up, create a file (doesn’t matter what it’s called, but i used ipaddy.sh), make sure to make it executable and open it with your favourite text editor</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">touch ipaddy
+chmod +x ipaddy.sh
+vim ipaddy.sh</code></pre></figure>
+
+<p>and then paste in this script, entering your own email address</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="nv">ip</span><span class="o">=</span><span class="k">$(</span>curl icanhazip.com<span class="k">)</span>
+<span class="nv">line</span><span class="o">=</span><span class="k">$(</span>head -n 1 ipaddress<span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$ip</span> !<span class="o">=</span> <span class="nv">$line</span> <span class="o">]</span>
+<span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"I have changed your home server ip to: </span><span class="nv">$ip</span><span class="s2">"</span> | mail -s <span class="s2">"Shoppinglist.no-ip.org"</span> &lt;your_email_address&gt;
+    <span class="nb">echo</span> <span class="nv">$ip</span> &gt; /home/pi/ipaddress
+<span class="k">fi</span></code></pre></figure>
+
+<p>Close the text editor and create another file which will hold your public IP address</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">touch ipaddress
+curl icanhazip.com &gt; ipaddress</code></pre></figure>
+
+<p>This is create a file and put your public IP address in it for use by the above script
+Then we need to set up old mate cron to run the script when you want it, I have mine set to run the script every 30 minutes, but you can change it to whatever you like</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">crontab -e</code></pre></figure>
+
+<p>This will open up the crontab for you to edit, go down the page a little until there’s some blank lines and paste this in:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">*</span>/30 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /home/pi/ipaddy.sh</code></pre></figure>
+
+<p>Now you are all set up with a webserver and a way to always know your IP address for when you aren’t at home!  The last thing you need to do is forward the right ports out of your home router so you can access your pi over the internet. I have a netgear so there’s plenty of online guides on how to do it, it’s pretty straightforward though</p>
+
+<p>Hope this is useful!</p>
+
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2013-11/1-webserver" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2013-11/1-webserver" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2013-11/1-webserver" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2013-11/1-webserver" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2013-11/1-webserver" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

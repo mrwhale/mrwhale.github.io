@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2016-12/openhab">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Openhab - Mrwhal3’s Blog</title>
+<meta property="og:title" content="Openhab" />
+<meta name="description" content="Since the ninjablock company has run out of money, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with Openhab. At the time I adopted this, it was the only major, multi-vendor supported Home automation “brain” around. Since then home assistant has come around, and alot of others have picked up support for alot more “things”. If I had the money, I would probably jump on the Smart Things wagon, but I don’t :( So this is a bit of a back post of the system, since I’ve had it running for almost 2 years since Openhab 1.7 came out. But I thought I would just share a bit about it, and my setup I am still yet to upgrade to OpenHAB 2.0 yet, it seems like a lot of work, it doesn’t look like there is a straight forward upgrade path from 1.x. So I’m still running 1.7, which is working fine for me Setup in the house So I had a nexus 7 laying around, and decided I’d use that as a wall mounted controller. This works well with openHAB because it even has a “full screen” mode for you to use in the app, which will hide the status bar and navigation keys. This is an always on display too I rarely use the web based GUI to access my home, having this controller works well, plus I have the app installed on my various hand held devices too (And my watch!). So I am never too far away from any controls. I’ve never found the need to open up the web GUI when I’ve been at my desk, much quicker just to unlock my phone and start the app. The default web interface is very ugly too :/ Hardware Raspberry pi Originally I had openHAB running on a raspberry pi (v1 B) but could notice the lack of power when interfacing with it. This wasnt too much of an issue when I first set it up, but after setting up a dozen or so rules, things started getting pretty sluggish. Doesn’t help that openHAB isn’t the only thing I have running on my pi. Not that I’m complaining, it does really well for the specs it has. However this was all fixed when I upgraded to a Raspberry Pi v2. That thing was such a powerful step up from v1. Incredible. I run openHAB, owncloud, dhcp/dns and various cron started scripts on that thing and It doesn’t even complain, or let me down. The only dependancies I needed in this situation were java (obviously, to run openHAB) and an MQTT server (I use mosquitto MQTT). This was to interface with the raspberry pi running the ninjablock things So all up 1 x Raspberry pi v2 (to Run openHAB and mqtt) 1 x Raspberry pi v1 model B (With the ninja crust pi hardware attaached to it, including 433MHZ transmitter) 1 x Raspberry pi as mpd server Ninja Blocks Ninja blocks Lucky for me, someone else that had a ninja block came to the same conclusion as me, so had already made a nice little python bridge to get the Ninjablock and its 433Mhz sensors into openHab. Old mate Perrin7 posted his link in the now dead Ninjablock forums. This little shim just connects to the Ninja Crust via its serial port, and listens for any events. It reads these events, figures out what device/sensor it was, and then publishes it to a MQTT thread. OpenHab also just listens to these threads and picks up changes as they are posted! I’ve had this running for a while now with no issues :) the only downside (but probably easily fixed) is I have to start this python script everytime the pi with the ninja block on it restarts (Say if I lose power or something). This is what I have that connects to my Ninjablock over 433Mhz 1 x Button 1 x Motion sensor 1 x Door/window sensor 3 x remote power switches (Watts Clever brand) Here is the sitemap, and items list in openhab specific to the ninjablock Switch Motion_Sensor &quot;Room Sensor&quot; (Persist_change) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:1000000001011010 01011001]&quot;} Switch C_Lamp &quot;Pergola Lights&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:11011010110110101 1011100], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011100]&quot; } Switch D_Lamp &quot;Door Lamp&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011110] , &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011110]&quot; } Switch Z_Lamp &quot;Room Heater&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011010], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011010]&quot; } Switch Button &quot;Button&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:command:ON]&quot;} Limitless LED Thing was probably the biggest purchase for me at the time, to replace most of my lights around the house with these. Has been a good investment, and already had a addon in openHAB so it was very easy to set up and get working. I have recently found a neat trick with these too, instead of setting the item as Switch in openHAB, you set it as Dimmer. Then when you link the light in the sitemap, you specify it as a Switch. This trick ensures that everyime you click the switch, your lights will go to 100% brightness (On being 100%, Off being 0%). I found this very useful, as before, when you turn the light on again it would turn back on at the last remembered brightness setting, which wasnt always at full brightness. Then I’d have to faff about with the slider bar to get it back up. “But what about if you want to change brightness after you turned the light on”, you ask. You can see the example in my item list and sitemap below. Using the visibility property, you can have the brightness slider show on your sitemap when the light is actually on, this reduces clutter on the screen (seeing as I only have a limited amount of screen space) Frame label=&quot;Lights&quot; { Switch item=all_off mappings=[OFF=&quot;All Off&quot;] Switch item=L_light Switch item=L_lightn mappings=[ON=ON] Slider item=L_light_dim visibility=[L_light==ON] Switch item=K_light Slider item=K_light_dim visibility=[K_light==ON] Switch item=E_light Slider item=E_light_dim visibility=[E_light==ON] Switch item=H_light Slider item=H_light_dim visibility=[H_light==ON] Switch item=B_light Slider item=B_light_dim visibility=[B_light==ON] Switch item=BT_light Slider item=BT_light_dim visibility=[BT_light==ON] } MPD server Because I had an extra raspberry pi and an extra speaker laying around, I turned it into a remote media player with Mopidy (Another post about this shortly). This enabled me to stream straight from spotify, and control it directly from openHAB too! Super cool :) Smart Home So this is where openHAB gets cool. Not only can you interface with smart things throughout your house, and have information gathered and displayed all in one central location, you can create rules to do things when certain things happen (Think IFTTT) For example In the mornings when my alarm goes off, openHAB turns the kitchen light on for me When i leave the house in the morning, it will turn that light off again I can choose a time at night to turn the wall heater in our bedroom on (this will get smarter when my bluetooth temperature sensors arrive) I can choose a time in the morning to turn the wall heater off I Also link my phone location into openHAB (using ownTracks) so then my partner can view my location on a map within openHAB These are just a few examples, but the amount of devices that openHAB supports, the length you can go to to automate your household is quite extensive and exciting If you want to see my complete sitemap/items list or my rules I use, get in touch. I’d be happy to share and help get you started on the way to home automation with openHAB" />
+<meta property="og:description" content="Since the ninjablock company has run out of money, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with Openhab. At the time I adopted this, it was the only major, multi-vendor supported Home automation “brain” around. Since then home assistant has come around, and alot of others have picked up support for alot more “things”. If I had the money, I would probably jump on the Smart Things wagon, but I don’t :( So this is a bit of a back post of the system, since I’ve had it running for almost 2 years since Openhab 1.7 came out. But I thought I would just share a bit about it, and my setup I am still yet to upgrade to OpenHAB 2.0 yet, it seems like a lot of work, it doesn’t look like there is a straight forward upgrade path from 1.x. So I’m still running 1.7, which is working fine for me Setup in the house So I had a nexus 7 laying around, and decided I’d use that as a wall mounted controller. This works well with openHAB because it even has a “full screen” mode for you to use in the app, which will hide the status bar and navigation keys. This is an always on display too I rarely use the web based GUI to access my home, having this controller works well, plus I have the app installed on my various hand held devices too (And my watch!). So I am never too far away from any controls. I’ve never found the need to open up the web GUI when I’ve been at my desk, much quicker just to unlock my phone and start the app. The default web interface is very ugly too :/ Hardware Raspberry pi Originally I had openHAB running on a raspberry pi (v1 B) but could notice the lack of power when interfacing with it. This wasnt too much of an issue when I first set it up, but after setting up a dozen or so rules, things started getting pretty sluggish. Doesn’t help that openHAB isn’t the only thing I have running on my pi. Not that I’m complaining, it does really well for the specs it has. However this was all fixed when I upgraded to a Raspberry Pi v2. That thing was such a powerful step up from v1. Incredible. I run openHAB, owncloud, dhcp/dns and various cron started scripts on that thing and It doesn’t even complain, or let me down. The only dependancies I needed in this situation were java (obviously, to run openHAB) and an MQTT server (I use mosquitto MQTT). This was to interface with the raspberry pi running the ninjablock things So all up 1 x Raspberry pi v2 (to Run openHAB and mqtt) 1 x Raspberry pi v1 model B (With the ninja crust pi hardware attaached to it, including 433MHZ transmitter) 1 x Raspberry pi as mpd server Ninja Blocks Ninja blocks Lucky for me, someone else that had a ninja block came to the same conclusion as me, so had already made a nice little python bridge to get the Ninjablock and its 433Mhz sensors into openHab. Old mate Perrin7 posted his link in the now dead Ninjablock forums. This little shim just connects to the Ninja Crust via its serial port, and listens for any events. It reads these events, figures out what device/sensor it was, and then publishes it to a MQTT thread. OpenHab also just listens to these threads and picks up changes as they are posted! I’ve had this running for a while now with no issues :) the only downside (but probably easily fixed) is I have to start this python script everytime the pi with the ninja block on it restarts (Say if I lose power or something). This is what I have that connects to my Ninjablock over 433Mhz 1 x Button 1 x Motion sensor 1 x Door/window sensor 3 x remote power switches (Watts Clever brand) Here is the sitemap, and items list in openhab specific to the ninjablock Switch Motion_Sensor &quot;Room Sensor&quot; (Persist_change) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:1000000001011010 01011001]&quot;} Switch C_Lamp &quot;Pergola Lights&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:11011010110110101 1011100], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011100]&quot; } Switch D_Lamp &quot;Door Lamp&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011110] , &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011110]&quot; } Switch Z_Lamp &quot;Room Heater&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011010], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011010]&quot; } Switch Button &quot;Button&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:command:ON]&quot;} Limitless LED Thing was probably the biggest purchase for me at the time, to replace most of my lights around the house with these. Has been a good investment, and already had a addon in openHAB so it was very easy to set up and get working. I have recently found a neat trick with these too, instead of setting the item as Switch in openHAB, you set it as Dimmer. Then when you link the light in the sitemap, you specify it as a Switch. This trick ensures that everyime you click the switch, your lights will go to 100% brightness (On being 100%, Off being 0%). I found this very useful, as before, when you turn the light on again it would turn back on at the last remembered brightness setting, which wasnt always at full brightness. Then I’d have to faff about with the slider bar to get it back up. “But what about if you want to change brightness after you turned the light on”, you ask. You can see the example in my item list and sitemap below. Using the visibility property, you can have the brightness slider show on your sitemap when the light is actually on, this reduces clutter on the screen (seeing as I only have a limited amount of screen space) Frame label=&quot;Lights&quot; { Switch item=all_off mappings=[OFF=&quot;All Off&quot;] Switch item=L_light Switch item=L_lightn mappings=[ON=ON] Slider item=L_light_dim visibility=[L_light==ON] Switch item=K_light Slider item=K_light_dim visibility=[K_light==ON] Switch item=E_light Slider item=E_light_dim visibility=[E_light==ON] Switch item=H_light Slider item=H_light_dim visibility=[H_light==ON] Switch item=B_light Slider item=B_light_dim visibility=[B_light==ON] Switch item=BT_light Slider item=BT_light_dim visibility=[BT_light==ON] } MPD server Because I had an extra raspberry pi and an extra speaker laying around, I turned it into a remote media player with Mopidy (Another post about this shortly). This enabled me to stream straight from spotify, and control it directly from openHAB too! Super cool :) Smart Home So this is where openHAB gets cool. Not only can you interface with smart things throughout your house, and have information gathered and displayed all in one central location, you can create rules to do things when certain things happen (Think IFTTT) For example In the mornings when my alarm goes off, openHAB turns the kitchen light on for me When i leave the house in the morning, it will turn that light off again I can choose a time at night to turn the wall heater in our bedroom on (this will get smarter when my bluetooth temperature sensors arrive) I can choose a time in the morning to turn the wall heater off I Also link my phone location into openHAB (using ownTracks) so then my partner can view my location on a map within openHAB These are just a few examples, but the amount of devices that openHAB supports, the length you can go to to automate your household is quite extensive and exciting If you want to see my complete sitemap/items list or my rules I use, get in touch. I’d be happy to share and help get you started on the way to home automation with openHAB" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2016-12/openhab" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2016-12/openhab" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-12-20T10:00:00+11:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Openhab",
+"datePublished": "2016-12-20T10:00:00+11:00",
+"description": "Since the ninjablock company has run out of money, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with Openhab. At the time I adopted this, it was the only major, multi-vendor supported Home automation “brain” around. Since then home assistant has come around, and alot of others have picked up support for alot more “things”. If I had the money, I would probably jump on the Smart Things wagon, but I don’t :( So this is a bit of a back post of the system, since I’ve had it running for almost 2 years since Openhab 1.7 came out. But I thought I would just share a bit about it, and my setup I am still yet to upgrade to OpenHAB 2.0 yet, it seems like a lot of work, it doesn’t look like there is a straight forward upgrade path from 1.x. So I’m still running 1.7, which is working fine for me Setup in the house So I had a nexus 7 laying around, and decided I’d use that as a wall mounted controller. This works well with openHAB because it even has a “full screen” mode for you to use in the app, which will hide the status bar and navigation keys. This is an always on display too I rarely use the web based GUI to access my home, having this controller works well, plus I have the app installed on my various hand held devices too (And my watch!). So I am never too far away from any controls. I’ve never found the need to open up the web GUI when I’ve been at my desk, much quicker just to unlock my phone and start the app. The default web interface is very ugly too :/ Hardware Raspberry pi Originally I had openHAB running on a raspberry pi (v1 B) but could notice the lack of power when interfacing with it. This wasnt too much of an issue when I first set it up, but after setting up a dozen or so rules, things started getting pretty sluggish. Doesn’t help that openHAB isn’t the only thing I have running on my pi. Not that I’m complaining, it does really well for the specs it has. However this was all fixed when I upgraded to a Raspberry Pi v2. That thing was such a powerful step up from v1. Incredible. I run openHAB, owncloud, dhcp/dns and various cron started scripts on that thing and It doesn’t even complain, or let me down. The only dependancies I needed in this situation were java (obviously, to run openHAB) and an MQTT server (I use mosquitto MQTT). This was to interface with the raspberry pi running the ninjablock things So all up 1 x Raspberry pi v2 (to Run openHAB and mqtt) 1 x Raspberry pi v1 model B (With the ninja crust pi hardware attaached to it, including 433MHZ transmitter) 1 x Raspberry pi as mpd server Ninja Blocks Ninja blocks Lucky for me, someone else that had a ninja block came to the same conclusion as me, so had already made a nice little python bridge to get the Ninjablock and its 433Mhz sensors into openHab. Old mate Perrin7 posted his link in the now dead Ninjablock forums. This little shim just connects to the Ninja Crust via its serial port, and listens for any events. It reads these events, figures out what device/sensor it was, and then publishes it to a MQTT thread. OpenHab also just listens to these threads and picks up changes as they are posted! I’ve had this running for a while now with no issues :) the only downside (but probably easily fixed) is I have to start this python script everytime the pi with the ninja block on it restarts (Say if I lose power or something). This is what I have that connects to my Ninjablock over 433Mhz 1 x Button 1 x Motion sensor 1 x Door/window sensor 3 x remote power switches (Watts Clever brand) Here is the sitemap, and items list in openhab specific to the ninjablock Switch Motion_Sensor &quot;Room Sensor&quot; (Persist_change) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:1000000001011010 01011001]&quot;} Switch C_Lamp &quot;Pergola Lights&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:11011010110110101 1011100], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010100], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011100]&quot; } Switch D_Lamp &quot;Door Lamp&quot; (frontroom) {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011110] , &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010110], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011110]&quot; } Switch Z_Lamp &quot;Room Heater&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011010], &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010010], &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011010]&quot; } Switch Button &quot;Button&quot; {mqtt=&quot;&lt;[mosquitto:ninjaCape/input/11:command:ON]&quot;} Limitless LED Thing was probably the biggest purchase for me at the time, to replace most of my lights around the house with these. Has been a good investment, and already had a addon in openHAB so it was very easy to set up and get working. I have recently found a neat trick with these too, instead of setting the item as Switch in openHAB, you set it as Dimmer. Then when you link the light in the sitemap, you specify it as a Switch. This trick ensures that everyime you click the switch, your lights will go to 100% brightness (On being 100%, Off being 0%). I found this very useful, as before, when you turn the light on again it would turn back on at the last remembered brightness setting, which wasnt always at full brightness. Then I’d have to faff about with the slider bar to get it back up. “But what about if you want to change brightness after you turned the light on”, you ask. You can see the example in my item list and sitemap below. Using the visibility property, you can have the brightness slider show on your sitemap when the light is actually on, this reduces clutter on the screen (seeing as I only have a limited amount of screen space) Frame label=&quot;Lights&quot; { Switch item=all_off mappings=[OFF=&quot;All Off&quot;] Switch item=L_light Switch item=L_lightn mappings=[ON=ON] Slider item=L_light_dim visibility=[L_light==ON] Switch item=K_light Slider item=K_light_dim visibility=[K_light==ON] Switch item=E_light Slider item=E_light_dim visibility=[E_light==ON] Switch item=H_light Slider item=H_light_dim visibility=[H_light==ON] Switch item=B_light Slider item=B_light_dim visibility=[B_light==ON] Switch item=BT_light Slider item=BT_light_dim visibility=[BT_light==ON] } MPD server Because I had an extra raspberry pi and an extra speaker laying around, I turned it into a remote media player with Mopidy (Another post about this shortly). This enabled me to stream straight from spotify, and control it directly from openHAB too! Super cool :) Smart Home So this is where openHAB gets cool. Not only can you interface with smart things throughout your house, and have information gathered and displayed all in one central location, you can create rules to do things when certain things happen (Think IFTTT) For example In the mornings when my alarm goes off, openHAB turns the kitchen light on for me When i leave the house in the morning, it will turn that light off again I can choose a time at night to turn the wall heater in our bedroom on (this will get smarter when my bluetooth temperature sensors arrive) I can choose a time in the morning to turn the wall heater off I Also link my phone location into openHAB (using ownTracks) so then my partner can view my location on a map within openHAB These are just a few examples, but the amount of devices that openHAB supports, the length you can go to to automate your household is quite extensive and exciting If you want to see my complete sitemap/items list or my rules I use, get in touch. I’d be happy to share and help get you started on the way to home automation with openHAB",
+"url": "http://www.mrwhal3.com/articles/2016-12/openhab"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Openhab">Openhab</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        20 DEC 2016
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    7 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>Since the ninjablock company has run out of <a href="https://discuss.ninjablocks.com/t/ninja-blocks-whats-been-happening-whats-happening-next/3608">money</a>, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with <a href="http://openhab.org">Openhab</a>. At the time I adopted this, it was the only major, multi-vendor supported Home automation “brain” around. Since then <a href="https://home-assistant.io/">home assistant</a> has come around, and alot of others have picked up support for alot more “things”. If I had the money, I would probably jump on the <a href="https://www.smartthings.com/">Smart Things</a> wagon, but I don’t :(</p>
+
+<p>So this is a bit of a back post of the system, since I’ve had it running for almost 2 years since <a href="https://github.com/openhab/openhab/releases/tag/v1.7.0">Openhab 1.7</a> came out. But I thought I would just share a bit about it, and my setup</p>
+
+<p>I am still yet to upgrade to OpenHAB 2.0 yet, it seems like a lot of work, it doesn’t look like there is a straight forward upgrade path from 1.x. So I’m still running 1.7, which is working fine for me</p>
+
+<h4 id="setup-in-the-house">Setup in the house</h4>
+
+<p>So I had a nexus 7 laying around, and decided I’d use that as a wall mounted controller. This works well with openHAB because it even has a “full screen” mode for you to use in the app, which will hide the status bar and navigation keys. This is an always on display too</p>
+
+<p>I rarely use the web based GUI to access my home, having this controller works well, plus I have the app installed on my various hand held devices too (And my watch!). So I am never too far away from any controls. I’ve never found the need to open up the web GUI when I’ve been at my desk, much quicker just to unlock my phone and start the app. The default web interface is very ugly too :/</p>
+
+<p><img src="http://www.mrwhal3.com/img/openhab-nexus.jpg" alt="Nexus 7 dashboard" /></p>
+
+<h4 id="hardware">Hardware</h4>
+
+<h5 id="raspberry-pi">Raspberry pi</h5>
+<p>Originally I had openHAB running on a raspberry pi (v1 B) but could notice the lack of power when interfacing with it. This wasnt too much of an issue when I first set it up, but after setting up a dozen or so rules, things started getting pretty sluggish. Doesn’t help that openHAB isn’t the only thing I have running on my pi. Not that I’m complaining, it does really well for the specs it has. However this was all fixed when I upgraded to a Raspberry Pi v2. That thing was such a powerful step up from v1. Incredible. I run openHAB, owncloud, dhcp/dns and various cron started scripts on that thing and It doesn’t even complain, or let me down.</p>
+
+<p>The only dependancies I needed in this situation were java (obviously, to run openHAB) and an MQTT server (I use mosquitto MQTT). This was to interface with the raspberry pi running the ninjablock things</p>
+
+<p>So all up</p>
+<ul>
+  <li>1 x Raspberry pi v2 (to Run openHAB and mqtt)</li>
+  <li>1 x Raspberry pi v1 model B (With the ninja crust pi hardware attaached to it, including 433MHZ transmitter)</li>
+  <li>1 x Raspberry pi as mpd server</li>
+</ul>
+
+<h5 id="ninja-blocks">Ninja Blocks</h5>
+<p><a href="/articles/2014-09/ninja-block">Ninja blocks</a></p>
+
+<p>Lucky for me, someone else that had a ninja block came to the same conclusion as me, so had already made a nice little python bridge to get the Ninjablock and its 433Mhz sensors into openHab. Old mate <a href="https://github.com/perrin7/ninjacape-mqtt-bridge">Perrin7</a> posted his link in the now dead Ninjablock forums. This little shim just connects to the Ninja Crust via its serial port, and listens for any events. It reads these events, figures out what device/sensor it was, and then publishes it to a MQTT thread. OpenHab also just listens to these threads and picks up changes as they are posted! I’ve had this running for a while now with no issues :) the only downside (but probably easily fixed) is I have to start this python script everytime the pi with the ninja block on it restarts (Say if I lose power or something).
+This is what I have that connects to my Ninjablock over 433Mhz</p>
+<ul>
+  <li>1 x Button</li>
+  <li>1 x Motion sensor</li>
+  <li>1 x Door/window sensor</li>
+  <li>3 x remote power switches (Watts Clever brand)</li>
+</ul>
+
+<p>Here is the sitemap, and items list in openhab specific to the ninjablock</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Switch Motion_Sensor    <span class="s2">"Room Sensor"</span>   <span class="o">(</span>Persist_change<span class="o">)</span> <span class="o">{</span><span class="nv">mqtt</span><span class="o">=</span><span class="s2">"&lt;[mosquitto:ninjaCape/input/11:state:ON:1000000001011010
+01011001]"</span><span class="o">}</span>
+Switch C_Lamp   <span class="s2">"Pergola Lights"</span>        <span class="o">(</span>frontroom<span class="o">)</span>     <span class="o">{</span><span class="nv">mqtt</span><span class="o">=</span><span class="s2">"&lt;[mosquitto:ninjaCape/input/11:state:ON:11011010110110101
+1011100],
+                                &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010100],
+                                &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010100],
+                                &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011100]"</span>
+                                <span class="o">}</span>
+Switch D_Lamp   <span class="s2">"Door Lamp"</span>     <span class="o">(</span>frontroom<span class="o">)</span>     <span class="o">{</span><span class="nv">mqtt</span><span class="o">=</span><span class="s2">"&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011110]
+,
+                                &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010110],
+                                &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010110],
+                                &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011110]"</span>
+                                <span class="o">}</span>
+Switch Z_Lamp   <span class="s2">"Room Heater"</span>   <span class="o">{</span><span class="nv">mqtt</span><span class="o">=</span><span class="s2">"&lt;[mosquitto:ninjaCape/input/11:state:ON:110110101101101011011010],
+                                &lt;[mosquitto:ninjaCape/input/11:state:OFF:110110101101101011010010],
+                                &gt;[mosquitto:ninjaCape/output/11:command:OFF:110110101101101011010010],
+                                &gt;[mosquitto:ninjaCape/output/11:command:ON:110110101101101011011010]"</span>
+                                <span class="o">}</span>
+
+Switch Button   <span class="s2">"Button"</span>        <span class="o">{</span><span class="nv">mqtt</span><span class="o">=</span><span class="s2">"&lt;[mosquitto:ninjaCape/input/11:command:ON]"</span><span class="o">}</span></code></pre></figure>
+
+<h5 id="limitless-led">Limitless LED</h5>
+<p>Thing was probably the biggest purchase for me at the time, to replace most of my lights around the house with these. Has been a good investment, and already had a addon in openHAB so it was very easy to set up and get working. I have recently found a neat trick with these too, instead of setting the item as <code class="highlighter-rouge">Switch</code> in openHAB, you set it as <code class="highlighter-rouge">Dimmer</code>. Then when you link the light in the sitemap, you specify it as a <code class="highlighter-rouge">Switch</code>. This trick ensures that everyime you click the switch, your lights will go to 100% brightness (On being 100%, <code class="highlighter-rouge">Off</code> being 0%). I found this very useful, as before, when you turn the light on again it would turn back on at the last remembered brightness setting, which wasnt always at full brightness. Then I’d have to faff about with the slider bar to get it back up. “But what about if you want to change brightness after you turned the light on”, you ask. You can see the example in my item list and sitemap below. Using the <code class="highlighter-rouge">visibility</code> property, you can have the brightness slider show on your sitemap when the light is actually on, this reduces clutter on the screen (seeing as I only have a limited amount of screen space)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> Frame <span class="nv">label</span><span class="o">=</span><span class="s2">"Lights"</span>  <span class="o">{</span>
+                Switch <span class="nv">item</span><span class="o">=</span>all_off <span class="nv">mappings</span><span class="o">=[</span><span class="nv">OFF</span><span class="o">=</span><span class="s2">"All Off"</span><span class="o">]</span>
+                Switch <span class="nv">item</span><span class="o">=</span>L_light
+                Switch <span class="nv">item</span><span class="o">=</span>L_lightn <span class="nv">mappings</span><span class="o">=[</span><span class="nv">ON</span><span class="o">=</span>ON]
+                Slider <span class="nv">item</span><span class="o">=</span>L_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">L_light</span><span class="o">==</span>ON]
+                Switch <span class="nv">item</span><span class="o">=</span>K_light
+                Slider <span class="nv">item</span><span class="o">=</span>K_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">K_light</span><span class="o">==</span>ON]
+                Switch <span class="nv">item</span><span class="o">=</span>E_light
+                Slider <span class="nv">item</span><span class="o">=</span>E_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">E_light</span><span class="o">==</span>ON]
+                Switch <span class="nv">item</span><span class="o">=</span>H_light
+                Slider <span class="nv">item</span><span class="o">=</span>H_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">H_light</span><span class="o">==</span>ON]
+                Switch <span class="nv">item</span><span class="o">=</span>B_light
+                Slider <span class="nv">item</span><span class="o">=</span>B_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">B_light</span><span class="o">==</span>ON]
+                Switch <span class="nv">item</span><span class="o">=</span>BT_light
+                Slider <span class="nv">item</span><span class="o">=</span>BT_light_dim <span class="nv">visibility</span><span class="o">=[</span><span class="nv">BT_light</span><span class="o">==</span>ON]
+        <span class="o">}</span></code></pre></figure>
+
+<h5 id="mpd-server">MPD server</h5>
+<p>Because I had an extra raspberry pi and an extra speaker laying around, I turned it into a remote media player with <a href="http://mopidy.com">Mopidy</a> (Another post about this shortly). This enabled me to stream straight from spotify, and control it directly from openHAB too! Super cool :)</p>
+
+<h4 id="smart-home">Smart Home</h4>
+<p>So this is where openHAB gets cool. Not only can you interface with smart things throughout your house, and have information gathered and displayed all in one central location, you can create rules to do things when certain things happen (Think IFTTT)</p>
+
+<p>For example</p>
+<ul>
+  <li>In the mornings when my alarm goes off, openHAB turns the kitchen light on for me</li>
+  <li>When i leave the house in the morning, it will turn that light off again</li>
+  <li>I can choose a time at night to turn the wall heater in our bedroom on (this will get smarter when my bluetooth temperature sensors arrive)</li>
+  <li>I can choose a time in the morning to turn the wall heater <em>off</em></li>
+  <li>I Also link my phone location into openHAB (using <a href="http://owntracks.org">ownTracks</a>) so then my partner can view my location on a map within openHAB</li>
+</ul>
+
+<p>These are just a few examples, but the amount of devices that openHAB supports, the length you can go to to automate your household is quite extensive and exciting</p>
+
+<p>If you want to see my complete sitemap/items list or my rules I use, get in touch. I’d be happy to share and help get you started on the way to home automation with openHAB</p>
+
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2016-12/openhab" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2016-12/openhab" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2016-12/openhab" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2016-12/openhab" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2016-12/openhab" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

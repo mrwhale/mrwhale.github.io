@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2017-04/RuuviTag">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>RuuviTag - Mrwhal3’s Blog</title>
+<meta property="og:title" content="RuuviTag" />
+<meta name="description" content="I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs So battery powered BLE temperature sensor, that runs javascript, and a raspberry pi 3 that is running openhab. Pretty much a perfect mix. Here is how I got them talking to each other You may be looking at the RuuviTag setup page and see that the default weather station firmware actually works for both RuuviTags. At the time of getting my Ruuvi, it only supported the RuuvTag+, so I looked at using the espruino firmware to get what I needed to work. Ruuvi Following the instructions here we need to flash the espruino firmware to ruuvi. Quick overview, but the video they have here is quite good Download nRF connect app Put Ruuvi into boot mode (hold R + B, let go of R while still holding B until red light comes and stays on) Connect to the ruuvi with nRF connect Press the “DFU” button that comes up in the app once you are connected, and select the espruino firmware zip file wait a little while Now follow the instructions here to get the IDE up and running to connect to Ruuvi Once you are able to get into the IDE and connect to ruuvi, upload this little snippet. Essentially it gathers the temp data every 60 seconds, converts it to a uint8 array, and then advertises it over BLE after following this guide, you may be asking why I’m not using the ruuvitag package to get all the data var Ruuvitag = require(&quot;Ruuvitag&quot;);. It seems that this package does not work with the RuuviTag basic. I need to raise this on the forums to see when it will be supported. But for now we can just use the code you would use for the puck.js on the ruuvi, and it does the same job Links to the espruino forum that helped me get this working one, two, three function tempTo(temp) { var f = parseFloat(temp.toFixed(2)) * 100; if (tempTo.buf === undefined) tempTo.buf = new Uint8Array(2); tempTo.buf[0] = f &amp; 0xff; tempTo.buf[1] = f &gt;&gt; 8 &amp; 0xff; return tempTo.buf; } setInterval(function(fn){ console.log(E.getTemperature()); },60000); setInterval(function() { NRF.setAdvertising({ 0x1809 : tempTo(E.getTemperature()) }); }, 60000); RaspberryPi 3 Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the ruuvi forums there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like this. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon) It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again. Setup So firstly during my trials, and some help from the Ruuvi Slack channel, we need to upgrade the version of bluez that is on the raspberry pi to the latest. There is apparently an issue in 5.23 that was causing me some grief. First lets install all the dependancies we will need sudo apt-get install bluetooth bluez bluez-hcidump libbluetooth-dev libudev-dev Add the stretch repo (with the newer bluez versions) to apt source list sudo vim /etc/apt/sources.list -&gt; add deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi sudo vim /etc/apt/apt.conf.d/40defaultrelease -&gt; add APT::Default-Release &quot;jessie&quot;; Update package list sudo apt-get update Upgrade bluez using the strech repo sudo apt-get install bluez bluez-hcidump -t stretch Now we need node. I’m going to install the latest, but the LTS version works great too curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - sudo apt-get install nodejs npm So before we go any further, lets do some testing. We can use the tools from the bluez package to scan BLE and see what data we can find $ sudo hcitool lescan LE Scan ... CE:A2:59:0E:85:C2 RuuviTag 85c2 CE:A2:59:0E:85:C2 (unknown) Cool, we can see ruuvi in the scan! No lets see what data ruuvi is giving us $ sudo hcitool lescan &amp; sudo hcidump --raw [1] 18782 LE Scan ... HCI sniffer - Bluetooth packet analyzer ver 5.43 device: hci0 snap_len: 1500 filter: 0xffffffff CE:A2:59:0E:85:C2 RuuviTag 85c2 &gt; 04 3E 24 02 01 00 01 C2 85 0E 59 A2 CE 18 02 01 05 05 16 09 18 46 05 0E 09 52 75 75 76 69 54 61 67 20 38 35 63 32 AC CE:A2:59:0E:85:C2 (unknown) &gt; 04 3E 1E 02 01 04 01 C2 85 0E 59 A2 CE 12 11 07 9E CA DC 24 0E E5 A9 E0 93 F3 A3 B5 01 00 40 6E AC Pretty neat, we can see a raw stream of hex data that the RuuviTag is giving out. Lets try again with the -x flag (show ascii and hex data) $ sudo hcitool lescan &amp; sudo hcidump -x HCI sniffer - Bluetooth packet analyzer ver 5.23 device: hci1 snap_len: 1500 filter: 0xffffffff &gt; HCI Event: LE Meta Event (0x3e) plen 36 LE Advertising Report ADV_IND - Connectable undirected advertising (0) bdaddr CE:A2:59:0E:85:C2 (Random) Flags: 0x05 Unknown type 0x16 with 4 bytes data Complete local name: &#39;RuuviTag 85c2&#39; RSSI: -77 More interesting things happying. We can see the name of the tag, its MAC address and RSI. Unforuntely we can’t see the data its advertising. I haven’t been able to find out how to do that just with hcidump but we will now turn to some javascript to get this info! Lets install some node dependacies we will need for this. npm install noble mqtt The noble module is pretty much where all the work happens, and we will just need the mqtt module to send messages to our openhab server I have also borrowed a few bits of code out of the EspruinoHub project, this made my life alot easier. We needed the config.js and attributes.js files out of the lib folder And here is index.js, that does the scanning and prints the data. Its still a bit of work in progress at the moment, but does exactly what I need. Although I do not have multiple RuuviTags, this solution should work just fine for mulitple tags. var noble = require(&#39;noble&#39;); var attributes = require(&#39;./attribute&#39;); var config = require(&#39;./config&#39;); var mqtt = require(&#39;mqtt&#39;); // my mqtt server needs some authentication, if you dont, you can just remove that object var client = mqtt.connect(&#39;mqtt://10.1.1.115&#39;, { username: &#39;Username&#39;, password: &#39;Password&#39; }) var connected = false; var inRange = {}; var packetsReceived = 0; var lastPacketsReceived = 0; var isScanning = false; noble.on(&#39;stateChange&#39;, function(state) { if (state === &#39;poweredOn&#39;) { noble.startScanning([], true); } else { noble.stopScanning(); } }); client.on(&#39;connect&#39;, function () { connected = true; }); noble.on(&#39;discover&#39;, function(peripheral) { packetsReceived++; var addr = peripheral.address; var id = addr; if (id in config.known_devices) id = config.known_devices[id]; var entered = !inRange[addr]; if (entered) { inRange[addr] = { id : id, address : addr, peripheral: peripheral, name : &quot;?&quot;, data : {} }; }; inRange[addr].lastSeen = Date.now(); inRange[addr].rssi = peripheral.rssi; console.log(&#39;hello my local name is:&#39;); console.log(&#39;\t&#39; + peripheral.advertisement.localName); var serviceData = peripheral.advertisement.serviceData; //If the advertising BLE device has any service data, then lets loop throught it and find out what it is if (serviceData &amp;&amp; serviceData.length) { for (var i in serviceData) { //If statement to limit the outgoing mqtt stream. We are checking to see if the device is already in our array we made above, and if it hasnt been seen in 60s, and that data hasnt changed if (inRange[addr].data[serviceData[i].uuid] &amp;&amp; inRange[addr].data[serviceData[i].uuid].payload.toString() == serviceData[i].data.toString() &amp;&amp; inRange[addr].data[serviceData[i].uuid].time &gt; Date.now()-60000){ console.log(&quot;waiting....&quot;); }else{ //Bit of debugging here so we can see whats going on console.log(&#39;\t\t&#39; + JSON.stringify(serviceData[i].uuid) + &#39;: &#39; + JSON.stringify(serviceData[i].data.toString(&#39;hex&#39;))); var n = attributes.getReadableAttributeName(serviceData[i].uuid); console.log(JSON.stringify(attributes.decodeAttribute(n,serviceData[i].data))+&quot;\n&quot;); inRange[addr].data[serviceData[i].uuid] = { payload : serviceData[i].data, time : Date.now() }; var extendedData = attributes.decodeAttribute(n,serviceData[i].data); //Can only sent mqtt if its actually connected, so if connected send data. We are only sending the temp number, not the whole json string which looks like { &quot;temp&quot;: 20 } in debug messages above if (connected &amp;&amp; extendedData.temp) client.publish(inRange[addr].peripheral.id +&#39;/temp&#39;, extendedData.temp.toString()); } } } if (peripheral.advertisement.manufacturerData) { console.log(&#39;\there is my manufacturer data:&#39;); console.log(&#39;\t\t&#39; + JSON.stringify(peripheral.advertisement.manufacturerData.toString(&#39;hex&#39;))); } if (peripheral.advertisement.txPowerLevel !== undefined) { console.log(&#39;\tmy TX power level is:&#39;); console.log(&#39;\t\t&#39; + peripheral.advertisement.txPowerLevel); } console.log(); }); If you go ahead and run this, nodejs index.js you will see somethings being printed out to console. Once it picks up Ruuvi, it should tell you the temperature now! The script is set to only re-send data on change, or ever 60 seconds. This is just so mqtt isn’t flooded with messages hello my local name is: RuuviTag 85c2 &quot;1809&quot;: &quot;0807&quot; {&quot;temp&quot;:18} hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: f022cXhN here is my manufacturer data: &quot;0f03000276064ef39800d605020000dae480&quot; Now lets go over to openhab, and makde sure its ready to receive some data Pre-requisites for this is obviously having mqtt biniding installed and working vim /etc/openhab2/items/ruuvi.items Add something like this - Number ruuvi &quot;RuuviTag [%.2f C]&quot; (climate) {mqtt=&quot;&lt;[mosq:cea2590e85c2/temp:state:default]&quot;} So the node script is publishing to a mqtt topic by the ruuvitag ID, which is just the tag’s MAC address without any : While you have the node script running, tail the openhab log to make sure things are working. tail -f /var/log/openhab2/events.log 2017-04-20 15:17:12.992 [ItemStateChangedEvent ] - piholeBlockedAds changed from 665 to 674 2017-04-20 15:19:42.802 [ItemStateChangedEvent ] - ruuvi changed from 18 to 18.25 2017-04-20 15:20:43.626 [ItemStateChangedEvent ] - ruuvi changed from 18.25 to 18.5 2017-04-20 15:21:42.921 [ItemStateChangedEvent ] - ruuvi changed from 18.5 to 18 2017-04-20 15:22:16.388 [ItemStateChangedEvent ] - piholeQueries changed from 14852 to 15265 2017-04-20 15:22:16.397 [ItemStateChangedEvent ] - piholePercent changed from 4.5381093455427 to 4.5070422535211 2017-04-20 15:22:16.401 [ItemStateChangedEvent ] - piholeBlockedAds changed from 674 to 688 Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a screen or something funky like that. Just put this into /etc/systemd/system/ruuvi.service [Unit] Description=Ruuvi-Scanner [Service] ExecStart=/usr/bin/node index.js Restart=always User=pi Group=pi WorkingDirectory=/home/pi/ruuvi [Install] WantedBy=multi-user.target Now you can start and stop it with systemctl So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room! I will also upload the files to github, so you can just download it from there too.." />
+<meta property="og:description" content="I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs So battery powered BLE temperature sensor, that runs javascript, and a raspberry pi 3 that is running openhab. Pretty much a perfect mix. Here is how I got them talking to each other You may be looking at the RuuviTag setup page and see that the default weather station firmware actually works for both RuuviTags. At the time of getting my Ruuvi, it only supported the RuuvTag+, so I looked at using the espruino firmware to get what I needed to work. Ruuvi Following the instructions here we need to flash the espruino firmware to ruuvi. Quick overview, but the video they have here is quite good Download nRF connect app Put Ruuvi into boot mode (hold R + B, let go of R while still holding B until red light comes and stays on) Connect to the ruuvi with nRF connect Press the “DFU” button that comes up in the app once you are connected, and select the espruino firmware zip file wait a little while Now follow the instructions here to get the IDE up and running to connect to Ruuvi Once you are able to get into the IDE and connect to ruuvi, upload this little snippet. Essentially it gathers the temp data every 60 seconds, converts it to a uint8 array, and then advertises it over BLE after following this guide, you may be asking why I’m not using the ruuvitag package to get all the data var Ruuvitag = require(&quot;Ruuvitag&quot;);. It seems that this package does not work with the RuuviTag basic. I need to raise this on the forums to see when it will be supported. But for now we can just use the code you would use for the puck.js on the ruuvi, and it does the same job Links to the espruino forum that helped me get this working one, two, three function tempTo(temp) { var f = parseFloat(temp.toFixed(2)) * 100; if (tempTo.buf === undefined) tempTo.buf = new Uint8Array(2); tempTo.buf[0] = f &amp; 0xff; tempTo.buf[1] = f &gt;&gt; 8 &amp; 0xff; return tempTo.buf; } setInterval(function(fn){ console.log(E.getTemperature()); },60000); setInterval(function() { NRF.setAdvertising({ 0x1809 : tempTo(E.getTemperature()) }); }, 60000); RaspberryPi 3 Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the ruuvi forums there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like this. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon) It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again. Setup So firstly during my trials, and some help from the Ruuvi Slack channel, we need to upgrade the version of bluez that is on the raspberry pi to the latest. There is apparently an issue in 5.23 that was causing me some grief. First lets install all the dependancies we will need sudo apt-get install bluetooth bluez bluez-hcidump libbluetooth-dev libudev-dev Add the stretch repo (with the newer bluez versions) to apt source list sudo vim /etc/apt/sources.list -&gt; add deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi sudo vim /etc/apt/apt.conf.d/40defaultrelease -&gt; add APT::Default-Release &quot;jessie&quot;; Update package list sudo apt-get update Upgrade bluez using the strech repo sudo apt-get install bluez bluez-hcidump -t stretch Now we need node. I’m going to install the latest, but the LTS version works great too curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - sudo apt-get install nodejs npm So before we go any further, lets do some testing. We can use the tools from the bluez package to scan BLE and see what data we can find $ sudo hcitool lescan LE Scan ... CE:A2:59:0E:85:C2 RuuviTag 85c2 CE:A2:59:0E:85:C2 (unknown) Cool, we can see ruuvi in the scan! No lets see what data ruuvi is giving us $ sudo hcitool lescan &amp; sudo hcidump --raw [1] 18782 LE Scan ... HCI sniffer - Bluetooth packet analyzer ver 5.43 device: hci0 snap_len: 1500 filter: 0xffffffff CE:A2:59:0E:85:C2 RuuviTag 85c2 &gt; 04 3E 24 02 01 00 01 C2 85 0E 59 A2 CE 18 02 01 05 05 16 09 18 46 05 0E 09 52 75 75 76 69 54 61 67 20 38 35 63 32 AC CE:A2:59:0E:85:C2 (unknown) &gt; 04 3E 1E 02 01 04 01 C2 85 0E 59 A2 CE 12 11 07 9E CA DC 24 0E E5 A9 E0 93 F3 A3 B5 01 00 40 6E AC Pretty neat, we can see a raw stream of hex data that the RuuviTag is giving out. Lets try again with the -x flag (show ascii and hex data) $ sudo hcitool lescan &amp; sudo hcidump -x HCI sniffer - Bluetooth packet analyzer ver 5.23 device: hci1 snap_len: 1500 filter: 0xffffffff &gt; HCI Event: LE Meta Event (0x3e) plen 36 LE Advertising Report ADV_IND - Connectable undirected advertising (0) bdaddr CE:A2:59:0E:85:C2 (Random) Flags: 0x05 Unknown type 0x16 with 4 bytes data Complete local name: &#39;RuuviTag 85c2&#39; RSSI: -77 More interesting things happying. We can see the name of the tag, its MAC address and RSI. Unforuntely we can’t see the data its advertising. I haven’t been able to find out how to do that just with hcidump but we will now turn to some javascript to get this info! Lets install some node dependacies we will need for this. npm install noble mqtt The noble module is pretty much where all the work happens, and we will just need the mqtt module to send messages to our openhab server I have also borrowed a few bits of code out of the EspruinoHub project, this made my life alot easier. We needed the config.js and attributes.js files out of the lib folder And here is index.js, that does the scanning and prints the data. Its still a bit of work in progress at the moment, but does exactly what I need. Although I do not have multiple RuuviTags, this solution should work just fine for mulitple tags. var noble = require(&#39;noble&#39;); var attributes = require(&#39;./attribute&#39;); var config = require(&#39;./config&#39;); var mqtt = require(&#39;mqtt&#39;); // my mqtt server needs some authentication, if you dont, you can just remove that object var client = mqtt.connect(&#39;mqtt://10.1.1.115&#39;, { username: &#39;Username&#39;, password: &#39;Password&#39; }) var connected = false; var inRange = {}; var packetsReceived = 0; var lastPacketsReceived = 0; var isScanning = false; noble.on(&#39;stateChange&#39;, function(state) { if (state === &#39;poweredOn&#39;) { noble.startScanning([], true); } else { noble.stopScanning(); } }); client.on(&#39;connect&#39;, function () { connected = true; }); noble.on(&#39;discover&#39;, function(peripheral) { packetsReceived++; var addr = peripheral.address; var id = addr; if (id in config.known_devices) id = config.known_devices[id]; var entered = !inRange[addr]; if (entered) { inRange[addr] = { id : id, address : addr, peripheral: peripheral, name : &quot;?&quot;, data : {} }; }; inRange[addr].lastSeen = Date.now(); inRange[addr].rssi = peripheral.rssi; console.log(&#39;hello my local name is:&#39;); console.log(&#39;\t&#39; + peripheral.advertisement.localName); var serviceData = peripheral.advertisement.serviceData; //If the advertising BLE device has any service data, then lets loop throught it and find out what it is if (serviceData &amp;&amp; serviceData.length) { for (var i in serviceData) { //If statement to limit the outgoing mqtt stream. We are checking to see if the device is already in our array we made above, and if it hasnt been seen in 60s, and that data hasnt changed if (inRange[addr].data[serviceData[i].uuid] &amp;&amp; inRange[addr].data[serviceData[i].uuid].payload.toString() == serviceData[i].data.toString() &amp;&amp; inRange[addr].data[serviceData[i].uuid].time &gt; Date.now()-60000){ console.log(&quot;waiting....&quot;); }else{ //Bit of debugging here so we can see whats going on console.log(&#39;\t\t&#39; + JSON.stringify(serviceData[i].uuid) + &#39;: &#39; + JSON.stringify(serviceData[i].data.toString(&#39;hex&#39;))); var n = attributes.getReadableAttributeName(serviceData[i].uuid); console.log(JSON.stringify(attributes.decodeAttribute(n,serviceData[i].data))+&quot;\n&quot;); inRange[addr].data[serviceData[i].uuid] = { payload : serviceData[i].data, time : Date.now() }; var extendedData = attributes.decodeAttribute(n,serviceData[i].data); //Can only sent mqtt if its actually connected, so if connected send data. We are only sending the temp number, not the whole json string which looks like { &quot;temp&quot;: 20 } in debug messages above if (connected &amp;&amp; extendedData.temp) client.publish(inRange[addr].peripheral.id +&#39;/temp&#39;, extendedData.temp.toString()); } } } if (peripheral.advertisement.manufacturerData) { console.log(&#39;\there is my manufacturer data:&#39;); console.log(&#39;\t\t&#39; + JSON.stringify(peripheral.advertisement.manufacturerData.toString(&#39;hex&#39;))); } if (peripheral.advertisement.txPowerLevel !== undefined) { console.log(&#39;\tmy TX power level is:&#39;); console.log(&#39;\t\t&#39; + peripheral.advertisement.txPowerLevel); } console.log(); }); If you go ahead and run this, nodejs index.js you will see somethings being printed out to console. Once it picks up Ruuvi, it should tell you the temperature now! The script is set to only re-send data on change, or ever 60 seconds. This is just so mqtt isn’t flooded with messages hello my local name is: RuuviTag 85c2 &quot;1809&quot;: &quot;0807&quot; {&quot;temp&quot;:18} hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: f022cXhN here is my manufacturer data: &quot;0f03000276064ef39800d605020000dae480&quot; Now lets go over to openhab, and makde sure its ready to receive some data Pre-requisites for this is obviously having mqtt biniding installed and working vim /etc/openhab2/items/ruuvi.items Add something like this - Number ruuvi &quot;RuuviTag [%.2f C]&quot; (climate) {mqtt=&quot;&lt;[mosq:cea2590e85c2/temp:state:default]&quot;} So the node script is publishing to a mqtt topic by the ruuvitag ID, which is just the tag’s MAC address without any : While you have the node script running, tail the openhab log to make sure things are working. tail -f /var/log/openhab2/events.log 2017-04-20 15:17:12.992 [ItemStateChangedEvent ] - piholeBlockedAds changed from 665 to 674 2017-04-20 15:19:42.802 [ItemStateChangedEvent ] - ruuvi changed from 18 to 18.25 2017-04-20 15:20:43.626 [ItemStateChangedEvent ] - ruuvi changed from 18.25 to 18.5 2017-04-20 15:21:42.921 [ItemStateChangedEvent ] - ruuvi changed from 18.5 to 18 2017-04-20 15:22:16.388 [ItemStateChangedEvent ] - piholeQueries changed from 14852 to 15265 2017-04-20 15:22:16.397 [ItemStateChangedEvent ] - piholePercent changed from 4.5381093455427 to 4.5070422535211 2017-04-20 15:22:16.401 [ItemStateChangedEvent ] - piholeBlockedAds changed from 674 to 688 Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a screen or something funky like that. Just put this into /etc/systemd/system/ruuvi.service [Unit] Description=Ruuvi-Scanner [Service] ExecStart=/usr/bin/node index.js Restart=always User=pi Group=pi WorkingDirectory=/home/pi/ruuvi [Install] WantedBy=multi-user.target Now you can start and stop it with systemctl So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room! I will also upload the files to github, so you can just download it from there too.." />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2017-04/RuuviTag" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2017-04/RuuviTag" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-04-19T09:00:00+10:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "RuuviTag",
+"datePublished": "2017-04-19T09:00:00+10:00",
+"description": "I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs So battery powered BLE temperature sensor, that runs javascript, and a raspberry pi 3 that is running openhab. Pretty much a perfect mix. Here is how I got them talking to each other You may be looking at the RuuviTag setup page and see that the default weather station firmware actually works for both RuuviTags. At the time of getting my Ruuvi, it only supported the RuuvTag+, so I looked at using the espruino firmware to get what I needed to work. Ruuvi Following the instructions here we need to flash the espruino firmware to ruuvi. Quick overview, but the video they have here is quite good Download nRF connect app Put Ruuvi into boot mode (hold R + B, let go of R while still holding B until red light comes and stays on) Connect to the ruuvi with nRF connect Press the “DFU” button that comes up in the app once you are connected, and select the espruino firmware zip file wait a little while Now follow the instructions here to get the IDE up and running to connect to Ruuvi Once you are able to get into the IDE and connect to ruuvi, upload this little snippet. Essentially it gathers the temp data every 60 seconds, converts it to a uint8 array, and then advertises it over BLE after following this guide, you may be asking why I’m not using the ruuvitag package to get all the data var Ruuvitag = require(&quot;Ruuvitag&quot;);. It seems that this package does not work with the RuuviTag basic. I need to raise this on the forums to see when it will be supported. But for now we can just use the code you would use for the puck.js on the ruuvi, and it does the same job Links to the espruino forum that helped me get this working one, two, three function tempTo(temp) { var f = parseFloat(temp.toFixed(2)) * 100; if (tempTo.buf === undefined) tempTo.buf = new Uint8Array(2); tempTo.buf[0] = f &amp; 0xff; tempTo.buf[1] = f &gt;&gt; 8 &amp; 0xff; return tempTo.buf; } setInterval(function(fn){ console.log(E.getTemperature()); },60000); setInterval(function() { NRF.setAdvertising({ 0x1809 : tempTo(E.getTemperature()) }); }, 60000); RaspberryPi 3 Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the ruuvi forums there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like this. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon) It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again. Setup So firstly during my trials, and some help from the Ruuvi Slack channel, we need to upgrade the version of bluez that is on the raspberry pi to the latest. There is apparently an issue in 5.23 that was causing me some grief. First lets install all the dependancies we will need sudo apt-get install bluetooth bluez bluez-hcidump libbluetooth-dev libudev-dev Add the stretch repo (with the newer bluez versions) to apt source list sudo vim /etc/apt/sources.list -&gt; add deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi sudo vim /etc/apt/apt.conf.d/40defaultrelease -&gt; add APT::Default-Release &quot;jessie&quot;; Update package list sudo apt-get update Upgrade bluez using the strech repo sudo apt-get install bluez bluez-hcidump -t stretch Now we need node. I’m going to install the latest, but the LTS version works great too curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - sudo apt-get install nodejs npm So before we go any further, lets do some testing. We can use the tools from the bluez package to scan BLE and see what data we can find $ sudo hcitool lescan LE Scan ... CE:A2:59:0E:85:C2 RuuviTag 85c2 CE:A2:59:0E:85:C2 (unknown) Cool, we can see ruuvi in the scan! No lets see what data ruuvi is giving us $ sudo hcitool lescan &amp; sudo hcidump --raw [1] 18782 LE Scan ... HCI sniffer - Bluetooth packet analyzer ver 5.43 device: hci0 snap_len: 1500 filter: 0xffffffff CE:A2:59:0E:85:C2 RuuviTag 85c2 &gt; 04 3E 24 02 01 00 01 C2 85 0E 59 A2 CE 18 02 01 05 05 16 09 18 46 05 0E 09 52 75 75 76 69 54 61 67 20 38 35 63 32 AC CE:A2:59:0E:85:C2 (unknown) &gt; 04 3E 1E 02 01 04 01 C2 85 0E 59 A2 CE 12 11 07 9E CA DC 24 0E E5 A9 E0 93 F3 A3 B5 01 00 40 6E AC Pretty neat, we can see a raw stream of hex data that the RuuviTag is giving out. Lets try again with the -x flag (show ascii and hex data) $ sudo hcitool lescan &amp; sudo hcidump -x HCI sniffer - Bluetooth packet analyzer ver 5.23 device: hci1 snap_len: 1500 filter: 0xffffffff &gt; HCI Event: LE Meta Event (0x3e) plen 36 LE Advertising Report ADV_IND - Connectable undirected advertising (0) bdaddr CE:A2:59:0E:85:C2 (Random) Flags: 0x05 Unknown type 0x16 with 4 bytes data Complete local name: &#39;RuuviTag 85c2&#39; RSSI: -77 More interesting things happying. We can see the name of the tag, its MAC address and RSI. Unforuntely we can’t see the data its advertising. I haven’t been able to find out how to do that just with hcidump but we will now turn to some javascript to get this info! Lets install some node dependacies we will need for this. npm install noble mqtt The noble module is pretty much where all the work happens, and we will just need the mqtt module to send messages to our openhab server I have also borrowed a few bits of code out of the EspruinoHub project, this made my life alot easier. We needed the config.js and attributes.js files out of the lib folder And here is index.js, that does the scanning and prints the data. Its still a bit of work in progress at the moment, but does exactly what I need. Although I do not have multiple RuuviTags, this solution should work just fine for mulitple tags. var noble = require(&#39;noble&#39;); var attributes = require(&#39;./attribute&#39;); var config = require(&#39;./config&#39;); var mqtt = require(&#39;mqtt&#39;); // my mqtt server needs some authentication, if you dont, you can just remove that object var client = mqtt.connect(&#39;mqtt://10.1.1.115&#39;, { username: &#39;Username&#39;, password: &#39;Password&#39; }) var connected = false; var inRange = {}; var packetsReceived = 0; var lastPacketsReceived = 0; var isScanning = false; noble.on(&#39;stateChange&#39;, function(state) { if (state === &#39;poweredOn&#39;) { noble.startScanning([], true); } else { noble.stopScanning(); } }); client.on(&#39;connect&#39;, function () { connected = true; }); noble.on(&#39;discover&#39;, function(peripheral) { packetsReceived++; var addr = peripheral.address; var id = addr; if (id in config.known_devices) id = config.known_devices[id]; var entered = !inRange[addr]; if (entered) { inRange[addr] = { id : id, address : addr, peripheral: peripheral, name : &quot;?&quot;, data : {} }; }; inRange[addr].lastSeen = Date.now(); inRange[addr].rssi = peripheral.rssi; console.log(&#39;hello my local name is:&#39;); console.log(&#39;\\t&#39; + peripheral.advertisement.localName); var serviceData = peripheral.advertisement.serviceData; //If the advertising BLE device has any service data, then lets loop throught it and find out what it is if (serviceData &amp;&amp; serviceData.length) { for (var i in serviceData) { //If statement to limit the outgoing mqtt stream. We are checking to see if the device is already in our array we made above, and if it hasnt been seen in 60s, and that data hasnt changed if (inRange[addr].data[serviceData[i].uuid] &amp;&amp; inRange[addr].data[serviceData[i].uuid].payload.toString() == serviceData[i].data.toString() &amp;&amp; inRange[addr].data[serviceData[i].uuid].time &gt; Date.now()-60000){ console.log(&quot;waiting....&quot;); }else{ //Bit of debugging here so we can see whats going on console.log(&#39;\\t\\t&#39; + JSON.stringify(serviceData[i].uuid) + &#39;: &#39; + JSON.stringify(serviceData[i].data.toString(&#39;hex&#39;))); var n = attributes.getReadableAttributeName(serviceData[i].uuid); console.log(JSON.stringify(attributes.decodeAttribute(n,serviceData[i].data))+&quot;\\n&quot;); inRange[addr].data[serviceData[i].uuid] = { payload : serviceData[i].data, time : Date.now() }; var extendedData = attributes.decodeAttribute(n,serviceData[i].data); //Can only sent mqtt if its actually connected, so if connected send data. We are only sending the temp number, not the whole json string which looks like { &quot;temp&quot;: 20 } in debug messages above if (connected &amp;&amp; extendedData.temp) client.publish(inRange[addr].peripheral.id +&#39;/temp&#39;, extendedData.temp.toString()); } } } if (peripheral.advertisement.manufacturerData) { console.log(&#39;\\there is my manufacturer data:&#39;); console.log(&#39;\\t\\t&#39; + JSON.stringify(peripheral.advertisement.manufacturerData.toString(&#39;hex&#39;))); } if (peripheral.advertisement.txPowerLevel !== undefined) { console.log(&#39;\\tmy TX power level is:&#39;); console.log(&#39;\\t\\t&#39; + peripheral.advertisement.txPowerLevel); } console.log(); }); If you go ahead and run this, nodejs index.js you will see somethings being printed out to console. Once it picks up Ruuvi, it should tell you the temperature now! The script is set to only re-send data on change, or ever 60 seconds. This is just so mqtt isn’t flooded with messages hello my local name is: RuuviTag 85c2 &quot;1809&quot;: &quot;0807&quot; {&quot;temp&quot;:18} hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: RuuviTag 85c2 waiting.... hello my local name is: f022cXhN here is my manufacturer data: &quot;0f03000276064ef39800d605020000dae480&quot; Now lets go over to openhab, and makde sure its ready to receive some data Pre-requisites for this is obviously having mqtt biniding installed and working vim /etc/openhab2/items/ruuvi.items Add something like this - Number ruuvi &quot;RuuviTag [%.2f C]&quot; (climate) {mqtt=&quot;&lt;[mosq:cea2590e85c2/temp:state:default]&quot;} So the node script is publishing to a mqtt topic by the ruuvitag ID, which is just the tag’s MAC address without any : While you have the node script running, tail the openhab log to make sure things are working. tail -f /var/log/openhab2/events.log 2017-04-20 15:17:12.992 [ItemStateChangedEvent ] - piholeBlockedAds changed from 665 to 674 2017-04-20 15:19:42.802 [ItemStateChangedEvent ] - ruuvi changed from 18 to 18.25 2017-04-20 15:20:43.626 [ItemStateChangedEvent ] - ruuvi changed from 18.25 to 18.5 2017-04-20 15:21:42.921 [ItemStateChangedEvent ] - ruuvi changed from 18.5 to 18 2017-04-20 15:22:16.388 [ItemStateChangedEvent ] - piholeQueries changed from 14852 to 15265 2017-04-20 15:22:16.397 [ItemStateChangedEvent ] - piholePercent changed from 4.5381093455427 to 4.5070422535211 2017-04-20 15:22:16.401 [ItemStateChangedEvent ] - piholeBlockedAds changed from 674 to 688 Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a screen or something funky like that. Just put this into /etc/systemd/system/ruuvi.service [Unit] Description=Ruuvi-Scanner [Service] ExecStart=/usr/bin/node index.js Restart=always User=pi Group=pi WorkingDirectory=/home/pi/ruuvi [Install] WantedBy=multi-user.target Now you can start and stop it with systemctl So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room! I will also upload the files to github, so you can just download it from there too..",
+"url": "http://www.mrwhal3.com/articles/2017-04/RuuviTag"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="RuuviTag">RuuviTag</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        19 APR 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    15 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs</p>
+
+<p>So battery powered BLE temperature sensor, that runs javascript, and a raspberry pi 3 that is running openhab. Pretty much a perfect mix. Here is how I got them talking to each other</p>
+
+<p>You may be looking at the RuuviTag setup page and see that the default weather station firmware actually works for both RuuviTags. At the time of getting my Ruuvi, it only supported the RuuvTag+, so I looked at using the espruino firmware to get what I needed to work.</p>
+
+<h2 id="ruuvi">Ruuvi</h2>
+
+<ul>
+  <li>Following the instructions <a href="https://ruu.vi/setup/#updating-the-firmware">here</a> we need to flash the espruino firmware to ruuvi. Quick overview, but the video they have here is quite good
+    <ul>
+      <li>Download nRF connect app</li>
+      <li>Put Ruuvi into boot mode (hold R + B, let go of R while still holding B until red light comes and stays on)</li>
+      <li>Connect to the ruuvi with nRF connect</li>
+      <li>Press the “DFU” button that comes up in the app once you are connected, and select the espruino firmware zip file</li>
+      <li>wait a little while</li>
+    </ul>
+  </li>
+  <li>Now follow the instructions <a href="http://www.espruino.com/Puck.js+Quick+Start">here</a> to get the IDE up and running to connect to Ruuvi</li>
+  <li>Once you are able to get into the IDE and connect to ruuvi, upload this little snippet. Essentially it gathers the temp data every 60 seconds, converts it to a uint8 array, and then advertises it over BLE
+    <ul>
+      <li>after following <a href="https://www.espruino.com/Ruuvitag">this</a> guide, you may be asking why I’m not using the ruuvitag package to get all the data <code class="highlighter-rouge">var Ruuvitag = require("Ruuvitag");</code>. It seems that this package does not work with the RuuviTag basic. I need to raise this on the forums to see when it will be supported. But for now we can just use the code you would use for the puck.js on the ruuvi, and it does the same job</li>
+      <li>Links to the espruino forum that helped me get this working <a href="http://forum.espruino.com/conversations/297509/">one</a>, <a href="http://forum.espruino.com/conversations/298878/">two</a>, <a href="http://forum.espruino.com/conversations/297591/?offset=25">three</a></li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">tempTo</span><span class="p">(</span><span class="nx">temp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">temp</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+  <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">E</span><span class="p">.</span><span class="nx">getTemperature</span><span class="p">());</span>
+<span class="p">},</span><span class="mi">60000</span><span class="p">);</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">NRF</span><span class="p">.</span><span class="nx">setAdvertising</span><span class="p">({</span>
+    <span class="mh">0x1809</span> <span class="p">:</span> <span class="nx">tempTo</span><span class="p">(</span><span class="nx">E</span><span class="p">.</span><span class="nx">getTemperature</span><span class="p">())</span>
+  <span class="p">});</span>
+<span class="p">},</span> <span class="mi">60000</span><span class="p">);</span></code></pre></figure>
+
+<h2 id="raspberrypi-3">RaspberryPi 3</h2>
+
+<p>Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the <a href="https://f.ruuvi.com/">ruuvi forums</a> there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like <a href="https://github.com/espruino/EspruinoHub">this</a>. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon)
+It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again.</p>
+
+<h4 id="setup">Setup</h4>
+<ul>
+  <li>So firstly during my trials, and some help from the Ruuvi Slack channel, we need to upgrade the version of bluez that is on the raspberry pi to the latest. There is apparently an issue in 5.23 that was causing me some grief.</li>
+  <li>First lets install all the dependancies we will need <code class="highlighter-rouge">sudo apt-get install bluetooth bluez bluez-hcidump libbluetooth-dev libudev-dev</code></li>
+  <li>Add the stretch repo (with the newer bluez versions) to apt source list
+    <ul>
+      <li><code class="highlighter-rouge">sudo vim /etc/apt/sources.list</code> -&gt; add <code class="highlighter-rouge">deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi</code></li>
+      <li><code class="highlighter-rouge">sudo vim /etc/apt/apt.conf.d/40defaultrelease</code> -&gt; add <code class="highlighter-rouge">APT::Default-Release "jessie";</code></li>
+    </ul>
+  </li>
+  <li>Update package list <code class="highlighter-rouge">sudo apt-get update</code></li>
+  <li>Upgrade bluez using the strech repo <code class="highlighter-rouge">sudo apt-get install bluez bluez-hcidump -t stretch</code></li>
+  <li>Now we need node. I’m going to install the latest, but the LTS version works great too
+    <ul>
+      <li><code class="highlighter-rouge">curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -</code></li>
+      <li><code class="highlighter-rouge">sudo apt-get install nodejs npm</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>So before we go any further, lets do some testing. We can use the tools from the <code class="highlighter-rouge">bluez</code> package to scan BLE and see what data we can find</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>sudo hcitool lescan
+LE Scan ...
+CE:A2:59:0E:85:C2 RuuviTag 85c2
+CE:A2:59:0E:85:C2 <span class="o">(</span>unknown<span class="o">)</span></code></pre></figure>
+
+<p>Cool, we can see ruuvi in the scan! No lets see what data ruuvi is giving us</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>sudo hcitool lescan &amp; sudo hcidump --raw
+<span class="o">[</span>1] 18782
+LE Scan ...
+HCI sniffer - Bluetooth packet analyzer ver 5.43
+device: hci0 snap_len: 1500 filter: 0xffffffff
+CE:A2:59:0E:85:C2 RuuviTag 85c2
+<span class="gp">&gt; </span>04 3E 24 02 01 00 01 C2 85 0E 59 A2 CE 18 02 01 05 05 16 09
+  18 46 05 0E 09 52 75 75 76 69 54 61 67 20 38 35 63 32 AC
+CE:A2:59:0E:85:C2 <span class="o">(</span>unknown<span class="o">)</span>
+<span class="gp">&gt; </span>04 3E 1E 02 01 04 01 C2 85 0E 59 A2 CE 12 11 07 9E CA DC 24
+  0E E5 A9 E0 93 F3 A3 B5 01 00 40 6E AC</code></pre></figure>
+
+<p>Pretty neat, we can see a raw stream of hex data that the RuuviTag is giving out. Lets try again with the <code class="highlighter-rouge">-x</code> flag (show ascii and hex data)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>sudo hcitool lescan &amp; sudo hcidump -x
+HCI sniffer - Bluetooth packet analyzer ver 5.23
+device: hci1 snap_len: 1500 filter: 0xffffffff
+<span class="gp">&gt; </span>HCI Event: LE Meta Event <span class="o">(</span>0x3e<span class="o">)</span> plen 36
+    LE Advertising Report
+      ADV_IND - Connectable undirected advertising <span class="o">(</span>0<span class="o">)</span>
+      bdaddr CE:A2:59:0E:85:C2 <span class="o">(</span>Random<span class="o">)</span>
+      Flags: 0x05
+      Unknown <span class="nb">type </span>0x16 with 4 bytes data
+      Complete <span class="nb">local </span>name: <span class="s1">'RuuviTag 85c2'</span>
+      RSSI: -77</code></pre></figure>
+
+<p>More interesting things happying. We can see the name of the tag, its MAC address and RSI. Unforuntely we can’t see the data its advertising. I haven’t been able to find out how to do that just with <code class="highlighter-rouge">hcidump</code> but we will now turn to some javascript to get this info!</p>
+
+<ul>
+  <li>Lets install some node dependacies we will need for this. <code class="highlighter-rouge">npm install noble mqtt</code>
+    <ul>
+      <li>The <a href="https://github.com/sandeepmistry/noble">noble module</a> is pretty much where all the work happens, and we will just need the mqtt module to send messages to our openhab server</li>
+    </ul>
+  </li>
+  <li>I have also borrowed a few bits of code out of the EspruinoHub project, this made my life alot easier. We needed the config.js and attributes.js files out of the <a href="https://github.com/espruino/EspruinoHub/tree/master/lib">lib</a> folder</li>
+  <li>And here is <code class="highlighter-rouge">index.js</code>, that does the scanning and prints the data. Its still a bit of work in progress at the moment, but does exactly what I need. Although I do not have multiple RuuviTags, this solution <em>should</em> work just fine for mulitple tags.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">noble</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'noble'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">attributes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./attribute'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./config'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">mqtt</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'mqtt'</span><span class="p">);</span>
+<span class="c1">// my mqtt server needs some authentication, if you dont, you can just remove that object</span>
+<span class="kd">var</span> <span class="nx">client</span>  <span class="o">=</span> <span class="nx">mqtt</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s1">'mqtt://10.1.1.115'</span><span class="p">,</span> <span class="p">{</span> <span class="na">username</span><span class="p">:</span> <span class="s1">'Username'</span><span class="p">,</span> <span class="na">password</span><span class="p">:</span> <span class="s1">'Password'</span> <span class="p">})</span>
+<span class="kd">var</span> <span class="nx">connected</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">inRange</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">packetsReceived</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lastPacketsReceived</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">isScanning</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'stateChange'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">'poweredOn'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">startScanning</span><span class="p">([],</span> <span class="kc">true</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">stopScanning</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">connected</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'discover'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">peripheral</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">packetsReceived</span><span class="o">++</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">addr</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">address</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">addr</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">config</span><span class="p">.</span><span class="nx">known_devices</span><span class="p">)</span>
+    <span class="nx">id</span> <span class="o">=</span> <span class="nx">config</span><span class="p">.</span><span class="nx">known_devices</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+  <span class="kd">var</span> <span class="nx">entered</span> <span class="o">=</span> <span class="o">!</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">];</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">entered</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">id</span> <span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+      <span class="na">address</span> <span class="p">:</span> <span class="nx">addr</span><span class="p">,</span>
+      <span class="na">peripheral</span><span class="p">:</span> <span class="nx">peripheral</span><span class="p">,</span>
+      <span class="na">name</span> <span class="p">:</span> <span class="s2">"?"</span><span class="p">,</span>
+      <span class="na">data</span> <span class="p">:</span> <span class="p">{}</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+  <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">lastSeen</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+  <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">rssi</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">rssi</span><span class="p">;</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'hello my local name is:'</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\t'</span> <span class="o">+</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">localName</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">serviceData</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">serviceData</span><span class="p">;</span>
+  <span class="c1">//If the advertising BLE device has any service data, then lets loop throught it and find out what it is</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">serviceData</span> <span class="o">&amp;&amp;</span> <span class="nx">serviceData</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">serviceData</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//If statement to limit the outgoing mqtt stream. We are checking to see if the device is already in our array we made above, and if it hasnt been seen in 60s, and that data hasnt changed</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">].</span><span class="nx">payload</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">].</span><span class="nx">time</span> <span class="o">&gt;</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="o">-</span><span class="mi">60000</span><span class="p">){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"waiting...."</span><span class="p">);</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+          <span class="c1">//Bit of debugging here so we can see whats going on</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\t\t'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">)</span> <span class="o">+</span> <span class="s1">': '</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">'hex'</span><span class="p">)));</span>
+      <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">.</span><span class="nx">getReadableAttributeName</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">decodeAttribute</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">))</span><span class="o">+</span><span class="s2">"\n"</span><span class="p">);</span>
+      <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="na">payload</span> <span class="p">:</span> <span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="na">time</span> <span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="p">};</span>
+      <span class="kd">var</span> <span class="nx">extendedData</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">.</span><span class="nx">decodeAttribute</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">);</span>
+      <span class="c1">//Can only sent mqtt if its actually connected, so if connected send data. We are only sending the temp number, not the whole json string which looks like { "temp": 20 } in debug messages above</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">connected</span> <span class="o">&amp;&amp;</span> <span class="nx">extendedData</span><span class="p">.</span><span class="nx">temp</span><span class="p">)</span> <span class="nx">client</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span><span class="s1">'/temp'</span><span class="p">,</span> <span class="nx">extendedData</span><span class="p">.</span><span class="nx">temp</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+    <span class="p">}</span>
+   <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">manufacturerData</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\there is my manufacturer data:'</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\t\t'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">manufacturerData</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">'hex'</span><span class="p">)));</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">txPowerLevel</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\tmy TX power level is:'</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'\t\t'</span> <span class="o">+</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">txPowerLevel</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">();</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>If you go ahead and run this, <code class="highlighter-rouge">nodejs index.js</code> you will see somethings being printed out to console. Once it picks up Ruuvi, it should tell you the temperature now!</p>
+<ul>
+  <li>The script is set to only re-send data on change, or ever 60 seconds. This is just so mqtt isn’t flooded with messages</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+                <span class="s2">"1809"</span>: <span class="s2">"0807"</span>
+<span class="o">{</span><span class="s2">"temp"</span>:18<span class="o">}</span>
+
+
+hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+waiting....
+
+hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+waiting....
+
+hello my <span class="nb">local </span>name is:
+        f022cXhN
+        here is my manufacturer data:
+                <span class="s2">"0f03000276064ef39800d605020000dae480"</span></code></pre></figure>
+
+<p>Now lets go over to openhab, and makde sure its ready to receive some data</p>
+<ul>
+  <li>Pre-requisites for this is obviously having mqtt biniding installed and working</li>
+  <li><code class="highlighter-rouge">vim /etc/openhab2/items/ruuvi.items</code></li>
+  <li>Add something like this - <code class="highlighter-rouge">Number ruuvi "RuuviTag [%.2f C]" (climate) {mqtt="&lt;[mosq:cea2590e85c2/temp:state:default]"}</code>
+    <ul>
+      <li>So the node script is publishing to a mqtt topic by the ruuvitag ID, which is just the tag’s MAC address without any <code class="highlighter-rouge">:</code></li>
+    </ul>
+  </li>
+  <li>While you have the node script running, tail the openhab log to make sure things are working. <code class="highlighter-rouge">tail -f /var/log/openhab2/events.log</code></li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">2017-04-20 15:17:12.992 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeBlockedAds changed from 665 to 674
+2017-04-20 15:19:42.802 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18 to 18.25
+2017-04-20 15:20:43.626 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18.25 to 18.5
+2017-04-20 15:21:42.921 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18.5 to 18
+2017-04-20 15:22:16.388 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeQueries changed from 14852 to 15265
+2017-04-20 15:22:16.397 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholePercent changed from 4.5381093455427 to 4.5070422535211
+2017-04-20 15:22:16.401 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeBlockedAds changed from 674 to 688</code></pre></figure>
+
+<p>Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap</p>
+
+<p><img src="http://www.mrwhal3.com/img/ruuvi.png" alt="Ruuvitag chart" /></p>
+
+<p>So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a <code class="highlighter-rouge">screen</code> or something funky like that. Just put this into <code class="highlighter-rouge">/etc/systemd/system/ruuvi.service</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Ruuvi-Scanner
+
+<span class="o">[</span>Service]
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/bin/node index.js
+<span class="nv">Restart</span><span class="o">=</span>always
+<span class="nv">User</span><span class="o">=</span>pi
+<span class="nv">Group</span><span class="o">=</span>pi
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/home/pi/ruuvi
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target</code></pre></figure>
+
+<p>Now you can start and stop it with <code class="highlighter-rouge">systemctl</code></p>
+
+<p>So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room!</p>
+
+<p>I will also upload the files to github, so you can just download it from there too..</p>
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2017-04/RuuviTag" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2017-04/RuuviTag" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2017-04/RuuviTag" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2017-04/RuuviTag" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2017-04/RuuviTag" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

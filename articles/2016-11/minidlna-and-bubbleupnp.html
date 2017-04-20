@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2016-11/minidlna-and-bubbleupnp">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Mini DLNA and bubbleUPnP - Mrwhal3’s Blog</title>
+<meta property="og:title" content="Mini DLNA and bubbleUPnP" />
+<meta name="description" content="So ages ago I found bubbleUPnP (also an andoid app). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also really nice, and you can control your media directly from your device too (Much like what plex does) What I was really impressed with was that the raspberrypi (v1 Model B) handled this without too much hastle, and was able to stream 720p content to the chromecast with no (noticable) worries Installation is pretty simple Ensure you have Java installed sudo apt-get install openjdk-8-jre (or the oracle java if you are so inclined) Install ffmpeg, if you want on the fly transcoding sudo apt-get install ffmpeg Download BubbleUPnP zip file from http://www.bubblesoftapps.com/bubbleupnpserver/#other_java_platforms Unpack the zip file and set the launch.sh file as executable unzip BubbleUPNPserver-distrib.zip cd BubbbleUPNPServer &amp;&amp; chmod +x launch.sh Run launch.sh Once its running you can make settings changes by going to serverIP:58050, but the transcoding settings can be setup in the android app once you connect to it So BubbleUPnP is not a media server (you cannot tell it where videos are for you to then stream) , it just enables alot of cool things ontop of traditional dlna media servers. So, now we need a dlna server to tell our network about media we want to watch. Incomes minidlna. This is a nice, lightweigh dlna server that the pi can use. Easy to install, sudo apt-get install minidlna Once installed, all you need to do is tell it where your content is and it will go ahead and scan and do its magic. Edit the file at /etc/minidlna.conf. Comments in that file are pretty straigh forward, all I needed to change was this line media_dir=V,/mnt/nas/downloads You can add as many of these as you need to secify where your media is. You can also specifically tell it what type of media it is (notice the V ad the start of the listing) this just helps it not have to guess Now that you have both services running, check out the app on your phone. You see that it can play to “Renderers” (Things that consume the media) and it plays from a “Library” (Your dlna server, or local device files). As you can see from the screenshot of my network, I could play media to my XBOX, and by bedroom chromecast. I could choose media from my desktop PC, or the “Musicbox” server (which is my rasbperry pi) Another thing to note is, if you do not need any transcoding done, then you dont need to install the BubbleUPnP server. You can just install the android app, and install minidlna somewhere to share your media to your network" />
+<meta property="og:description" content="So ages ago I found bubbleUPnP (also an andoid app). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also really nice, and you can control your media directly from your device too (Much like what plex does) What I was really impressed with was that the raspberrypi (v1 Model B) handled this without too much hastle, and was able to stream 720p content to the chromecast with no (noticable) worries Installation is pretty simple Ensure you have Java installed sudo apt-get install openjdk-8-jre (or the oracle java if you are so inclined) Install ffmpeg, if you want on the fly transcoding sudo apt-get install ffmpeg Download BubbleUPnP zip file from http://www.bubblesoftapps.com/bubbleupnpserver/#other_java_platforms Unpack the zip file and set the launch.sh file as executable unzip BubbleUPNPserver-distrib.zip cd BubbbleUPNPServer &amp;&amp; chmod +x launch.sh Run launch.sh Once its running you can make settings changes by going to serverIP:58050, but the transcoding settings can be setup in the android app once you connect to it So BubbleUPnP is not a media server (you cannot tell it where videos are for you to then stream) , it just enables alot of cool things ontop of traditional dlna media servers. So, now we need a dlna server to tell our network about media we want to watch. Incomes minidlna. This is a nice, lightweigh dlna server that the pi can use. Easy to install, sudo apt-get install minidlna Once installed, all you need to do is tell it where your content is and it will go ahead and scan and do its magic. Edit the file at /etc/minidlna.conf. Comments in that file are pretty straigh forward, all I needed to change was this line media_dir=V,/mnt/nas/downloads You can add as many of these as you need to secify where your media is. You can also specifically tell it what type of media it is (notice the V ad the start of the listing) this just helps it not have to guess Now that you have both services running, check out the app on your phone. You see that it can play to “Renderers” (Things that consume the media) and it plays from a “Library” (Your dlna server, or local device files). As you can see from the screenshot of my network, I could play media to my XBOX, and by bedroom chromecast. I could choose media from my desktop PC, or the “Musicbox” server (which is my rasbperry pi) Another thing to note is, if you do not need any transcoding done, then you dont need to install the BubbleUPnP server. You can just install the android app, and install minidlna somewhere to share your media to your network" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-11-18T10:00:00+11:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Mini DLNA and bubbleUPnP",
+"datePublished": "2016-11-18T10:00:00+11:00",
+"description": "So ages ago I found bubbleUPnP (also an andoid app). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also really nice, and you can control your media directly from your device too (Much like what plex does) What I was really impressed with was that the raspberrypi (v1 Model B) handled this without too much hastle, and was able to stream 720p content to the chromecast with no (noticable) worries Installation is pretty simple Ensure you have Java installed sudo apt-get install openjdk-8-jre (or the oracle java if you are so inclined) Install ffmpeg, if you want on the fly transcoding sudo apt-get install ffmpeg Download BubbleUPnP zip file from http://www.bubblesoftapps.com/bubbleupnpserver/#other_java_platforms Unpack the zip file and set the launch.sh file as executable unzip BubbleUPNPserver-distrib.zip cd BubbbleUPNPServer &amp;&amp; chmod +x launch.sh Run launch.sh Once its running you can make settings changes by going to serverIP:58050, but the transcoding settings can be setup in the android app once you connect to it So BubbleUPnP is not a media server (you cannot tell it where videos are for you to then stream) , it just enables alot of cool things ontop of traditional dlna media servers. So, now we need a dlna server to tell our network about media we want to watch. Incomes minidlna. This is a nice, lightweigh dlna server that the pi can use. Easy to install, sudo apt-get install minidlna Once installed, all you need to do is tell it where your content is and it will go ahead and scan and do its magic. Edit the file at /etc/minidlna.conf. Comments in that file are pretty straigh forward, all I needed to change was this line media_dir=V,/mnt/nas/downloads You can add as many of these as you need to secify where your media is. You can also specifically tell it what type of media it is (notice the V ad the start of the listing) this just helps it not have to guess Now that you have both services running, check out the app on your phone. You see that it can play to “Renderers” (Things that consume the media) and it plays from a “Library” (Your dlna server, or local device files). As you can see from the screenshot of my network, I could play media to my XBOX, and by bedroom chromecast. I could choose media from my desktop PC, or the “Musicbox” server (which is my rasbperry pi) Another thing to note is, if you do not need any transcoding done, then you dont need to install the BubbleUPnP server. You can just install the android app, and install minidlna somewhere to share your media to your network",
+"url": "http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Mini DLNA and bubbleUPnP">Mini DLNA and bubbleUPnP</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        18 NOV 2016
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>So ages ago I found <a href="https://www.bubblesoftapps.com/bubbleupnpserver/">bubbleUPnP</a> (also an <a href="https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&amp;hl=en">andoid app</a>). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also really nice, and you can control your media directly from your device too (Much like what plex does)</p>
+
+<p>What I was really impressed with was that the raspberrypi (v1 Model B) handled this without too much hastle, and was able to stream 720p content to the chromecast with no (noticable) worries</p>
+
+<p>Installation is pretty simple</p>
+<ol>
+  <li>Ensure you have Java installed <code class="highlighter-rouge">sudo apt-get install openjdk-8-jre</code> (or the oracle java if you are so inclined)</li>
+  <li>Install ffmpeg, if you want on the fly transcoding <code class="highlighter-rouge">sudo apt-get install ffmpeg</code></li>
+  <li>Download BubbleUPnP zip file from http://www.bubblesoftapps.com/bubbleupnpserver/#other_java_platforms</li>
+  <li>Unpack the zip file and set the <code class="highlighter-rouge">launch.sh</code> file as executable
+    <ul>
+      <li><code class="highlighter-rouge">unzip BubbleUPNPserver-distrib.zip</code></li>
+      <li><code class="highlighter-rouge">cd BubbbleUPNPServer &amp;&amp; chmod +x launch.sh</code></li>
+    </ul>
+  </li>
+  <li>Run <code class="highlighter-rouge">launch.sh</code></li>
+</ol>
+
+<p>Once its running you can make settings changes by going to <code class="highlighter-rouge">serverIP:58050</code>, but the transcoding settings can be setup in the android app once you connect to it</p>
+
+<p>So BubbleUPnP is not a media server (you cannot tell it where videos are for you to then stream) , it just enables alot of cool things ontop of traditional dlna media servers. So, now we need a dlna server to tell our network about media we want to watch. Incomes <code class="highlighter-rouge">minidlna</code>. This is a nice, lightweigh dlna server that the pi can use. Easy to install, <code class="highlighter-rouge">sudo apt-get install minidlna</code></p>
+
+<p>Once installed, all you need to do is tell it where your content is and it will go ahead and scan and do its magic. Edit the file at <code class="highlighter-rouge">/etc/minidlna.conf</code>. Comments in that file are pretty straigh forward, all I needed to change was this line
+<code class="highlighter-rouge">media_dir=V,/mnt/nas/downloads</code></p>
+
+<p>You can add as many of these as you need to secify where your media is. You can also specifically tell it what type of media it is (notice the V ad the start of the listing) this just helps it not have to guess</p>
+
+<p>Now that you have both services running, check out the app on your phone.</p>
+
+<p><img src="/img/bubble.png" alt="Android BubbleUPnP" height="400px" width="350px" /></p>
+
+<p>You see that it can play to “Renderers” (Things that consume the media) and it plays from a “Library” (Your dlna server, or local device files). As you can see from the screenshot of my network, I could play media to my XBOX, and by bedroom chromecast. I could choose media from my desktop PC, or the “Musicbox” server (which is my rasbperry pi)</p>
+
+<p>Another thing to note is, if you do not need any transcoding done, then you dont need to install the BubbleUPnP server. You can just install the android app, and install minidlna somewhere to share your media to your network</p>
+
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2016-11/minidlna-and-bubbleupnp" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

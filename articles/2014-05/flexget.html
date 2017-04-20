@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="canonical" href="/articles/2014-05/flexget">
+  <link rel="alternate" type="application/rss+xml" title="Mrwhal3's Blog" href=" /feed.xml " />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="/favicon.png">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7736525253699078",
+    enable_page_level_ads: true
+  });
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-43857428-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Flexget - Mrwhal3’s Blog</title>
+<meta property="og:title" content="Flexget" />
+<meta name="description" content="Automated tv show downloads. No more refreshing a browser, waiting for the link to become available" />
+<meta property="og:description" content="Automated tv show downloads. No more refreshing a browser, waiting for the link to become available" />
+<link rel="canonical" href="http://www.mrwhal3.com/articles/2014-05/flexget" />
+<meta property="og:url" content="http://www.mrwhal3.com/articles/2014-05/flexget" />
+<meta property="og:site_name" content="Mrwhal3’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-05-15T14:17:00+10:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Flexget",
+"datePublished": "2014-05-15T14:17:00+10:00",
+"description": "Automated tv show downloads. No more refreshing a browser, waiting for the link to become available",
+"url": "http://www.mrwhal3.com/articles/2014-05/flexget"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://www.mrwhal3.com/img/avatar.jpg" alt="" class="avatar">
+  
+  <a href="http://www.mrwhal3.com/" class="author_name">Harry</a>
+  <span class="author_job">Systems Administrator</span>
+  <span class="author_bio mbm">Tech enthusiast, hacker of homeautomation</span>
+  <nav class="nav">
+    <ul class="nav-list">
+       
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/archive/">Archive</a>
+        <span>/</span>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/categories/">Categories</a>
+        <span>/</span>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://www.mrwhal3.com/tags/">Tags</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/mrwhale" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<li><a href="http://blog.mrwhal3.com/feed.xml" class="social-link-item">RSS</a></li>
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://www.mrwhal3.com/" >
+  Home
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Flexget">Flexget</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        15 MAY 2014
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    5 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>A month or so ago, I was trying to figure out how to use eztv’s rss feed to automatically download new torrents to my pi. That’s when I ran across the awesome python program called flexget. (link <a href="http://flexget.com/">here</a>)With this you can specify the shows you like, and it will check for new episodes and add them to your torrent client for download. It does a lot more then this,but this is the main way I use it at the moment. So here’s some instructions on how I got it up and running on my raspberry pi
+First you will need python 2.7 or later and pip (a package manager for python apps). I also use transmission as the torrent client, but there are others you can use</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install python
+sudo apt-get install python-pip
+ </code></pre></figure>
+
+<p>Once python is installed and working, install flexget with pip</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> sudo pip install flexget
+ </code></pre></figure>
+
+<p>Next, you need to set up the config file for flexget. Create a folder called <code class="highlighter-rouge">.flexget</code>in your home directory, then create a file called <code class="highlighter-rouge">config.yml</code>(yes <a href="http://en.wikipedia.org/wiki/YAML">yml</a>, not xml) in that folder. This is the file that flexget will read by default when you run the command.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> ~
+mkdir .flexget
+touch .flexget/config.yml
+ </code></pre></figure>
+
+<p>Open up the config file in your fav editor, and you can use the contents of mine as an example, or check out the flexget wiki for other ‘recipes’ and <a href="http://flexget.com/wiki/Cookbook/Series">examples</a>:)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">vim .flexget/config.yml
+ </code></pre></figure>
+
+<p>And here is the contents of my config.yml. Just need to set the quality you prefer, the path where you want them downloaded (mine is to my external hard drive) and your tranmission (or deluge) configuration (flexget can only hook into these two torrent programs at the moment)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> templates:
+   tv:
+     series:
+       settings:
+         tv:
+           <span class="nb">set</span>:
+             path: /mnt/usb/Torrents/Series/
+       tv:
+         - The Big Bang Theory
+         - Person of Interest
+         - The Blacklist
+         - Suits
+         - Revolution 2012
+         - Chicago Fire
+         - Chicago PD
+         - Grey<span class="s1">'s Anatomy
+         - Wonderland
+         - Wonderland.AU
+         - Royal Pains
+
+     transmission:
+       host: 10.1.1.15
+       port: 9091
+       username: pi
+       password:
+
+     clean_transmission:
+       host: 10.1.1.15
+       port: 9091
+       username: pi
+       password:
+       finished_for: 2 hours
+
+   ShowRSS:
+     priority: 2
+     rss: http://showrss.info/feeds/all.rss
+     template: tv
+
+ #  kat-tv2:
+ #    priority: 1
+ #    rss: https://kickass.so/tv/?rss=1
+ #    template: tv
+ #    verify_ssl_certificates: no
+
+ #  thepiratebay.org-tv:
+ #    priority: 2
+ #    rss: http://rss.thepiratebay.org/208
+ #    template: tv
+ #    verify_ssl_certificates: no
+
+ </span></code></pre></figure>
+
+<p>As I use transmission as my torrent client, I can hook straight into it with flexget. The only downfall is the rpc password for transmission is in plain text in the config file.</p>
+
+<p>Anyways, now let’s run flexget for the first time (just as normal user). This will output if its succesfully added movies/tv shows to your torrent program, or it will check and output any errors in syntax in your config file (spacing has to be correct)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">flexget execute
+
+014-05-15 12:03 VERBOSE details
+bt-chat.com-tv Produced 40 entries.2014-05-15 12:03 VERBOSE task
+bt-chat.com-tv ACCEPTED: <span class="sb">`</span>Revolution.2012.S02E21.HDTV.x264-LOL.[eztv].torrent<span class="sb">`</span> <span class="se">\</span>
+by series plugin because matches quality
+
+2014-05-15 12:03 VERBOSE task
+bt-chat.com-tv ACCEPTED: <span class="sb">`</span>Person.of.Interest.S03E23.720p.HDTV.X264-DIMENSION.[eztv].torrent<span class="sb">`</span><span class="se">\</span>
+ by series plugin because matches quality
+2014-05-15 12:03 INFO   download   bt-chat.com-tv Downloading: <span class="se">\</span>
+Revolution.2012.S02E21.HDTV.x264-LOL.[eztv].torrent
+2014-05-15 12:04 INFO   download   bt-chat.com-tv Downloading: <span class="se">\</span>
+Person.of.Interest.S03E23.720p.HDTV.X264-DIMENSION.[eztv].torrent
+2014-05-15 12:04 VERBOSE details
+bt-chat.com-tv Summary - Accepted: 2 <span class="o">(</span>Rejected: 0 Undecided: 38 Failed: 0<span class="o">)</span>
+ </code></pre></figure>
+
+<p>Now that we know it’s working, add an entry into cron to run the command every hour</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> crontab -e
+ </code></pre></figure>
+
+<p>and add this line at the bottom</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">0 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> flexget execute
+ </code></pre></figure>
+
+<p>Now you will never have to check for a new torrent manually again, just make the changes to <code class="highlighter-rouge">config.yml</code> to add/remove shows movies you like!
+Hope this is useful</p>
+
+<p><strong>Extra stuff</strong></p>
+
+<p>So I got this working a while ago, but forgot to add it to this post! I added the functionality so, after a torrent is completed, it will send you a pushbullet notification to your mobile (or where ever you want!)</p>
+<ol>
+  <li>So first you will need to sign up to pushbullet to get an access token (API key). Once logged in, click o the little pciture of you up the top right and go to “Account settings”. This page will list your access token for use later on</li>
+  <li>Next, intall it and login to it on your mobile. This will create a device in your account, and assign it a device id, for use in the script</li>
+  <li>Now lets find out the device id, run this command and save the device ID for your device</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl -u &lt;your_access_token_here&gt;: -X GET https://api.pushbullet.com/v2/devices
+ </code></pre></figure>
+
+<p>Now lets create a new script,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">touch torrentdone.sh
+chmod +x torrentdone.sh
+ </code></pre></figure>
+
+<p>This is what your script should look like:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="nv">apikey</span><span class="o">=</span>&lt;apikey&gt;
+<span class="nv">deviceid</span><span class="o">=</span>&lt;ID of device&gt;
+
+/usr/bin/curl https://api.pushbullet.com/v2/pushes <span class="se">\ </span>-u <span class="nv">$apikey</span>: <span class="se">\ </span>-d <span class="nv">$deviceid</span> <span class="se">\</span>
+ -d <span class="nb">type</span><span class="o">=</span>note <span class="se">\ </span>-d <span class="nv">title</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TR_TORRENT_NAME</span><span class="s2">"</span> <span class="se">\</span>
+  -d <span class="nv">body</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TR_TIME_LOCALTIME</span><span class="s2">"</span> <span class="se">\ </span>-X POST &gt;&gt; <span class="k">done</span>
+ </code></pre></figure>
+
+<p>Now we need to setup transmission to run this script on finishing a torrent</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /etc/transmission-daemon/
+sudo nano settings.json
+ </code></pre></figure>
+
+<p>and modify this line to be:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="s2">"script-torrent-done-filename"</span>: <span class="s2">"/home/pi/torrentdone.sh"</span>,
+ </code></pre></figure>
+
+<p>All done! Now, not only will all your torrents automatically download, you will be notified of them when they complete!</p>
+
+
+  </article>
+</div>
+
+
+<!-- div class="share-buttons">
+  <h6>Share on: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://www.mrwhal3.com/articles/2014-05/flexget" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.mrwhal3.com/articles/2014-05/flexget" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://www.mrwhal3.com/articles/2014-05/flexget" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://www.mrwhal3.com/articles/2014-05/flexget" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://www.mrwhal3.com/articles/2014-05/flexget" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+</ul>
+</div --> <!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 Harry. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
