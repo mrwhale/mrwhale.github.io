@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Ubuntu Live USB with persistence</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Ubuntu Live USB with persistence</h2>		
+	<time datetime="2018-02-04T10:00:00+11:00" class="by-line">04 Feb 2018 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>Creating a live USB is easy, adding persistence seems to be quite hard. After lots of research, there was alot of ways to do it, but most of these tutorials were out of date so some things weren’t relevant anymore or just didn’t work</p>
+
+<p>Here are some <em>hopefully</em> simple steps to create a live USB with persistence, using Ubuntu. This will also be available as a normal USB flash drive to windows users</p>
+
+<h3 id="requirements">Requirements</h3>
+<ul>
+  <li>Ubuntu ISO</li>
+  <li>USB flash drive. 4G is ideal, although you probably could have it on 2GB</li>
+  <li>Device already running linux</li>
+</ul>
+
+<h3 id="steps">Steps</h3>
+<ul>
+  <li>Firstly we will format the USB to FAT32 and wipe anything from it. You can use gparted if you want</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#find your usb's device location</span>
+<span class="nv">$ </span><span class="nb">sudo </span>fdisk <span class="nt">-l</span>
+
+Disk /dev/sdb: 14.3 GiB, 15376000000 bytes, 30031250 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+Disklabel <span class="nb">type</span>: dos
+Disk identifier: 0x00766c29
+
+Device     Boot Start      End  Sectors  Size Id Type
+/dev/sdb1  <span class="k">*</span>     2048 30031249 30029202 14.3G  c W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span>
+
+<span class="c">#Now format as FAT32 (Make sure its unmounted)</span>
+<span class="nv">$ </span><span class="nb">sudo </span>mkfs.vfat /dev/sdb</code></pre></figure>
+
+<ul>
+  <li>Now lets copy over the ubuntu ISO to the USB (this may take some time)</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo dd </span><span class="k">if</span><span class="o">=</span>~/Download/ubuntu-17.10.1-desktop-amd64.iso <span class="nv">of</span><span class="o">=</span>/dev/sdb1 <span class="nv">status</span><span class="o">=</span>progress</code></pre></figure>
+
+<ul>
+  <li>Once finished, mount up the drive so we can modify the boot config to tell it to be persistent. We will modify the grub config and also the isolinux config
+<code class="highlighter-rouge">$ sudo mount /dev/sdb1 ~/usb/</code></li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="code"><pre><span class="nv">$ </span><span class="nb">sudo </span>vim usb/boot/grub/grub.conf
+.....
+menuentry <span class="s2">"Try Ubuntu without installing"</span> <span class="o">{</span>
+        <span class="nb">set </span><span class="nv">gfxpayload</span><span class="o">=</span>keep
+        linux   /casper/vmlinuz.efi persistent <span class="nv">file</span><span class="o">=</span>/cdrom/preseed/ubuntu.seed <span class="nv">boot</span><span class="o">=</span>casper quiet splash <span class="nt">---</span>
+        initrd  /casper/initrd.lz
+<span class="o">}</span>
+.....
+<span class="c"># Add "persistent" after /casper/vmlinuz.efi</span>
+
+<span class="nv">$ </span><span class="nb">sudo </span>vim usb/isolinux/txt.cfg
+.....
+label live
+  menu label ^Try Ubuntu without installing
+  kernel /casper/vmlinuz.efi
+  append  <span class="nv">file</span><span class="o">=</span>/cdrom/preseed/ubuntu.seed <span class="nv">boot</span><span class="o">=</span>casper persistent <span class="nv">initrd</span><span class="o">=</span>/casper/initrd.lz quiet splash <span class="nt">---</span>
+.....
+<span class="c"># Add "persistent" to the append line, just after the boot=casper statement</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<ul>
+  <li>We must now create a file (or you could shrink the partition and make a new partition, it does the same thing) for where the persistent data will store itself. It will store in a file (or partition) called <code class="highlighter-rouge">casper-rw</code>. I have chosen this to only be 1Gb, but you can choose your size below. There are several ways to create a pre-space-populated file, this is just one of them</li>
+</ul>
+
+<p><code class="highlighter-rouge">sudo dd if=/dev/zero of=usb/casper-rw bs=1M count=1024</code></p>
+
+<p>Now we will format the file into an <code class="highlighter-rouge">ext4</code> format so the OS can read it</p>
+
+<p><code class="highlighter-rouge">sudo mkfs.ext4 usb/casper-rw</code></p>
+
+<ul>
+  <li>All finished. Unmount and go boot from it. If you find that 1Gb isnt enough, you can resize that <code class="highlighter-rouge">casper-rw</code> using the following</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#Create new block, the size of what you want to add. E.g 1Gb to make a 2Gb file</span>
+<span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/tmp/tmpfile <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>1024
+<span class="c">#Append new block to existing block</span>
+<span class="nv">$ </span><span class="nb">cat</span> /tmp/tmpfile <span class="o">&gt;&gt;</span> usb/casper-rw
+<span class="c"># Enlarge the filesystem</span>
+<span class="nv">$ </span><span class="nb">sudo </span>e2fsck <span class="nt">-f</span> usb/casper-rw
+<span class="nv">$ </span><span class="nb">sudo </span>resize2fs usb/casper-rw</code></pre></figure>
+
+<p>Thanks alot to <a href="https://rudd-o.com/linux-and-free-software/a-better-way-to-create-a-customized-ubuntu-live-usb-drive">this</a> tutorial that was the most helpful, altyhough  I was unable to get the 2 partition USB thing to work, like in the example in that article.</p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

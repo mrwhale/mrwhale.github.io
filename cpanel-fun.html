@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Fun with cPanel</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Fun with cPanel</h2>		
+	<time datetime="2016-06-17T10:00:00+10:00" class="by-line">17 Jun 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>Recently have had to set up a few cPanel servers, and here are some things I ran into while doing so. One isn’t necessarily cPanels fault, but it still took me a long time to find a work around for it :/</p>
+
+<h4 id="key-based-login-for-ssh">Key based login for SSH</h4>
+
+<p>Common practice for most cloud provides these days is to give you a VM with password based authentication turned off. That’s cool with me as this is one of the first things I do anyway. Setting up cPanel a breeze. Create a new user, no worries. Create SSH keys and import, easy. Attempt to login server: <code class="highlighter-rouge">login limit exceeded for account</code></p>
+
+<p>Odd.. but let’s turn on verbose.</p>
+
+<p>Ah it’s giving other keys before the one it needs. Let’s add <code class="highlighter-rouge">IdentitiesOnly yes</code> to config file</p>
+
+<p>Still not working. Let’s try super verbose. Still no luck. 30 odd minutes of faffing about I decide to check the server logs (Note: check these first, not after)</p>
+
+<p>Ah there is the real problem, server is complaining about permission issues being bad on .ssh folder for user</p>
+
+<p><code class="highlighter-rouge">Chmod</code> that up and fixed!</p>
+
+<h4 id="cpanel-and-aws-ec2">cPanel and aws ec2</h4>
+
+<p>Make sure you check NAT settings! Spun up a fresh VM, added an account but it wouldn’t work! Kept redirecting me to that default “no site here” page. Tried this that and the other, but still not working</p>
+
+<p>Turns out cPanel hadn’t detected the NAT settings properly, so didn’t have the right elastic IP (and in fact had the wrong internal IP) in its settings. To fix run <code class="highlighter-rouge">/scripts/build_cpnat</code></p>
+
+<p>Check (settings -&gt; IP) to make sure it’s all better</p>
+
+<h4 id="getting-custom-sites-into-cpanel">Getting custom sites into cPanel</h4>
+
+<p>Got a site that was developed by someone else, and from the looks of it was just setup on a LAMP server, nothing special, but had real trouble trying to squash this into cPanel. Site was built on the zend framework and use composer as dependency manager. Now this would have been nice to know before I started</p>
+
+<p>Copy site files into <code class="highlighter-rouge">public_html</code>. No thanks. Zend uses another folder <code class="highlighter-rouge">public</code> where it stores the index.php etc. That’s cool, let’s just change document root in <code class="highlighter-rouge">/var/cPanel/userdata/user/site-name</code> have to do this because there are other folders on the same level as this public folder that it uses</p>
+
+<h5 id="note">Note</h5>
+<p>There are other ways around this, using symlinks or htaccess. Probably better practice. But php</p>
+
+<h4 id="composer-and-cpanel">Composer and cpanel</h4>
+<p>The next issue I ran into was getting composer running, to build and make sure dependacies are there. Composer in cPanel? Sure why not</p>
+
+<p><code class="highlighter-rouge">cd</code> to your public dir, or whereever your composer.json file is, <code class="highlighter-rouge">wget https://getcomposer.org/download/1.1.1/composer.phar</code> (or lookup the composer site to get the latest, and then <code class="highlighter-rouge">php composer.phar install</code></p>
+
+<p>Surprisingly was as simple as this!</p>
+
+<p>All good? Almost. Get slapped with this error:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ZendMailProtocol_Exception' with message '535 Incorrect authentication data ' in /Zend/Mail/Protocol/Abstract.php:378 
+</code></pre></div></div>
+
+<p><em>Sigh</em></p>
+
+<p>Turns out Zend doesn’t play ball with exim or any other mail agent you have installed, and tried to send email by itself. So you need to enable (or disable) a setting within cpanel to get it working
+Probably not the most security best practice setting to be playing with, but I needed to get it working</p>
+
+<ol>
+  <li>Login to WHM</li>
+  <li>Under Server Configuration, select Tweak Settings</li>
+  <li>Click on the Mail tab</li>
+  <li>Scroll down to “Restrict outgoing SMTP to root, exim, and mailman (FKA SMTP Tweak)” and make sure it’s set to “OFF”</li>
+  <li>Scroll to the bottom of the page and click Save</li>
+</ol>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

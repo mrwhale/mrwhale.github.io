@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>ffmpeg picture-in-picture</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>ffmpeg picture-in-picture</h2>		
+	<time datetime="2015-11-26T09:28:00+11:00" class="by-line">26 Nov 2015 - <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So just a quick one.
+I needed to create a video that has Picture in Picture. So we could have a video of the presentation, inside a recording of the slides used. Usually I would use Adobe premier pro for this, but as I have Ubuntu installed on my laptop, I though of ffmpeg. It is much less resource intensive then the Adobe product, but of course its all command line, so you don’t get a pretty GUI to play with. Once you master ffmpeg, its an amazing and fast tool that can do pretty much manipulate any audio/visual that you need in any way you want</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ffmpeg <span class="nt">-i</span> pip1.mp4 <span class="nt">-i</span> pip2.mp4 <span class="se">\</span>
+<span class="nt">-filter_complex</span> <span class="s2">"[1]scale=iw/4:ih/4 [pip]; [0][pip] </span><span class="se">\</span><span class="s2">
+overlay=main_w-overlay_w-250:main_h-overlay_h-100"</span> <span class="se">\</span>
+<span class="nt">-b</span>:v 50M <span class="nt">-ar</span> 44100 &lt;br /&gt;-ab 192k <span class="nt">-vcodec</span> mpeg4 <span class="se">\</span>
+<span class="nt">-acodec</span> libmp3lame PIPoutput.mp4</code></pre></figure>
+
+<p>Here  is a screen shot of what it accomplishes. It encodes it using mpeg4 for  video, and mp3 for audio and keeps the quality of the original video’s.  (this is just an example using 2 random videos I found)</p>
+
+<p><img src="/img/pip.png" alt="pip with 2 videos" title="PIP with 2 videos" /></p>
+
+<p>If you adjust the bits “-overlay_w-<strong>250</strong>” and “-overlay_h-<strong>100</strong>” this is adjust the location of the pip relative to the bottom corner of the screen (I’m pretty sure)</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

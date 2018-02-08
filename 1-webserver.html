@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>1. Webserver</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>1. Webserver</h2>		
+	<time datetime="2013-11-01T10:07:00+11:00" class="by-line">01 Nov 2013 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So the first thing I did was use <a href="http://www.penguintutor.com/linux/raspberrypi-webserver">this</a> very helpful guide to help setup my pi as a LAMP server. I didn’t follow the whole thing, just the bits I needed.So following is the basics..firstly install apache</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>apache2</code></pre></figure>
+
+<p>and then mysql</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>mysql-server</code></pre></figure>
+
+<p>And finally PHP</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>php5
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>php5-mysql</code></pre></figure>
+
+<p>Once this is done go to your pi’s IP address to make sure apache works</p>
+
+<p>Because I didn’t get a static IP from my ISP, it changes all the time (which is annoying) so I decided to get a dynamic DNS name for myself. I used www.noip.com and just got a free one.</p>
+
+<p>They also provide something called a DUC(dynamic update client) so your pi can talk to their servers and update the dns record if your ip address changesI found that on the pi it didn’t work with the apt-get install commands so follow the instructions half way down <a href="https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client-on-ubuntu/">this</a> webpage to manually install it, once set up it will run in the background and tell the noip.com servers if you public IP address has changed</p>
+
+<p>Now for those who don’t want their pi to be linked to a url, I also wrote a small bash script that you can run with cron at whatever interval you want, that checks the current public IP to the previous IP and then emails you of it has changed. This is how I implemented it, with help from <a href="http://www.sbprojects.com/projects/raspberrypi/exim4.php">this</a> website to set up mail on the pi and link it with your gmail account. I used the SSMTP setup on that page.</p>
+
+<p>Once this is set up, create a file (doesn’t matter what it’s called, but i used ipaddy.sh), make sure to make it executable and open it with your favourite text editor</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">touch </span>ipaddy
+<span class="nb">chmod</span> +x ipaddy.sh
+vim ipaddy.sh</code></pre></figure>
+
+<p>and then paste in this script, entering your own email address</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="nv">ip</span><span class="o">=</span><span class="k">$(</span>curl icanhazip.com<span class="k">)</span>
+<span class="nv">line</span><span class="o">=</span><span class="k">$(</span><span class="nb">head</span> <span class="nt">-n</span> 1 ipaddress<span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$ip</span> <span class="o">!=</span> <span class="nv">$line</span> <span class="o">]</span>
+<span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"I have changed your home server ip to: </span><span class="nv">$ip</span><span class="s2">"</span> | mail <span class="nt">-s</span> <span class="s2">"Shoppinglist.no-ip.org"</span> &lt;your_email_address&gt;
+    <span class="nb">echo</span> <span class="nv">$ip</span> <span class="o">&gt;</span> /home/pi/ipaddress
+<span class="k">fi</span></code></pre></figure>
+
+<p>Close the text editor and create another file which will hold your public IP address</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">touch </span>ipaddress
+curl icanhazip.com <span class="o">&gt;</span> ipaddress</code></pre></figure>
+
+<p>This is create a file and put your public IP address in it for use by the above script
+Then we need to set up old mate cron to run the script when you want it, I have mine set to run the script every 30 minutes, but you can change it to whatever you like</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">crontab <span class="nt">-e</span></code></pre></figure>
+
+<p>This will open up the crontab for you to edit, go down the page a little until there’s some blank lines and paste this in:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">*</span>/30 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /home/pi/ipaddy.sh</code></pre></figure>
+
+<p>Now you are all set up with a webserver and a way to always know your IP address for when you aren’t at home!  The last thing you need to do is forward the right ports out of your home router so you can access your pi over the internet. I have a netgear so there’s plenty of online guides on how to do it, it’s pretty straightforward though</p>
+
+<p>Hope this is useful!</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

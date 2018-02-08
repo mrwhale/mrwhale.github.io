@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Flexget</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Flexget</h2>		
+	<time datetime="2014-05-15T14:17:00+10:00" class="by-line">15 May 2014 - <span class="read-time" title="Estimated read time">
+  
+  
+    4 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>A month or so ago, I was trying to figure out how to use eztv’s rss feed to automatically download new torrents to my pi. That’s when I ran across the awesome python program called flexget. (link <a href="http://flexget.com/">here</a>)With this you can specify the shows you like, and it will check for new episodes and add them to your torrent client for download. It does a lot more then this,but this is the main way I use it at the moment. So here’s some instructions on how I got it up and running on my raspberry pi
+First you will need python 2.7 or later and pip (a package manager for python apps). I also use transmission as the torrent client, but there are others you can use</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>python
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>python-pip
+ </code></pre></figure>
+
+<p>Once python is installed and working, install flexget with pip</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nb">sudo </span>pip <span class="nb">install </span>flexget
+ </code></pre></figure>
+
+<p>Next, you need to set up the config file for flexget. Create a folder called <code class="highlighter-rouge">.flexget</code>in your home directory, then create a file called <code class="highlighter-rouge">config.yml</code>(yes <a href="http://en.wikipedia.org/wiki/YAML">yml</a>, not xml) in that folder. This is the file that flexget will read by default when you run the command.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> ~
+<span class="nb">mkdir</span> .flexget
+<span class="nb">touch</span> .flexget/config.yml
+ </code></pre></figure>
+
+<p>Open up the config file in your fav editor, and you can use the contents of mine as an example, or check out the flexget wiki for other ‘recipes’ and <a href="http://flexget.com/wiki/Cookbook/Series">examples</a>:)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">vim .flexget/config.yml
+ </code></pre></figure>
+
+<p>And here is the contents of my config.yml. Just need to set the quality you prefer, the path where you want them downloaded (mine is to my external hard drive) and your tranmission (or deluge) configuration (flexget can only hook into these two torrent programs at the moment)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> templates:
+   tv:
+     series:
+       settings:
+         tv:
+           <span class="nb">set</span>:
+             path: /mnt/usb/Torrents/Series/
+       tv:
+         - The Big Bang Theory
+         - Person of Interest
+         - The Blacklist
+         - Suits
+         - Revolution 2012
+         - Chicago Fire
+         - Chicago PD
+         - Grey<span class="s1">'s Anatomy
+         - Wonderland
+         - Wonderland.AU
+         - Royal Pains
+
+     transmission:
+       host: 10.1.1.15
+       port: 9091
+       username: pi
+       password:
+
+     clean_transmission:
+       host: 10.1.1.15
+       port: 9091
+       username: pi
+       password:
+       finished_for: 2 hours
+
+   ShowRSS:
+     priority: 2
+     rss: http://showrss.info/feeds/all.rss
+     template: tv
+
+ #  kat-tv2:
+ #    priority: 1
+ #    rss: https://kickass.so/tv/?rss=1
+ #    template: tv
+ #    verify_ssl_certificates: no
+
+ #  thepiratebay.org-tv:
+ #    priority: 2
+ #    rss: http://rss.thepiratebay.org/208
+ #    template: tv
+ #    verify_ssl_certificates: no
+
+ </span></code></pre></figure>
+
+<p>As I use transmission as my torrent client, I can hook straight into it with flexget. The only downfall is the rpc password for transmission is in plain text in the config file.</p>
+
+<p>Anyways, now let’s run flexget for the first time (just as normal user). This will output if its succesfully added movies/tv shows to your torrent program, or it will check and output any errors in syntax in your config file (spacing has to be correct)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">flexget execute
+
+014-05-15 12:03 VERBOSE details
+bt-chat.com-tv Produced 40 entries.2014-05-15 12:03 VERBOSE task
+bt-chat.com-tv ACCEPTED: <span class="sb">`</span>Revolution.2012.S02E21.HDTV.x264-LOL.[eztv].torrent<span class="sb">`</span> <span class="se">\</span>
+by series plugin because matches quality
+
+2014-05-15 12:03 VERBOSE task
+bt-chat.com-tv ACCEPTED: <span class="sb">`</span>Person.of.Interest.S03E23.720p.HDTV.X264-DIMENSION.[eztv].torrent<span class="sb">`</span><span class="se">\</span>
+ by series plugin because matches quality
+2014-05-15 12:03 INFO   download   bt-chat.com-tv Downloading: <span class="se">\</span>
+Revolution.2012.S02E21.HDTV.x264-LOL.[eztv].torrent
+2014-05-15 12:04 INFO   download   bt-chat.com-tv Downloading: <span class="se">\</span>
+Person.of.Interest.S03E23.720p.HDTV.X264-DIMENSION.[eztv].torrent
+2014-05-15 12:04 VERBOSE details
+bt-chat.com-tv Summary - Accepted: 2 <span class="o">(</span>Rejected: 0 Undecided: 38 Failed: 0<span class="o">)</span>
+ </code></pre></figure>
+
+<p>Now that we know it’s working, add an entry into cron to run the command every hour</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> crontab <span class="nt">-e</span>
+ </code></pre></figure>
+
+<p>and add this line at the bottom</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">0 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> flexget execute
+ </code></pre></figure>
+
+<p>Now you will never have to check for a new torrent manually again, just make the changes to <code class="highlighter-rouge">config.yml</code> to add/remove shows movies you like!
+Hope this is useful</p>
+
+<p><strong>Extra stuff</strong></p>
+
+<p>So I got this working a while ago, but forgot to add it to this post! I added the functionality so, after a torrent is completed, it will send you a pushbullet notification to your mobile (or where ever you want!)</p>
+<ol>
+  <li>So first you will need to sign up to pushbullet to get an access token (API key). Once logged in, click o the little pciture of you up the top right and go to “Account settings”. This page will list your access token for use later on</li>
+  <li>Next, intall it and login to it on your mobile. This will create a device in your account, and assign it a device id, for use in the script</li>
+  <li>Now lets find out the device id, run this command and save the device ID for your device</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">-u</span> &lt;your_access_token_here&gt;: <span class="nt">-X</span> GET https://api.pushbullet.com/v2/devices
+ </code></pre></figure>
+
+<p>Now lets create a new script,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">touch </span>torrentdone.sh
+<span class="nb">chmod</span> +x torrentdone.sh
+ </code></pre></figure>
+
+<p>This is what your script should look like:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="nv">apikey</span><span class="o">=</span>&lt;apikey&gt;
+<span class="nv">deviceid</span><span class="o">=</span>&lt;ID of device&gt;
+
+/usr/bin/curl https://api.pushbullet.com/v2/pushes <span class="se">\ </span><span class="nt">-u</span> <span class="nv">$apikey</span>: <span class="se">\ </span><span class="nt">-d</span> <span class="nv">$deviceid</span> <span class="se">\</span>
+ <span class="nt">-d</span> <span class="nb">type</span><span class="o">=</span>note <span class="se">\ </span><span class="nt">-d</span> <span class="nv">title</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TR_TORRENT_NAME</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="nv">body</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TR_TIME_LOCALTIME</span><span class="s2">"</span> <span class="se">\ </span><span class="nt">-X</span> POST <span class="o">&gt;&gt;</span> <span class="k">done</span>
+ </code></pre></figure>
+
+<p>Now we need to setup transmission to run this script on finishing a torrent</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /etc/transmission-daemon/
+<span class="nb">sudo </span>nano settings.json
+ </code></pre></figure>
+
+<p>and modify this line to be:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="s2">"script-torrent-done-filename"</span>: <span class="s2">"/home/pi/torrentdone.sh"</span>,
+ </code></pre></figure>
+
+<p>All done! Now, not only will all your torrents automatically download, you will be notified of them when they complete!</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

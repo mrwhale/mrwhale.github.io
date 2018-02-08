@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Blacklist Checker</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Blacklist Checker</h2>		
+	<time datetime="2016-04-06T10:00:00+10:00" class="by-line">06 Apr 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>This is a nice little php script that you can run in the background via cron to constantly check your mail servers (or any server you have that deals with mail) and alert you via slack</p>
+
+<p>I know there are things out there like mxtoolbox that can do this for you, and include a larger list of blacklists, but I wanted something I could run on our own infrastructure that did what I wanted, and alerted me via slack (much cooler then email alerts). Eventually I will also add in bulk email alerts (like a weekly update of whats happened) and maybe, just maybe SMS alerts via twilio or SMScentral</p>
+
+<p>I have been using mxtoolbox, but was finding the email alerts not helpful, as I don’t often check my emails during the day, and they started going to my spam folder. I wrote this so I could be in control of what I checked and when, and then post it to Slack when there was an issue. As at work I always have a slack windows open because use it heavily.</p>
+
+<p>This alerts you when things clear up for a particular server too</p>
+
+<p>You can check it out <a href="https://github.com/mrwhale/blacklist-checker">here</a></p>
+
+<p>Here is what the notifications look like:</p>
+
+<p><img src="http://www.mrwhal3.com//img/slack-blacklist-checker.png" alt="Slack notifications" /></p>
+
+<p>The git repo includes setup instructions in the README, but I will include here too</p>
+
+<h1 id="usage">Usage</h1>
+
+<p>To use this you will need</p>
+
+<ul>
+  <li>A slack API token</li>
+  <li>A slack webhook to the channel you want to post to</li>
+  <li>PHP (of course)</li>
+</ul>
+
+<ol>
+  <li>Download this repo</li>
+  <li>open <code class="highlighter-rouge">blacklist-cron.php</code> and edit settings at the top of the script to include slack specific stuff</li>
+  <li>edit <code class="highlighter-rouge">servers.txt</code> to add in your mail servers (can be IP or domain name)</li>
+  <li>edit <code class="highlighter-rouge">dnsbls.txt</code> to include all the DNSBL servers you want to check against (left this full of the ones I use)
+    <ul>
+      <li>be sure to check each one. Some, like baracuda, require you to sign up if you are going to be making lots of calls</li>
+    </ul>
+  </li>
+  <li>Make a cron entry, like 
+<code class="highlighter-rouge">00 08-18 * * * /usr/bin/php /home/john/blacklist/blacklist-cron.php &gt;&gt; /home/john/blacklist/cron.log</code>
+    <ul>
+      <li>This will run the script every hour between 8am and 6pm (office ours). I also did this to reduce the amount of requests i send to each dnsbl. You can change this to suit your needs</li>
+    </ul>
+  </li>
+</ol>
+
+<p>You will now be alerted when a server of yours gets put on any of those blacklists, like this. It will also alert you when they are removed again</p>
+
+<p>You can also run this via the commandline if you want to see whats going on <code class="highlighter-rouge">php blacklist-cron.php</code> and if you have debug turned on, things will just print to screen</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">john@johns-server:~/backlist<span class="nv">$ </span>php blacklist-cron.php
+Checking 1.2.3.4
+is the server <span class="k">in </span>bl array? 
+server not found on any blacklists. Yay!
+
+Checking mymailserver.com.au
+is the server <span class="k">in </span>bl array? 
+mymailserver.com.au -&gt; 5.6.7.8
+checking against ubl.unsubscore.com
+Added to blarray
+Creating report
+posting to slack
+
+Checking mailserver02.net
+is the server <span class="k">in </span>bl array? 
+mailserver02.net -&gt; 123.45.67.89
+server not found on any blacklists. Yay!</code></pre></figure>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

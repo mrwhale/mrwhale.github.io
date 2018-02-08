@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>TV dashboards with chromecasts and dashing</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>TV dashboards with chromecasts and dashing</h2>		
+	<time datetime="2016-05-04T10:00:00+10:00" class="by-line">04 May 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    13 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>I had some time, and we had some TV’s hanging on the wall wasting space. So I decided to create a dashboard that could put some useful information on these TV’s for everyone to see</p>
+
+<p>Previously we were utilising the chromecasts with <a href="https://greenscreen.io">Greenscreen</a>, and it worked well, but had its issues (probably more related to the chromecasts, not the software) but we weren’t using it as a useful dashboard, more just to scroll through some website links and display the occasional funny gif</p>
+
+<p>This stopped working for us when they updated the way to talk to the chromecasts :( So instead of fixing it, I decided to find something else to do the job, and a cool dashboard to go with it</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>So I installed everything under Debian virtual machine, that’s running both the dashboard, and the dashboard controller with 1gb RAM. I eventually plan to have it all running on a raspberry pi. More on that when I get around to it!</p>
+
+<p>So go ahead and spin yourself one of these up, and when you are ready, install the following dependancie
+s
+(apt-get)</p>
+
+<ul>
+  <li>nodejs</li>
+  <li>avahi-utils</li>
+  <li>avahi-daemon</li>
+  <li>libavahi-compat-libdnssd-dev</li>
+  <li>Ruby (&gt;1.9)</li>
+</ul>
+
+<p>(npm)</p>
+
+<ul>
+  <li>bower</li>
+  <li>grunt-cli</li>
+  <li>fd</li>
+</ul>
+
+<p>note: To install additional widgets once dashing is setup - <code class="highlighter-rouge">dashing install [gist ID]</code></p>
+
+<h1 id="dashboard">Dashboard</h1>
+<p>So a year or so ago, I stumbled upon <a href="https://dashing.io">Dashing</a>. At the time I used this awesome framework to build a dashboard for home, so I could view/control my automated home from a wall mounted tablet in style. Very out of date, but see <a href="https://github.com/mrwhale/dashboard">home dashboard</a></p>
+
+<p>This took a bit of tinkering to get it to display things how I wanted, and I had to learn some ruby along the way, but all part of the fun. <img src="http://www.mrwhal3.com//img/dashboard.png" alt="work dashboard" /></p>
+
+<p>To get things setup</p>
+
+<ul>
+  <li>
+    <p>Install <code class="highlighter-rouge">dashing</code></p>
+
+    <p><code class="highlighter-rouge">sudo gem install dashing</code></p>
+  </li>
+  <li>
+    <p>Generate your dashboard and bundle the gems</p>
+
+    <p><code class="highlighter-rouge">dashing new my-dashboard &amp;&amp; cd my-dashboard &amp;&amp; bundle</code></p>
+  </li>
+  <li>
+    <p>modify <code class="highlighter-rouge">config.ru</code> to:</p>
+    <ul>
+      <li>add an authtoken (useful if you want to talk to the API externally)</li>
+      <li>disable x-frame-options. This is needed, as the dashboard controller will load dashing in an iframe. If it turned on, it will cause some issues (line 6)</li>
+      <li>set the default dashboard that gets loaded (line 5)</li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="code"><pre><span class="nb">require</span> <span class="s1">'dashing'</span>
+<span class="n">configure</span> <span class="k">do</span>
+  <span class="n">set</span> <span class="ss">:auth_token</span><span class="p">,</span> <span class="s1">'myauthtoken'</span>
+  <span class="n">set</span> <span class="ss">:default_dashboard</span><span class="p">,</span> <span class="s1">'gs'</span>
+  <span class="n">set</span> <span class="ss">:protection</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="ss">:frame_options</span>
+  <span class="n">helpers</span> <span class="k">do</span>
+    <span class="k">def</span> <span class="nf">protected!</span>
+     <span class="c1"># Put any authentication code you want in here.</span>
+     <span class="c1"># This method is run before accessing any resource.</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">map</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">assets_prefix</span> <span class="k">do</span>
+  <span class="n">run</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span><span class="p">.</span><span class="nf">sprockets</span>
+<span class="k">end</span>
+<span class="n">run</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span>
+  </pre></td></tr></tbody></table></code></pre></figure>
+
+<ul>
+  <li>
+    <p>Read below about configuring the widgets, and then start!</p>
+
+    <p><code class="highlighter-rouge">sudo dashing start -p 80</code></p>
+  </li>
+</ul>
+
+<p>First I had to change the way the List widget worked, so I could have 2 rows of names for the leave. This is what I had to add to <code class="highlighter-rouge">widgets/list/list.html</code></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="code"><pre><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"title"</span> <span class="na">data-bind=</span><span class="s">"title"</span><span class="nt">&gt;&lt;/h1&gt;</span>
+<span class="nt">&lt;hr/&gt;</span>
+<span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"list-nostyle"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">data-foreach-item=</span><span class="s">"itemsleft"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"label"</span> <span class="na">data-bind=</span><span class="s">"item.label"</span><span class="nt">&gt;&lt;/span&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;td&gt;</span>
+      <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"list-nostyle"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;li</span> <span class="na">data-foreach-item=</span><span class="s">"itemsright"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"label"</span> <span class="na">data-bind=</span><span class="s">"item.label"</span><span class="nt">&gt;&lt;/span&gt;</span>
+      <span class="nt">&lt;/li&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;/tr&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"more-info"</span> <span class="na">data-bind=</span><span class="s">"moreinfo"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"updated-at"</span> <span class="na">data-bind=</span><span class="s">"updatedAtMessage"</span><span class="nt">&gt;&lt;/p&gt;</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>Then had to change/add some font sizes to make it look how I wanted (as the TV’s were on walls above desk area’s, I had to make sure things were big enough to read easily)
+<code class="highlighter-rouge">widgets/list/list.scss</code></p>
+
+<figure class="highlight"><pre><code class="language-css" data-lang="css"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre>  <span class="nc">.title</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="err">$</span><span class="n">title-color</span><span class="p">;</span>
+    <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">50px</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nt">ol</span><span class="o">,</span> <span class="nt">ul</span> <span class="p">{</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="m">5px</span><span class="p">;</span>
+    <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="err">$</span><span class="n">label-color</span><span class="p">;</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">40px</span><span class="p">;</span>
+  <span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>I found <a href="https://gist.github.com/chelsea/5641535#file-random_aww-rb">this dashing</a> widget that collects and displays reddit images, and changed it to use the subreddits I wanted (<code class="highlighter-rouge">/r/aww</code>) and combined it with the <a href="https://gist.github.com/jwalton/7916168">big image</a> dashing widget to display that nice 2 row sized image</p>
+
+<p>I didnt change anything in the style or html, however I just modified the job <code class="highlighter-rouge">jobs/aww.rb</code> to do it at the intervals I wanted, and included the subreddits I wanted. You can add any other subreddits to the <code class="highlighter-rouge">subreddit</code> array at the top of the script</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="code"><pre><span class="nb">require</span> <span class="s1">'net/http'</span>
+<span class="nb">require</span> <span class="s1">'json'</span>
+
+<span class="n">placeholder</span> <span class="o">=</span> <span class="s1">'http://i.imgur.com/JycUgrg.jpg'</span>
+<span class="c1">#subreddits = ['/r/aww.json','/r/animalsbeingjerks.json','/r/aww_gifs.json','/r/babyduckgifs.json']</span>
+<span class="n">subreddits</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/r/aww.json'</span><span class="p">]</span>
+<span class="no">SCHEDULER</span><span class="p">.</span><span class="nf">every</span> <span class="s1">'300s'</span> <span class="k">do</span>
+  <span class="n">randomreddit</span> <span class="o">=</span> <span class="n">subreddits</span><span class="p">.</span><span class="nf">sample</span>
+  <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'www.reddit.com'</span><span class="p">)</span>
+  <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="nf">request</span><span class="p">(</span><span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Get</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">randomreddit</span><span class="p">))</span>
+  <span class="n">json</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">body</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">json</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'children'</span><span class="p">].</span><span class="nf">count</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+    <span class="n">send_event</span><span class="p">(</span><span class="s1">'picture'</span><span class="p">,</span> <span class="ss">image: </span><span class="n">placeholder</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'children'</span><span class="p">].</span><span class="nf">map</span><span class="p">{</span><span class="o">|</span><span class="n">child</span><span class="o">|</span> <span class="n">child</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'url'</span><span class="p">]</span> <span class="p">}</span>
+
+    <span class="c1"># Ensure we're linking directly to an image, not a gallery etc.</span>
+    <span class="n">valid_urls</span> <span class="o">=</span> <span class="n">urls</span><span class="p">.</span><span class="nf">select</span><span class="p">{</span><span class="o">|</span><span class="n">url</span><span class="o">|</span> <span class="n">url</span><span class="p">.</span><span class="nf">downcase</span><span class="p">.</span><span class="nf">end_with?</span><span class="p">(</span><span class="s1">'png'</span><span class="p">,</span> <span class="s1">'gif'</span><span class="p">,</span> <span class="s1">'jpg'</span><span class="p">,</span> <span class="s1">'jpeg'</span><span class="p">)}</span>
+    <span class="n">send_event</span><span class="p">(</span><span class="s1">'picture'</span><span class="p">,</span> <span class="ss">image: </span><span class="s2">"</span><span class="si">#{</span><span class="n">valid_urls</span><span class="p">.</span><span class="nf">shuffle</span><span class="p">.</span><span class="nf">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">first</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>And for weather info I used this <a href="https://gist.github.com/kostasdizas/8c45637dee3b1bf27e6a">forecast.io</a> dashing widget for the weather. Previously, in my home dashboard, I had used the <a href="https://gist.github.com/ysim/6768311">verbinski</a> widget, so I attempted to incorporate that initially. But I didn’t want the default of 3 columns of weather (Today, Tomorrow and weekly) and tried to change it to only be todays weather. It worked, but I wasnt able to make it match the rest of the tiles on the dashboard, and ended up looking out of place <img src="http://www.mrwhal3.com//img/failweather.png" alt="fail whale front end" /></p>
+
+<h4 id="getting-calendar-info-into-the-dashboard">Getting calendar info into the dashboard</h4>
+<p>So because we use google calendars here (we utilise a shared calendar for leave/remote) I was able to leverage the library’s Google has created to get this info. They do have a ruby library for this, but first go I was unable to get it working (needed a new version of Ruby) So I defaulted back to use the PHP library</p>
+
+<p>First you need to follow <a href="https://developers.google.com/google-apps/calendar/quickstart/php">these</a> instructions to turn calendar api access on, and configure an access token, also follow those instructions for installing the google client library from <code class="highlighter-rouge">composer</code></p>
+
+<p>So I run this as a cron job, every hour, between 6-6. I’ve modified it to just download events on the leave and remote calendars to seperate text files. This is the read into the dashboard by a ruby job, which is part of dashing
+(I have only included the snippet of code I modified, the rest is the same as in the google example)</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+</pre></td><td class="code"><pre><span class="c1">// Get the API client and construct the service object.</span>
+<span class="nv">$client</span> <span class="o">=</span> <span class="nx">getClient</span><span class="p">();</span>
+<span class="nv">$service</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Google_Service_Calendar</span><span class="p">(</span><span class="nv">$client</span><span class="p">);</span>
+<span class="nv">$todaystart</span> <span class="o">=</span> <span class="nb">date</span><span class="p">(</span><span class="s2">"Y-m-d"</span><span class="p">)</span> <span class="o">.</span> <span class="s2">"T00:00:00+10:00"</span><span class="p">;</span>
+<span class="nv">$todayend</span> <span class="o">=</span> <span class="nb">date</span><span class="p">(</span><span class="s2">"Y-m-d"</span><span class="p">)</span> <span class="o">.</span> <span class="s2">"T23:59:59+10:00"</span><span class="p">;</span>
+<span class="c1">// Print the next 10 events on the user's calendar.</span>
+<span class="nv">$calendarId</span> <span class="o">=</span> <span class="s1">'Goes here'</span><span class="p">;</span>
+<span class="nv">$optParams</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+  <span class="s1">'maxResults'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="s1">'orderBy'</span> <span class="o">=&gt;</span> <span class="s1">'startTime'</span><span class="p">,</span>
+  <span class="s1">'singleEvents'</span> <span class="o">=&gt;</span> <span class="k">TRUE</span><span class="p">,</span>
+  <span class="s1">'timeMin'</span> <span class="o">=&gt;</span> <span class="nv">$todaystart</span><span class="p">,</span>
+  <span class="s1">'timeMax'</span> <span class="o">=&gt;</span> <span class="nv">$todayend</span><span class="p">,</span>
+<span class="p">);</span>
+<span class="nv">$results</span> <span class="o">=</span> <span class="nv">$service</span><span class="o">-&gt;</span><span class="na">events</span><span class="o">-&gt;</span><span class="na">listEvents</span><span class="p">(</span><span class="nv">$calendarId</span><span class="p">,</span> <span class="nv">$optParams</span><span class="p">);</span>
+<span class="nv">$fh</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">"/home/John/work-dashboard/jobs/leaveleft.txt"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">);</span>
+<span class="nv">$fh2</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">"/home/John/work-dashboard/jobs/leaveright.txt"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">count</span><span class="p">(</span><span class="nv">$results</span><span class="o">-&gt;</span><span class="na">getItems</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">print</span> <span class="s2">"No upcoming events found.</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="k">print</span> <span class="s2">"Upcoming events:</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+  <span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="nv">$results</span><span class="o">-&gt;</span><span class="na">getItems</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$start</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">start</span><span class="o">-&gt;</span><span class="na">dateTime</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$start</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nv">$start</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">start</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nb">printf</span><span class="p">(</span><span class="s2">"%s (%s)</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getSummary</span><span class="p">(),</span> <span class="nv">$start</span><span class="p">);</span>
+    <span class="nv">$data1</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getSummary</span><span class="p">();</span>
+    <span class="nv">$split</span> <span class="o">=</span> <span class="nb">explode</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span> <span class="nv">$data1</span><span class="p">);</span>
+    <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">.</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nv">$i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">){</span>
+        <span class="nb">fwrite</span><span class="p">(</span><span class="nv">$fh</span><span class="p">,</span><span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+        <span class="nb">fwrite</span><span class="p">(</span><span class="nv">$fh2</span><span class="p">,</span><span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nv">$i</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>And then here are the jobs that go in the dashing job folder</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="code"><pre><span class="c1">#leave.rb</span>
+<span class="no">SCHEDULER</span><span class="p">.</span><span class="nf">every</span> <span class="s1">'360s'</span> <span class="k">do</span> 
+  <span class="n">leavep</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">({</span> <span class="ss">value: </span><span class="mi">0</span> <span class="p">})</span>
+  <span class="n">leaver</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">({</span> <span class="ss">value: </span><span class="mi">0</span> <span class="p">})</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">readlines</span><span class="p">(</span><span class="s1">'/home/John/work-dashboard/jobs/leaveleft.txt'</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+    <span class="n">leavep</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">label: </span><span class="n">line</span> <span class="p">}</span>
+  <span class="k">end</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">readlines</span><span class="p">(</span><span class="s1">'/home/John/work-dashboard/jobs/leaveright.txt'</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+    <span class="n">leaver</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">label: </span><span class="n">line</span> <span class="p">}</span>
+  <span class="k">end</span>
+  <span class="n">send_event</span><span class="p">(</span><span class="s1">'leave'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">itemsleft: </span><span class="n">leavep</span><span class="p">.</span><span class="nf">values</span> <span class="p">})</span>
+  <span class="n">send_event</span><span class="p">(</span><span class="s1">'leave'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">itemsright: </span><span class="n">leaver</span><span class="p">.</span><span class="nf">values</span> <span class="p">})</span>
+<span class="k">end</span>
+
+<span class="c1">#remote.rb</span>
+<span class="no">SCHEDULER</span><span class="p">.</span><span class="nf">every</span> <span class="s1">'360s'</span> <span class="k">do</span>
+  <span class="n">leavep</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">({</span> <span class="ss">value: </span><span class="mi">0</span> <span class="p">})</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">readlines</span><span class="p">(</span><span class="s1">'/home/harry/work-dashboard/jobs/remoteleft.txt'</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+    <span class="n">leavep</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">label: </span><span class="n">line</span> <span class="p">}</span>
+  <span class="k">end</span>
+  <span class="n">send_event</span><span class="p">(</span><span class="s1">'remote'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">itemsleft: </span><span class="n">leavep</span><span class="p">.</span><span class="nf">values</span> <span class="p">})</span>
+  <span class="c1">#send_event('remote', { itemsright: leavep.values })</span>
+<span class="k">end</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>To make this less messy, I definitely could have got the Ruby library working, then just had it running as a job under dashing to push results directly to the dashboard, instead of having this extra script run then pull in seperate. Also merging the 2 scripts that are currently seperate (leave.rb and remote.rb) From memory I originally did this but there was issues when it was pushing things to the dashboard.</p>
+
+<p>But now I have a dashboard that displays some useful information to the managers at work, without having to open up calenders and faff about with that to see who is away/remote and also gives everyone something cute to look at</p>
+
+<p>I plan to create another dashboard for the “developer” area so there some more relavant information for them, such as status of TeamCity/Jenkin’s builds, git commits for the day. But that’s on the to-do list. Should be simple enough though as there are a multitude of widgets for dashing you can <a href="https://github.com/Shopify/dashing/wiki/Additional-Widgets">use here</a></p>
+
+<h1 id="dashboard-controller">Dashboard Controller</h1>
+
+<p>So as I mentioned, instead of Greenscreen I set out to find something else that could control chromecasts, but better. Thats when I found <a href="https://github.com/vincentbernat/dashkiosk">DashKiosk</a>
+Pretty awesome as its a dashboard manager that can handle more then just chromecasts. Anything that can browse the web, and has as screen can be turned into a dashboard using this!
+The plan was to buy some raspberry pi’s and attach them to the TV, so we could have a more reliable “client”, but thankfully, the chromecastV2 worked perfectly</p>
+
+<p>Pretty straight forward setup:</p>
+
+<ol>
+  <li>Download and extract the latest dashkiosk tar ball
+    <ul>
+      <li><code class="highlighter-rouge">wget https://github.com/vincentbernat/dashkiosk/archive/v2.6.6.tar.gz</code></li>
+      <li><code class="highlighter-rouge">tar -zxvf v2.6.6.tar.gz</code></li>
+      <li><code class="highlighter-rouge">cd dashkiosk-2.6.6/</code></li>
+    </ul>
+  </li>
+  <li>Install npm dependancies and build
+    <ul>
+      <li><code class="highlighter-rouge">sudo npm install</code> #this is going to take a bit of time. Shouldnt be any errors at this stage (I got one but it was because i didnt install something at the start)</li>
+      <li><code class="highlighter-rouge">sudo grunt</code> #This also may take some time</li>
+    </ul>
+  </li>
+  <li>Test to make sure chromecasts work
+    <ul>
+      <li><code class="highlighter-rouge">avahi-browse _googlecast._tcp</code>
+  This will list all the chromecasts on the network, make sure you can see them
+  Now make sure you can resolve the name to IP</li>
+      <li><code class="highlighter-rouge">getent hosts "Dev\032Area".local</code>
+  If this works, you are good to go! If not, see <a href="https://dashkiosk.readthedocs.org/en/latest/chromecast.html">here</a></li>
+    </ul>
+  </li>
+  <li>Finish up and configure for your environment
+    <ul>
+      <li><code class="highlighter-rouge">cd dist</code></li>
+      <li><code class="highlighter-rouge">sudo npm install --production</code> #this will take a while</li>
+      <li><code class="highlighter-rouge">sudo vim lib/config.js</code></li>
+    </ul>
+  </li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre>  <span class="err">#</span><span class="nx">change</span> <span class="nx">the</span> <span class="nx">chromecast</span> <span class="nx">part</span><span class="p">,</span> <span class="nx">where</span> <span class="nx">the</span> <span class="nx">IP</span> <span class="nx">address</span> 
+  <span class="err">#</span> <span class="nx">is</span> <span class="nx">the</span> <span class="nx">IP</span> <span class="nx">address</span> <span class="k">of</span> <span class="nx">the</span> <span class="nx">server</span> 
+  <span class="err">#</span> <span class="p">(</span><span class="nx">Cant</span> <span class="nx">use</span> <span class="nx">domain</span> <span class="nx">name</span> <span class="nx">because</span> <span class="nx">chromecast</span> <span class="nx">uses</span> <span class="nx">google</span> <span class="nx">dns</span><span class="p">,</span>
+  <span class="err">#</span>  <span class="nx">so</span> <span class="nx">unless</span> <span class="nx">it</span> <span class="nx">is</span> <span class="kr">public</span> <span class="nx">facing</span> <span class="nx">it</span> <span class="nx">wont</span> <span class="nx">work</span>
+  <span class="c1">// Chromecast</span>
+      <span class="nx">chromecast</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nl">enabled</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">receiver</span><span class="p">:</span> <span class="s1">'http://192.168.100.171:9400/receiver'</span><span class="p">,</span>
+        <span class="nx">app</span><span class="p">:</span> <span class="s1">'5E7A2C2C'</span>
+      <span class="p">},</span>
+  </pre></td></tr></tbody></table></code></pre></figure>
+
+<ol>
+  <li>Run it!
+    <ul>
+      <li><code class="highlighter-rouge">sudo node server.js --environment production</code>
+  This will start up on port 9400, so go to <code class="highlighter-rouge">http://IPADDY:9400</code></li>
+    </ul>
+  </li>
+</ol>
+
+<p>The only issue I had was getting the chromecast module working, but that ended up being an easy fix. Had to change 1 file to turn off(?) ipv6</p>
+
+<h3 id="some-issues-along-the-way">Some issues along the way</h3>
+<p>So the main issue with this setup is the chromecast v1 hardware. In our setup we have 2 AP’s using both bands, but the chromecasts frequently dropped out and had to reconnect. This was a pain with greenscreen as you had to manually reconnect the chromecast back up. I never got to the bottom whether it was the chromecasts, or our wifi that was the main issue. But upgrading to the Chromecastv2 was a whole lot better, much more stable and noticably faster</p>
+
+<p>Let me know if you are interested, and I’ll load the whole dashing dashboard I created into github</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

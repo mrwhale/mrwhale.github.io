@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Multi room audio with raspberry pi</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Multi room audio with raspberry pi</h2>		
+	<time datetime="2016-01-17T20:14:00+11:00" class="by-line">17 Jan 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So I’ve had a though for a while that I’d like something like Sonos in my home, but something like that is wayyyy out of my price range. Then I got thinking, surely opensource can do this!</p>
+
+<p>I’ve just spent most of the day researching and setting up a solution. The first thing that came up was pulseaudio. This cool piece of software can do all sorts, and one of them being able to setup up a client-server like environment to stream audio from a pulseaudio “server” over multicast to any mpd “client” who is listening. The theory behind this is you can set up multiple broadcast’s and have each device listening on different ones, plus all listening to on the same one. So you could stream to all devices, or to individual ones. The problem with this way (from what I could find) was that there was no easy, user friendly way to switch “zones” (broadcast addresses) on the server to play to different devices. This wouldn’t fly with the wife! Although this would be a nice, quick solution for most tech people</p>
+
+<p>I needed something that could be “user” friendly (super simple), that was easy to use, that would have an android and/or iOS app to control the server and that didn’t require much else then pushing a few buttons in an app to make it work. I eventually found mopidy (https://www.mopidy.com/) I choose this as it ties into a few music streaming services, as I don’t have a large collection of local music, I listen mainly to spotify. It also has some nice apps available on Android, iOS and a web client, so controlling the server would be nice and simple. Hooking into this to allow for multi-room streaming I used snapcast (https://github.com/badaix/snapcast) a nice c# program to allow for client-server streaming with as many clients as you like. Unfortunately it doesn’t support “Zones” yet (which I originally wanted), but its on the todo list
+As I have 3 rpi’s in my house, I will be using them as my audio clients, and server. I will be hooking one pi into my lounge surround sound, and have an old speaker system that I use in the Kitchen</p>
+
+<p>Hardware:
+1x rpi 2 (as the server)
+2 x rpi B (as the clients)
+Speakers to plug into the “clients”</p>
+
+<p>For now I have just plugged everything into the 3.5” jack on the rpi, but I have read alot that the quality of this sound is terrible (I didn’t notice too much in my tests) and that getting a USB audio device would be a much better idea. So maybe when I start noticing quality, that will be the first thing to check</p>
+
+<p>Software:
+mopidy
+snapcast</p>
+
+<p>Installing mopidy was a breeze, just followed their instructions on their wiki (https://docs.mopidy.com/en/latest/installation/raspberrypi/)</p>
+
+<p>Install the spotify plugin</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>mopidy-spotify</code></pre></figure>
+
+<p>Once I got to snapcast, it needed a few dependencies, which rasbian (wheezy) didn’t care for. It was running older versions of the software needed and it didnt look like I could update it easily, so I bit the bullet and upgraded to Jessie</p>
+
+<p>This took ages! most of my time was spent waiting around for it to download and build, it probably would have been quicker to download the Jessie iso, re-flash the SD card and re-install everything. But once it was done, installing it was easy, and setup was even easier</p>
+
+<p>Just start mopidy on the server</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">mopidy</code></pre></figure>
+
+<p>and start the server portion of snapcast</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>snapserver <span class="nt">-d</span></code></pre></figure>
+
+<p>and start the client portion of snapcast on your streaming client</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>snapclient <span class="nt">-d</span>
+<span class="c">#(or `sudo service snapclient start` . I had issues with running via \</span>
+     <span class="c">#init.d and found it easier to start the service with the snapclient command)#</span></code></pre></figure>
+
+<p>Then control your mopidy server with your favourite method (mine was android app) and magic!</p>
+
+<p>I haven’t included the commands yet, so maybe i’ll add them if i can run <code class="highlighter-rouge">history</code> on my pi
+Hope this helps someone, as finding an opensource/cheap solution for this was harder then I thought!</p>
+
+<p>Here are some other alternatives you can use too, especially if most of your collection of music is locally stored:</p>
+
+<ol>
+  <li>Squeezebox (http://monksoundworks.blogspot.com.au/2014/03/raspberry-pi-multi-room-audio-solved.html)</li>
+  <li>Volumio - http://volumio.org/</li>
+  <li>Pi music Box - (pretty much a nice GUI ontop of mopidy) http://www.pimusicbox.com/</li>
+</ol>
+
+<p>As I was writing this, I found this - https://github.com/thaytan/aurena.  Seems very cool as it already supports “Zones” I will see if it ties  into modipy or streaming services!</p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>3. File server</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>3. File server</h2>		
+	<time datetime="2014-05-14T12:10:00+10:00" class="by-line">14 May 2014 - <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>Now we have a webserver, torrent server (which is downloading all your torrents to an attached hard drive), I have set up a file server to serve the torrent folder to my windows computers in the house. This means I can plug my laptop in the TV, browse to the rpi, and play a show :). Here’s how I did so.</p>
+
+<p>First you need to make sure you have samba installed</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>samba</code></pre></figure>
+
+<p>I have made the share a public share with guests allowed ( so its not very secure ), but I like to think my wifi is secure enough to stop people from gaining access. That said, it doesn’t really matter if anyone can view the files, as I have set them to read only, and only people on the LAN can view them.</p>
+
+<p>Once Samba is installed, the next step is to add the shares you want to <code class="highlighter-rouge">smb.conf</code>, located in <code class="highlighter-rouge">/etc/samba/</code>. Below is a snippet of my <code class="highlighter-rouge">smb.conf</code> file, showing the public share of the external hard drive attached to the pi, mounted at <code class="highlighter-rouge">/mnt/usb/</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>usb]
+comment <span class="o">=</span> USB
+path <span class="o">=</span> /mnt/usb/Torrents
+only guest <span class="o">=</span> Yes
+<span class="nb">read </span>only <span class="o">=</span> Yes
+browseable <span class="o">=</span> Yes
+public <span class="o">=</span> Yes</code></pre></figure>
+
+<p>I place this at the bottom of the file, leaving everything else as default. Just to make sure that everything is okay, I recommend running the tool <code class="highlighter-rouge">testparm</code>. This will check your samba config file to make sure there are no errors.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">testparm</code></pre></figure>
+
+<p>if you get no errors, go ahead and start your server</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>service samba start</code></pre></figure>
+
+<p>Now that samba is running, you can map that drive from any other device on your LAN. e.g from my windows pc, just map new network drive and put in the path <code class="highlighter-rouge">\\&lt;ip of rpi&gt;\usb</code> and I can view all my downloads!</p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

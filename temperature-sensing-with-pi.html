@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Temperature Sensing with the Pi</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Temperature Sensing with the Pi</h2>		
+	<time datetime="2014-08-28T15:00:00+10:00" class="by-line">28 Aug 2014 - <span class="read-time" title="Estimated read time">
+  
+  
+    6 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>I ordered a couple of gadget for my pi a while ago, and they finally came in the mail ( only had to wait 2 months!) Anyways, I ordered a water-proof digital temperature sensor (DS18B20) and a ultrasonic range finder (HC-SR04) to play around with.
+So firstly I wanted to get the temperature sensor going. I followed the adafruit tutorial, just to hook the temp sensor to the pi (https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/hardware)
+Once it was physically connected, lets check if it works</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /sys/devices/w1_bus_master1/
+ </code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nb">ls
+</span>28-0000056e9afb w1_master_attempts w1_master_search
+driver w1_master_max_slave_count w1_master_slave_count
+power w1_master_name w1_master_slaves
+subsystem w1_master_pointer w1_master_timeout
+uevent w1_master_pullup
+w1_master_add w1_master_remove
+ </code></pre></figure>
+
+<p>There should be a listing under there that’s a whole bunch of numbers and letters (the devices ID). In my case it’s
+28-0000056e9afb. <code class="highlighter-rouge">cd</code> into this folder and <code class="highlighter-rouge">cat</code> the file called <code class="highlighter-rouge">w1_slave</code>
+You should get output like so:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">db 00 4b 46 7f ff 05 10 1a : <span class="nv">crc</span><span class="o">=</span>1a YES
+db 00 4b 46 7f ff 05 10 1a <span class="nv">t</span><span class="o">=</span>13687
+ </code></pre></figure>
+
+<p>The first like is the checksum, to make sure the device is working correctly, and the second line is the temperature, in degree’s celcius, and to 3 decimal places (13687 = 13.687C)
+Now we know the temp sensor is working alright, we can make a nice python script to read it and log it. For this project, I used:</p>
+
+<ol>
+  <li><a href="https://plot.ly/">plot.ly</a>. All you need to do it create a free account and your good to go!</li>
+  <li><a href="http://www.wunderground.com/?apiref=c9cf00c7dcaed623">weather underground</a> You can create a free ‘dev’ account which gives you 500 API calls a day (This is what I use, the way I have set it up, it will only ever call 288 a day)</li>
+  <li>Bureau of Meteorology. I used this just so I could compare the temperature with wunderground
+Both temperature gathering sites give out the data is JSON format, so it was easy enough to extract the data needed, and then pass it onto plot.ly.
+Here’s two of my graphs:</li>
+  <li>https://plot.ly/~harrysibenaler/4 - this one uses wunderground’s temperature feed, and I’ve also added the temp of the CPU on the rpi</li>
+  <li>https://plot.ly/~harrysibenaler/5 - this uses BOM’s temperature feed</li>
+</ol>
+
+<p>And here is the python script I used to do this! all you need to do is go through and add your API key for the various sites, and add your location (you may have to play around to find the correct location code for this one) I’ve also set it up to pull my plot.ly key and username out of a file called config.json. I did this because I have multiple scripts using it :)</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="k">as</span> <span class="n">py</span>
+<span class="kn">from</span> <span class="nn">plotly.graph_objs</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">localtime</span><span class="p">,</span> <span class="n">strftime</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'./config.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
+    <span class="n">plotly_user_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+<span class="n">py</span><span class="o">.</span><span class="n">sign_in</span><span class="p">(</span><span class="n">plotly_user_config</span><span class="p">[</span><span class="s">"plotly_username"</span><span class="p">],</span> <span class="n">plotly_user_config</span><span class="p">[</span><span class="s">"plotly_api_key"</span><span class="p">])</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">'modprobe w1-gpio'</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">'modprobe w1-therm'</span><span class="p">)</span>
+<span class="n">base_dir</span> <span class="o">=</span> <span class="s">'/sys/bus/w1/devices/'</span>
+<span class="n">device_folder</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s">'28*'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">device_file</span> <span class="o">=</span> <span class="n">device_folder</span> <span class="o">+</span> <span class="s">'/w1_slave'</span>
+<span class="k">def</span> <span class="nf">read_temp_raw</span><span class="p">():</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">device_file</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">lines</span>
+<span class="k">def</span> <span class="nf">read_temp</span><span class="p">():</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">read_temp_raw</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s">'YES'</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">read_temp_raw</span><span class="p">()</span>
+    <span class="n">equals_pos</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">'t='</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">equals_pos</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">temp_string</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">equals_pos</span><span class="o">+</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">temp_c2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp_string</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
+        <span class="n">temp_c</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">temp_c2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_c</span>
+<span class="k">def</span> <span class="nf">read_pi_temp</span><span class="p">():</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/sys/class/thermal/thermal_zone0/temp'</span> <span class="p">,</span> <span class="s">'r'</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">temp_c2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
+    <span class="n">temp_cpi</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">temp_c2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp_cpi</span>
+
+<span class="k">def</span> <span class="nf">read_temp_bom</span><span class="p">():</span>
+    <span class="n">f_bom</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">'http://www.bom.gov.au/fwo/IDV60901/IDV60901.94866.json'</span><span class="p">)</span>
+    <span class="n">json_string_bom</span> <span class="o">=</span> <span class="n">f_bom</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">parsed_json_bom</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_string_bom</span><span class="p">)</span>
+    <span class="n">temp_c_bom</span> <span class="o">=</span> <span class="n">parsed_json_bom</span><span class="p">[</span><span class="s">'observations'</span><span class="p">][</span><span class="s">'data'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'air_temp'</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">temp_c_bom</span>
+<span class="c"># Weather Underground key</span>
+<span class="n">wu_key</span> <span class="o">=</span> <span class="s">"&lt;APIKEY&gt;"</span>
+<span class="n">wu_state</span> <span class="o">=</span> <span class="s">"Victoria"</span>
+<span class="n">wu_city</span> <span class="o">=</span> <span class="s">"Melbourne"</span>
+<span class="n">wu_retry</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">def</span> <span class="nf">get_WUTemp</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="c">#Get data from weather service</span>
+        <span class="c">#If exception occurs, retry a few times then quit</span>
+        <span class="k">for</span> <span class="n">retry</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">retries</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">'http://api.wunderground.com/api/'</span> \
+                        <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s">'/geolookup/conditions/q/'</span> <span class="o">+</span> <span class="n">state</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> \
+                         <span class="n">city</span> <span class="o">+</span> <span class="s">'.json'</span><span class="p">)</span>
+                        <span class="n">json_string</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                        <span class="c">#print json_string</span>
+                        <span class="n">parsed_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span>
+                        <span class="n">location</span> <span class="o">=</span> <span class="n">parsed_json</span><span class="p">[</span><span class="s">'location'</span><span class="p">][</span><span class="s">'city'</span><span class="p">]</span>
+                        <span class="n">temp_c</span> <span class="o">=</span> <span class="n">parsed_json</span><span class="p">[</span><span class="s">'current_observation'</span><span class="p">][</span><span class="s">'temp_c'</span><span class="p">]</span>
+                <span class="k">except</span><span class="p">:</span>
+                        <span class="n">e</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">print</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="n">temp_fc</span><span class="o">=</span> <span class="bp">None</span>
+                        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">temp_c</span>
+<span class="n">pitemp</span> <span class="o">=</span> <span class="n">read_pi_temp</span><span class="p">()</span>
+<span class="n">series1</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">'name'</span> <span class="p">:</span> <span class="s">'Pi CPU Temp'</span><span class="p">,</span>
+  <span class="s">'x'</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+  <span class="s">'y'</span> <span class="p">:</span> <span class="n">read_pi_temp</span><span class="p">(),</span>
+  <span class="s">'type'</span> <span class="p">:</span> <span class="s">'scatter'</span><span class="p">,</span>
+  <span class="s">'mode'</span> <span class="p">:</span> <span class="s">'lines'</span><span class="p">}</span>
+<span class="n">series2</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">'name'</span> <span class="p">:</span> <span class="s">'Room Temp'</span><span class="p">,</span>
+  <span class="s">'x'</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+  <span class="s">'y'</span> <span class="p">:</span> <span class="n">read_temp</span><span class="p">(),</span>
+  <span class="s">'type'</span> <span class="p">:</span> <span class="s">'scatter'</span><span class="p">,</span>
+  <span class="s">'mode'</span> <span class="p">:</span> <span class="s">'lines'</span><span class="p">}</span>
+<span class="n">series3</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">'name'</span> <span class="p">:</span> <span class="s">'Outdoor Temp (wunderground.com)'</span><span class="p">,</span>
+  <span class="s">'x'</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+  <span class="s">'y'</span> <span class="p">:</span> <span class="n">get_WUTemp</span><span class="p">(</span><span class="n">wu_key</span><span class="p">,</span> <span class="n">wu_state</span><span class="p">,</span> <span class="n">wu_city</span><span class="p">),</span>
+  <span class="s">'type'</span> <span class="p">:</span> <span class="s">'scatter'</span><span class="p">,</span>
+  <span class="s">'mode'</span> <span class="p">:</span> <span class="s">'lines'</span><span class="p">}</span>
+<span class="n">series4</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">'name'</span> <span class="p">:</span> <span class="s">'Outdoor Temp (bom.gov.au)'</span><span class="p">,</span>
+  <span class="s">'x'</span> <span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+  <span class="s">'y'</span> <span class="p">:</span> <span class="n">read_temp_bom</span><span class="p">(),</span>
+  <span class="s">'type'</span> <span class="p">:</span> <span class="s">'scatter'</span><span class="p">,</span>
+  <span class="s">'mode'</span> <span class="p">:</span> <span class="s">'lines'</span><span class="p">}</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">series1</span><span class="p">,</span> <span class="n">series3</span><span class="p">,</span> <span class="n">series2</span><span class="p">,</span> <span class="n">series4</span><span class="p">]</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">py</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">filename</span> <span class="o">=</span> <span class="s">'Rpi Room Temp Multi'</span><span class="p">,</span> <span class="n">fileopt</span><span class="o">=</span><span class="s">'extend'</span><span class="p">)</span>
+
+ </code></pre></figure>
+
+<p>Have Fun!</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

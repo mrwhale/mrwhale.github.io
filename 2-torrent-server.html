@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>2. Torrent server</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>2. Torrent server</h2>		
+	<time datetime="2013-11-13T16:23:00+11:00" class="by-line">13 Nov 2013 - <span class="read-time" title="Estimated read time">
+  
+  
+    4 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So now all that your web server is up and running, and you have a Dynamic DNS name (if you chose to do that), here’s how I set up the torrent server on the pi (using transmission) credit goes to <a href="http://www.computeristas.com/wp/?p=98">this</a> website for helpful instructions. I also had a spare 500gb external harddrive (externally powered too) that I am using as storage for the downloads (I only have a 4gb SD for the pi) so instructions for setting this up, credit goes to <a href="http://rasspberrypi.wordpress.com/2012/09/04/mounting-and-unmounting-usb-drives-on-raspberry-pi/">this</a> webiste</p>
+
+<p>First up, lets set up the hard drive on the pi. I tried the normal way of mounting the hard drive but I ran into the issue on the above link about the hard drive being mounted in read only, so lets just install some other programs to help us out</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>ntfs-3g</code></pre></figure>
+
+<p>Once this is done, plug your hard drive in and power it on. to find out where your hard drive is located run</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>fdisk <span class="nt">-l</span></code></pre></figure>
+
+<p>This will give you output similar to this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Disk /dev/mmcblk0: 3974 MB, 3974103040 bytes
+4 heads, 16 sectors/track, 121280 cylinders, total 7761920 sectors
+Units <span class="o">=</span> sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+Disk identifier: 0x000c7b31
+
+    Device Boot   Start     End   Blocks  Id System
+/dev/mmcblk0p1      8192   122879    57344  c W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span>/dev/mmcblk0p2     122880   7761919   3819520  83 Linux
+
+Disk /dev/sda: 500.1 GB, 500107862016 bytes
+255 heads, 63 sectors/track, 60801 cylinders, total 976773168 sectors
+Units <span class="o">=</span> sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+Disk identifier: 0x8d399bc0
+
+ Device Boot   Start     End   Blocks  Id System
+/dev/sda1       63  976751999  488375968+  7 HPFS/NTFS/exFAT</code></pre></figure>
+
+<p>We can see that my 500 gb hard drive is at the location /dev/sda from the output above. So before we mount it we need to make a folder to mount the hard drive in</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo mkdir</span> /mnt/usb</code></pre></figure>
+
+<p>Now we can mount the hard drive</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>mount /dev/sda1 /mnt/usb <span class="nt">-t</span> ntfs</code></pre></figure>
+
+<p>You can check to see if its mounted with</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">df</span> <span class="nt">-h</span></code></pre></figure>
+
+<p>and you should see it in the list as /dev/sda1 mounted on /mnt/usb:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Filesystem   Size Used Avail Use% Mounted on
+rootfs     3.6G 2.1G 1.4G 62% /
+/dev/root    3.6G 2.1G 1.4G 62% /
+devtmpfs    235M   0 235M  0% /dev
+tmpfs      49M 636K  48M  2% /run
+tmpfs      5.0M   0 5.0M  0% /run/lock
+tmpfs      98M   0  98M  0% /run/shm
+/dev/mmcblk0p1  56M  19M  38M 33% /boot
+/dev/sda1    466G 215G 252G 47% /mnt/usb</code></pre></figure>
+
+<p>I also made another folder on the hard drive</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /mnt/usb
+<span class="nb">sudo mkdir </span>torrents
+<span class="nb">sudo chmod </span>777 torrents</code></pre></figure>
+
+<p>I give this folder full permissions ( its probably not best practice but I know it works when its like this..)</p>
+
+<p>So now we can get transmission server up and running, finally. Thanks to <a href="http://www.computeristas.com/wp/?p=98">this</a>guy for some helpful instructions to get our torrent server up and running\</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>transmission-daemon</code></pre></figure>
+
+<p>We already set up a save folder previous at /mnt/usb/Torrents so I just used this for both complete and incomplete torrents (but you can make yourself another folder to store incomplete files in if you want). Now we customise the settings file</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>nano /etc/transmission-daemon/settings.json</code></pre></figure>
+
+<p>Now you can scan through and change the settings as desired (its pretty self explanatory) but here is a list of the setting I changed</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="s2">"download-dir"</span>: <span class="s2">"/mnt/usb/Torrents"</span>,
+<span class="s2">"incomplete-dir"</span>: <span class="s2">"/mnt/usb/Torrents/"</span>,
+<span class="s2">"incomplete-dir-enabled"</span>: <span class="nb">true</span>,
+<span class="s2">"rpc-password"</span>: <span class="s2">"put desired password here"</span>
+<span class="s2">"rpc-username"</span>: <span class="s2">"pi"</span>,
+<span class="s2">"rpc-whitelist"</span>: <span class="s2">"127.0.0.1,*.*.*.*,192.168.*.*"</span>,</code></pre></figure>
+
+<p>The rpc-whitelist is there to give access to certain IP address’s to the web front-end of transmission. <em>.</em>.<em>.</em> gives access to the world, as I connect to the server with my phone while out and about to upload torrents and such. But you can restrict it to your local LAN/work IP’s or whatever you need. All the rest of the settings you can modify as needed to suit. Now we want to reload the server to save our settings</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>service transmission-daemon reload</code></pre></figure>
+
+<p>Once this is done you can restart it as necessary, as explained on the above webpage, reloading it will save the config, but restarting it will override it</p>
+
+<p>You should now be able to access it through your x.x.x.x:9091 ( Mine is accessible at 192.168.0.5:9091 )</p>
+
+<p>So there’s also a nifty transmission android app that you can then remotely upload torrents to your server to download <a href="https://play.google.com/store/apps/details?id=com.neogb.rtac">https://play.google.com/store/apps/details?id=com.neogb.rtac</a></p>
+
+<p>The last thing you need to do is forward the right ports out of your home router so you can access your pi over the internet. I have a netgear so there’s plenty of online guides on how to do it, it’s pretty straightforward though. you will need to forward on port 80, and 9091</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

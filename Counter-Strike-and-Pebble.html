@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Counter Strike and Pebble</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Counter Strike and Pebble</h2>		
+	<time datetime="2016-09-03T10:00:00+10:00" class="by-line">03 Sep 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    4 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>Hey all, it’s been a while! I’ve been busy. Combining my enthusiasm to CS and the usefulness of a pebble watch to create you <a href="https://apps.getpebble.com/applications/57c24bc35e3c3db4850002af">CSontheGO</a></p>
+
+<p>Pretty cool huh? Being able to keep up to date with CS matches from your watch. I decided to do this because I:</p>
+<ol>
+  <li>wanted to Learn a php framework</li>
+  <li>Enjoy developing things in my spare time</li>
+</ol>
+
+<p>This project had to be split into 2 parts, the backend/data store, and the pebble watch. Surprisingly I had a pretty much a beta version of the app running in about 45hours of dev time. This is probably mostly due to the paths I took with each part of the project</p>
+
+<h4 id="the-backend">the backend</h4>
+<p>So I wanted to learn a php framework (because I like php) and <a href="https://laravel.com/">laravel</a> and <a href="https://lumen.laravel.com/">lumen</a> came to me highly recommended. All I have to say is amazing</p>
+
+<p>So I needed a backend/data store for this project because there were no publicly consumable APIs from any sites that report on Counter Strike, so I had to make my own. For something the pebble app can use to give you information at your wrist</p>
+
+<p>Currently I am getting the data I need by scraping a well known e Sports website. The plan is to add other sites, for redundancy, incase I get blocked, or that particular site doesn’t provide updates for unknown reasons</p>
+
+<p>I ended up using lumen, as I didn’t need the full laravel install to make my idea come to life, this data store would only provide an API for the pebble app to connect to anyway, and the scraping is all done via headless cli scripts. Perfect</p>
+
+<h5 id="ide-choice">IDE choice</h5>
+<p>So because this was the first “big” personal project I was making, I decided to try out an IDE that supports PHP
+I have created various things in php previously, but they have never been big, so I just stuck to using <code class="highlighter-rouge">vim</code> which has suited my needs fine</p>
+
+<p>The choices only really come down to</p>
+
+<ul>
+  <li><a href="https://www.jetbrains.com/phpstorm/">Php storm</a> by jetbrains</li>
+  <li><a href="http://www.eclipse.org/pdt/">Eclipse PDT</a></li>
+  <li><a href="https://netbeans.org/">Netbeans</a></li>
+  <li><a href="https://atom.io/">Atom</a> not an IDE per say but including because a legitimate option</li>
+  <li><a href="https://code.visualstudio.com/">VS code</a> same as atom</li>
+</ul>
+
+<p><strong>PHP storm</strong> 
+If I had the cash to splash, I would have bought this. I used the 30 day trial, and its pretty amazing. Has all the bells and whistles you’d expect from an IDE and it does really well at on the fly suggestions and hints while developing, even with lumen. I was quite impressed with it. 
+I’ve used the base product before though, while developing on an Android app. <a href="https://developer.android.com/studio/index.html">Android studio</a> uses the indelij platform underneath it, which is the same as php storm</p>
+
+<p><strong>Eclipse</strong> 
+I switched over to eclipse after my trial of above had finished. Eclipse was fine, but it was lacking in the suggestions and hints during development. It didn’t seem as robust and complete as php storm. I found myself having to just look up the docs more often then not when I was using eclipse. To see what parameters where etc.</p>
+
+<p>And that is why I ended up just using <strong>atom</strong>. It has a decent enough support for PHP to give me syntax errors, and if I’m using the docs anyway, I may as well use something a little more light weight. I’ve used atom previously, mainly as just a text editor of choice (after <code class="highlighter-rouge">vim</code>) but it’s come a long way since I last used it so it was quite pleasant. And does exactly what i need it to do. I know I’m missing the big IDE features like integrated testing, integrated environments and things like that, but that’s okay with me</p>
+
+<h4 id="pebble-app">pebble app</h4>
+<p>There were 2 paths I could have taken with this. Write in c, with the <a href="https://developer.pebble.com/docs/c/">pebble c</a> framework, or use <a href="https://pebble.github.io/pebblejs/">pebblejs</a>, a framework that allows you to write the app in JavaScript. I chose pebblejs. There were a few downfalls with pebblejs, namely, it “runs” on the phone and sends all the data to the watch, causing more BT round trips, using more battery. The good thing about it was it was very quick to get an app up and running. No worrying about appmessage and dealing with all that in c. Although I will eventually rewrite in c to support all watches and the new APIs, which pebblejs doesn’t support (and probably won’t)</p>
+
+<p>Writing this was pretty neat, JavaScript is super powerful and includes all the things I needed (pulling data from the API and showing it in a menu) and I could utilise things like timeline pins via the rest API too.</p>
+
+<p>All in all, I’ve had fun! I’ve learnt alot, both in PHP frameworks and development in general. I have a long list of fixes/feature I want to add but don’t exactly have the usage of the app to really continue :( I will certainly leave the backend up for those (and myself) that are currently using it. I guess there isn’t much of a user base that like CSGO and have a Pebble!</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

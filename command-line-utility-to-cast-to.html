@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>command line utility to cast to chromecast</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>command line utility to cast to chromecast</h2>		
+	<time datetime="2014-11-20T16:08:00+11:00" class="by-line">20 Nov 2014 - <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So just a quick one today, found an awesome command utility to be able to cast content to a chromecast! It does local content, content from the interwebs and can even stream torrents :O</p>
+
+<p>https://github.com/xat/castnow</p>
+
+<p>Kudos to old mate xat for this one</p>
+
+<p><del>Unfortunately I haven’t been able to get it working from my raspberry pi yet :( Keep getting build errors when trying to install it via npm…</del> I will update once I finally figure it out</p>
+
+<p><strong>Edit 1</strong></p>
+
+<p><del>So I didn’t get it working on my raspberry pi</del> , but I recently upgraded (not sure its the right word :P) to Ubuntu 14.04. I have always wanted to be running Linux as my main desktop environment, but as I am a heavy gamer, I couldn’t do it because all my favourite games (CS:GO) were only on Windows.</p>
+
+<p>But when I got the good news the other month that they had ported it over to Linux, I didn’t waste anytime. First I installed CentOS (big fan of the long term support, a guy I used to work with also worked on the earlier releases of this..) But I was having heaps of issues with drivers, and just generally being not nice, I sighed to myself and installed Ubuntu.</p>
+
+<p>And it just worked. No issues have come up, even managed to get WOL working (couldn’t get it working on Windows), and the only thing left to do now is get SLI working for my dual GTX 690’s</p>
+
+<p>Little bit off topic.. but I managed to easily get castnow installed on Ubuntu, and got it streaming youtube video and even torrents direct to my chromecast :D Pretty awesome stuff too. Next step is to plug my chromecast directly into power, so I can turn the TV on via the chromecast (TV is CEC compatible)</p>
+
+<p><strong>Edit 2</strong></p>
+
+<p>So good new everyone! After trolling the internet for a while, I finally found the missing piece to get castnow working from your raspberry pi. A post by <a href="https://www.reddit.com/r/Chromecast/comments/2kzbms/castnow_a_commandline_chromecast_player/cmle5ax">Dudecalion on reddit</a> shows that all I needed was a node version that was compatible with ARM (the one’s I tried from apt-get were old versions). So here are some instructions to get it working from your pi!</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> wget http://nodejs.org/dist/v0.10.28/node-v0.10.28-linux-arm-pi.tar.gz
+
+ <span class="nb">tar</span> <span class="nt">-zxvf</span> node-v0.10.28-linux-arm-pi.tar.gz
+ <span class="nb">cd </span>node-v0.10.28-linux-arm-pi/bin
+
+ <span class="nb">sudo </span>su
+
+ <span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/location/to/download/node-v0.10.28-linux-arm-pi/bin/"</span>
+
+ npm <span class="nb">install</span> <span class="nt">-g</span> castnow</code></pre></figure>
+
+<p>And now wait. install took around 5 minutes for me, with a few warnings. But once it was done, you can Profit! As said in the post, because the pi isn’t that powerful it probably won’t be able to handle transcoding on the fly, so best to just keep it to playing youtube video’s or local mp4’s (but will happily be proved wrong!)</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

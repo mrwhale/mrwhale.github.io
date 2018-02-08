@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>C.H.I.P, flic and openhab</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>C.H.I.P, flic and openhab</h2>		
+	<time datetime="2017-01-05T10:00:00+11:00" class="by-line">05 Jan 2017 - <span class="read-time" title="Estimated read time">
+  
+  
+    11 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So I finally received my <a href="/C-H-I-P">C.H.I.P</a>, and over the break I purchased myself some <a href="https://flic.io/">flic bluetooth buttons</a> with the plan of making some nice push buttons around the home to control openhab. This idea mostly came from usablity/speed of use of openhab. Having the dashboard in the middle of the house is a nice idea, but if you are in another room, without your phone there isn’t too much you can do without having to go to this dashboard to interact with openhab. Flic makes it nice and convenient to do things you do often, with a click, double click or press of a button!</p>
+
+<p>Some examples, incase this still seems silly to you.</p>
+
+<ol>
+  <li>A button by the back door
+    <ul>
+      <li>A single click it will “turn off” the house. This includes lights, lamps and music from my mpd server.</li>
+      <li>double click on the way back in, and it will turn the main house lights back on for you</li>
+      <li>Long press to update openhab that you are now home. This then triggers some other openhab rules</li>
+    </ul>
+  </li>
+  <li>A button by my bedside table
+    <ul>
+      <li>Single click to turn bedside table lights on night mode (For those middle of the night wake ups)</li>
+      <li>Double click to turn the main house lights on (useful for winter when its still dark when I wake up)</li>
+      <li>Long press to turn all the lights off. For bed time</li>
+    </ul>
+  </li>
+  <li>A button by my wife’s bed side table
+    <ul>
+      <li>Single click to turn the hall way, and lounge room lights on night mode. For when she has to feed the baby</li>
+      <li>Double  click to turn those back off</li>
+      <li>Long press to turn all lights off, for bed time</li>
+    </ul>
+  </li>
+  <li>Button on a clip that sits around the house
+    <ul>
+      <li>Single click to play music</li>
+      <li>Double click to pause music</li>
+      <li>Long press to skip song</li>
+    </ul>
+  </li>
+</ol>
+
+<p>This makes some everyday tasks much more convenient, without having to pull your phone out and load openhab (if you aren’t near the dashboard). The only con of this setup I have found so far is that, as it runs off bluetooth, the range of the buttons is quite limited if using the on-board bluetooth controller of C.H.I.P. To exend it nicely through your house, I recommend purchasing a usb bluetooth controller (I will update this once I find a suitable one for my setup)</p>
+
+<h4 id="setup">Setup</h4>
+<p>So C.H.I.P comes preinstalled with a GNU/Linux debian based OS customised specifically for C.H.I.P. This is nice as I am very familiar with debian. Connecting to C.H.I.P was super easy. Plug into usb on a desktop and it presents itself as a serial connection you can then <code class="highlighter-rouge">screen</code> into!
+Their <a href="http://docs.getchip.com">docs</a> are quite well written so it was a breeze to follow</p>
+
+<p>Flic have developed a <a href="https://github.com/50ButtonsEach/fliclib-linux-hci">linux sdk</a> for working with the buttons, obviously aimed at developers, so you can extend the buttons further then using the smart phone apps. This is nice as instead of having to pair the buttons with your phone (which moves around all the time) you can create a dedicated devices in 1 place in the house to use and interact with flic.
+Anyway, some initial setup notes on connecting flic to C.H.I.P</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#update the chip</span>
+<span class="nb">sudo </span>apt-get update
+<span class="nb">sudo </span>apt-get upgrade
+
+<span class="c">#Install some useful things</span>
+
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>git
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>bash-completion screen
+
+<span class="c">#Clone the flic linux sdk</span>
+
+git clone https://github.com/50ButtonsEach/fliclib-linux-hci.git</code></pre></figure>
+
+<p>Now at this point I had no idea what to use to script up flic, but the SDK comes with some nice client librarys (and examples!) for C, Java, nodejs python and websocket. Out of this list, I have had the <a href="% post_url 2016-09-03-Counter-Strike-and-Pebble %">most experience with javascript lately</a>, so I chose Nodejs. So lets install nodejs and npm</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nb">install </span>nodejs npm</code></pre></figure>
+
+<p>So because I have an ISP that offers IPv6 too, I was running into an issue where <code class="highlighter-rouge">apt</code> was timing out connecting to a debian repository over IPv6, so I had to force <code class="highlighter-rouge">apt</code> to only use IPv4</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>apt-get <span class="nt">-o</span> Acquire::ForceIPv4<span class="o">=</span><span class="nb">true install </span>nodejs npm</code></pre></figure>
+
+<p>A weird thing you need to do for npm to make sure its up to date with the latest</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>npm <span class="nb">install</span> <span class="nt">-g</span> npm</code></pre></figure>
+
+<p>And we also need the http library for nodejs</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>npm <span class="nb">install</span> <span class="nt">-g</span> http</code></pre></figure>
+
+<p>Now we have all we to get things running! Just for now, we will start the server in a <code class="highlighter-rouge">screen</code> so we can see whats happening if needed. It also starts in daemon mode too, but we will use that one later to integrate with <code class="highlighter-rouge">systemd</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd </span>fliclib-linux-hci/bin/armv6l
+./flicd <span class="nt">-f</span> sqlite.db</code></pre></figure>
+
+<p>So the flic server will store all the information in needs into this sqlite db, make sure you have it in a safe location so you dont have to re-pair your buttons again!
+Now onto the client.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd </span>fliclib-linux-hci/clientlib/nodejs
+nodejs newscanwizard.js</code></pre></figure>
+
+<p>If you check your server <code class="highlighter-rouge">screen</code> it will also show that a “client” has connected to it</p>
+
+<p>Now press one of your buttons and watch some magic! Save that address of the button for later, we will now write up a small client to handle the buttons and make them do things when you press them</p>
+
+<p><code class="highlighter-rouge">vim nodejs-flic.js</code></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cp">#!/usr/bin/nodejs
+</span><span class="kd">var</span> <span class="nx">fliclib</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"/home/chip/Documents/fliclib-linux-hci/clientlib/nodejs/fliclibNodeJs"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">FlicClient</span> <span class="o">=</span> <span class="nx">fliclib</span><span class="p">.</span><span class="nx">FlicClient</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">FlicConnectionChannel</span> <span class="o">=</span> <span class="nx">fliclib</span><span class="p">.</span><span class="nx">FlicConnectionChannel</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">FlicScanner</span> <span class="o">=</span> <span class="nx">fliclib</span><span class="p">.</span><span class="nx">FlicScanner</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"http"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FlicClient</span><span class="p">(</span><span class="s2">"localhost"</span><span class="p">,</span> <span class="mi">5551</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">listenToButton</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">cc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FlicConnectionChannel</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">);</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">addConnectionChannel</span><span class="p">(</span><span class="nx">cc</span><span class="p">);</span>
+        <span class="c1">//There are other methods you can watch, but all I care about at the moment is what type of click just happened</span>
+        <span class="nx">cc</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"buttonSingleOrDoubleClickOrHold"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">clickType</span><span class="p">,</span> <span class="nx">wasQueued</span><span class="p">,</span> <span class="nx">timeDiff</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">bdAddr</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">clickType</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="p">(</span><span class="nx">wasQueued</span> <span class="p">?</span> <span class="s2">"wasQueued"</span> <span class="p">:</span> <span class="s2">"notQueued"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">timeDiff</span> <span class="o">+</span> <span class="s2">" seconds ago"</span><span class="p">);</span>
+                <span class="c1">//If statement to find out what button was pressed. Probably turn this into case to make it neater</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">bdAddr</span> <span class="o">===</span> <span class="s2">"ab:cd:ef:11:22:33"</span><span class="p">){</span>
+                        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Blue button"</span><span class="p">);</span>
+                        <span class="cm">/*Create http request to openhab API
+                        hostname: openhab server IP address
+                        port: openhab port (default 8080)
+                        path: Path to the item you wish to change.
+                        */</span>
+                        <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+                                    <span class="na">hostname</span><span class="p">:</span> <span class="s1">'1.2.3.4'</span><span class="p">,</span>
+                                    <span class="na">port</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span>
+                                    <span class="na">path</span><span class="p">:</span> <span class="s1">'/rest/items/all_off'</span><span class="p">,</span>
+                                    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span>
+                                    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+                                            <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'text/plain'</span>
+                                    <span class="p">},</span>
+                            <span class="p">};</span>
+                            <span class="kd">var</span> <span class="nx">req</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'STATUS:'</span> <span class="o">+</span> <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span><span class="p">);</span>
+                                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'HEADERS:'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">headers</span><span class="p">));</span>
+                                    <span class="nx">res</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">);</span>
+                                    <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'data'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+                                            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'BODY:'</span> <span class="o">+</span> <span class="nx">body</span><span class="p">);</span>
+                                    <span class="p">});</span>
+                                    <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                                            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'problem '</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span> <span class="p">);</span>
+                                    <span class="p">});</span>
+                            <span class="p">});</span>
+                        <span class="k">if</span><span class="p">(</span><span class="nx">clickType</span> <span class="o">===</span> <span class="s2">"ButtonSingleClick"</span><span class="p">){</span>
+                                <span class="c1">//On single click, send OFF to the openhab item</span>
+                                <span class="nx">req</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">"OFF"</span><span class="p">);</span>
+                                <span class="nx">req</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+                        <span class="p">}</span><span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">clickType</span> <span class="o">===</span> <span class="s2">"ButtonDoubleClick"</span><span class="p">){</span>
+                                <span class="c1">//On double click, send ON to the openhab item</span>
+                                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"doubelclick"</span><span class="p">);</span>
+                                <span class="nx">req</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">"ON"</span><span class="p">);</span>
+                                <span class="nx">req</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+                        <span class="p">}</span><span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">clickType</span> <span class="o">===</span> <span class="s2">"ButtonHold"</span><span class="p">){</span>
+                                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"hold"</span><span class="p">);</span>
+                        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+                                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Something Wrong"</span><span class="p">);</span>
+                        <span class="p">}</span>
+                <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="nx">cc</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"connectionStatusChanged"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">connectionStatus</span><span class="p">,</span> <span class="nx">disconnectReason</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">bdAddr</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">connectionStatus</span> <span class="o">+</span> <span class="p">(</span><span class="nx">connectionStatus</span> <span class="o">==</span> <span class="s2">"Disconnected"</span> <span class="p">?</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">disconnectReason</span> <span class="p">:</span> <span class="s2">""</span><span class="p">));</span>
+        <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span><span class="s2">"ready"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Connected to daemon!"</span><span class="p">);</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">getInfo</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">info</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">info</span><span class="p">.</span><span class="nx">bdAddrOfVerifiedButtons</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">listenToButton</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">);</span>
+                <span class="p">});</span>
+        <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"bluetoothControllerStateChange"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Bluetooth controller state change: "</span> <span class="o">+</span> <span class="nx">state</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"newVerifiedButton"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"A new button was added: "</span> <span class="o">+</span> <span class="nx">bdAddr</span><span class="p">);</span>
+        <span class="nx">listenToButton</span><span class="p">(</span><span class="nx">bdAddr</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Daemon connection error: "</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"close"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">hadError</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Connection to daemon is now closed"</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>As you can see in my terribly coded example, we are watching for a button press, and when a button press happens, we find out which button it was, what sort of press it was, and do an action. So in those gaps you can do anything you want! In my case I am just hitting the openhab rest API to action the items I have connected to openhab. This is where the SDK is nice, you can do anything you want here!</p>
+
+<p>You may notice here that I only specify 1 openhab item that I am changing the state of. This is because I am doing the rest of the work via the openhab rules engine. The item in openhab is just a switch, that binds to nothing. The entry in <code class="highlighter-rouge">default.items</code> looks like this <code class="highlighter-rouge">Switch all_off  "All Off"</code> You can also add this as a switch item to your sitemap, so you can run the rule below from the openhab UI. Here is the rule that handles this blue button (all_off item)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#/etc/openhab/configuration/rules/flic.rules</span>
+import org.openhab.core.library.types.<span class="k">*</span>
+
+rule <span class="s2">"All off"</span>
+when
+        Item all_off received <span class="nb">command </span>OFF
+<span class="k">then
+        </span>sendCommand<span class="o">(</span>L_light, 0<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>K_light, OFF<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>E_light, OFF<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>H_light, OFF<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>B_light, OFF<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>BT_light, OFF<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+end
+
+rule <span class="s2">"Home on"</span>
+when
+        Item all_off received <span class="nb">command </span>ON
+<span class="k">then
+        </span>sendCommand<span class="o">(</span>K_light, ON<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>L_light, 100<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>BT_light, ON<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+        sendCommand<span class="o">(</span>K_light_dim, 100<span class="o">)</span>
+        Thread::sleep<span class="o">(</span>500<span class="o">)</span>
+end</code></pre></figure>
+
+<p>I have all these sleep commands in here, as I found that having the commands run directly after one another did not work well with milight, so adding a small delay made sure each one runs successfully and the milight bridge actually gets the command</p>
+
+<p>Now that we have a nice peiece of code that handles our buttons and actions, I didn’t want these to be running in <code class="highlighter-rouge">screen</code> sessions. you know, in case of an outage or similar, I didnt want to have to ssh into C.H.I.P to start everything back up again. <code class="highlighter-rouge">systemd</code> is nice here. We can write some stuff in a file so <code class="highlighter-rouge">systemd</code> can handle running the code as a service for us, just like any other daemon you have installed.</p>
+
+<p><code class="highlighter-rouge">vim flic.service</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Flic and openhab
+
+<span class="o">[</span>Service]
+<span class="nv">ExecStart</span><span class="o">=</span>/home/chip/Documents/fliclib-linux-hci/clientlib/nodejs/nodejs-flic.js
+<span class="nv">Restart</span><span class="o">=</span>always
+<span class="nv">User</span><span class="o">=</span>root
+<span class="nv">Group</span><span class="o">=</span>root
+<span class="nv">Environment</span><span class="o">=</span><span class="nv">PATH</span><span class="o">=</span>/usr/bin:/usr/local/bin
+<span class="nv">Environment</span><span class="o">=</span><span class="nv">NODE_ENV</span><span class="o">=</span>production
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/home/chip/Documents/fliclib-linux-hci/clientlib/nodejs/
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target</code></pre></figure>
+
+<p>Make sure you change the user here, and make the <code class="highlighter-rouge">.js</code> file executable! I did not, and had some errors.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">chmod</span> +x /home/chip/Documents/fliclib-linux-hci/clientlib/nodejs/nodejs-flic.js</code></pre></figure>
+
+<p>Now copy it to where systemd exects these files</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo cp </span>flic.service /etc/systemd/system/</code></pre></figure>
+
+<p>Start it</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>systemctl start flic.service</code></pre></figure>
+
+<p>check logs</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>journalctl <span class="nt">-fa</span> <span class="nt">-u</span> flic.service</code></pre></figure>
+
+<p>This acts like <code class="highlighter-rouge">tail -f</code> on the log file. Now its running under <code class="highlighter-rouge">systemd</code> you can add this service to start at startup, and manage it using the <code class="highlighter-rouge">systemctl</code> command. Now we just do a similar thing to make the flic daemon managed by <code class="highlighter-rouge">systemd</code></p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

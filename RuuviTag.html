@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>RuuviTag</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>RuuviTag</h2>		
+	<time datetime="2017-04-19T09:00:00+10:00" class="by-line">19 Apr 2017 - <span class="read-time" title="Estimated read time">
+  
+  
+    14 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs</p>
+
+<p>So battery powered BLE temperature sensor, that runs javascript, and a raspberry pi 3 that is running openhab. Pretty much a perfect mix. Here is how I got them talking to each other</p>
+
+<p>You may be looking at the RuuviTag setup page and see that the default weather station firmware actually works for both RuuviTags. At the time of getting my Ruuvi, it only supported the RuuvTag+, so I looked at using the espruino firmware to get what I needed to work.</p>
+
+<h2 id="ruuvi">Ruuvi</h2>
+
+<ul>
+  <li>Following the instructions <a href="https://ruu.vi/setup/#updating-the-firmware">here</a> we need to flash the espruino firmware to ruuvi. Quick overview, but the video they have here is quite good
+    <ul>
+      <li>Download nRF connect app</li>
+      <li>Put Ruuvi into boot mode (hold R + B, let go of R while still holding B until red light comes and stays on)</li>
+      <li>Connect to the ruuvi with nRF connect</li>
+      <li>Press the “DFU” button that comes up in the app once you are connected, and select the espruino firmware zip file</li>
+      <li>wait a little while</li>
+    </ul>
+  </li>
+  <li>Now follow the instructions <a href="http://www.espruino.com/Puck.js+Quick+Start">here</a> to get the IDE up and running to connect to Ruuvi</li>
+  <li>Once you are able to get into the IDE and connect to ruuvi, upload this little snippet. Essentially it gathers the temp data every 60 seconds, converts it to a uint8 array, and then advertises it over BLE
+    <ul>
+      <li>after following <a href="https://www.espruino.com/Ruuvitag">this</a> guide, you may be asking why I’m not using the ruuvitag package to get all the data <code class="highlighter-rouge">var Ruuvitag = require("Ruuvitag");</code>. It seems that this package does not work with the RuuviTag basic. I need to raise this on the forums to see when it will be supported. But for now we can just use the code you would use for the puck.js on the ruuvi, and it does the same job</li>
+      <li>Links to the espruino forum that helped me get this working <a href="http://forum.espruino.com/conversations/297509/">one</a>, <a href="http://forum.espruino.com/conversations/298878/">two</a>, <a href="http://forum.espruino.com/conversations/297591/?offset=25">three</a></li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="code"><pre><span class="kd">function</span> <span class="nx">tempTo</span><span class="p">(</span><span class="nx">temp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">temp</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint8Array</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+  <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">tempTo</span><span class="p">.</span><span class="nx">buf</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">E</span><span class="p">.</span><span class="nx">getTemperature</span><span class="p">());</span>
+<span class="p">},</span><span class="mi">60000</span><span class="p">);</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">NRF</span><span class="p">.</span><span class="nx">setAdvertising</span><span class="p">({</span>
+    <span class="mh">0x1809</span> <span class="p">:</span> <span class="nx">tempTo</span><span class="p">(</span><span class="nx">E</span><span class="p">.</span><span class="nx">getTemperature</span><span class="p">())</span>
+  <span class="p">});</span>
+<span class="p">},</span> <span class="mi">60000</span><span class="p">);</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<h2 id="raspberrypi-3">RaspberryPi 3</h2>
+
+<p>Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the <a href="https://f.ruuvi.com/">ruuvi forums</a> there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like <a href="https://github.com/espruino/EspruinoHub">this</a>. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon)
+It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again.</p>
+
+<h4 id="setup">Setup</h4>
+<ul>
+  <li>So firstly during my trials, and some help from the Ruuvi Slack channel, we need to upgrade the version of bluez that is on the raspberry pi to the latest. There is apparently an issue in 5.23 that was causing me some grief.</li>
+  <li>First lets install all the dependancies we will need <code class="highlighter-rouge">sudo apt-get install bluetooth bluez bluez-hcidump libbluetooth-dev libudev-dev</code></li>
+  <li>Add the stretch repo (with the newer bluez versions) to apt source list
+    <ul>
+      <li><code class="highlighter-rouge">sudo vim /etc/apt/sources.list</code> -&gt; add <code class="highlighter-rouge">deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi</code></li>
+      <li><code class="highlighter-rouge">sudo vim /etc/apt/apt.conf.d/40defaultrelease</code> -&gt; add <code class="highlighter-rouge">APT::Default-Release "jessie";</code></li>
+    </ul>
+  </li>
+  <li>Update package list <code class="highlighter-rouge">sudo apt-get update</code></li>
+  <li>Upgrade bluez using the strech repo <code class="highlighter-rouge">sudo apt-get install bluez bluez-hcidump -t stretch</code></li>
+  <li>Now we need node. I’m going to install the latest, but the LTS version works great too
+    <ul>
+      <li><code class="highlighter-rouge">curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -</code></li>
+      <li><code class="highlighter-rouge">sudo apt-get install nodejs npm</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>So before we go any further, lets do some testing. We can use the tools from the <code class="highlighter-rouge">bluez</code> package to scan BLE and see what data we can find</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>hcitool lescan
+LE Scan ...
+CE:A2:59:0E:85:C2 RuuviTag 85c2
+CE:A2:59:0E:85:C2 <span class="o">(</span>unknown<span class="o">)</span></code></pre></figure>
+
+<p>Cool, we can see ruuvi in the scan! No lets see what data ruuvi is giving us</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>hcitool lescan &amp; <span class="nb">sudo </span>hcidump <span class="nt">--raw</span>
+<span class="o">[</span>1] 18782
+LE Scan ...
+HCI sniffer - Bluetooth packet analyzer ver 5.43
+device: hci0 snap_len: 1500 filter: 0xffffffff
+CE:A2:59:0E:85:C2 RuuviTag 85c2
+<span class="o">&gt;</span> 04 3E 24 02 01 00 01 C2 85 0E 59 A2 CE 18 02 01 05 05 16 09
+  18 46 05 0E 09 52 75 75 76 69 54 61 67 20 38 35 63 32 AC
+CE:A2:59:0E:85:C2 <span class="o">(</span>unknown<span class="o">)</span>
+<span class="o">&gt;</span> 04 3E 1E 02 01 04 01 C2 85 0E 59 A2 CE 12 11 07 9E CA DC 24
+  0E E5 A9 E0 93 F3 A3 B5 01 00 40 6E AC</code></pre></figure>
+
+<p>Pretty neat, we can see a raw stream of hex data that the RuuviTag is giving out. Lets try again with the <code class="highlighter-rouge">-x</code> flag (show ascii and hex data)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>hcitool lescan &amp; <span class="nb">sudo </span>hcidump <span class="nt">-x</span>
+HCI sniffer - Bluetooth packet analyzer ver 5.23
+device: hci1 snap_len: 1500 filter: 0xffffffff
+<span class="o">&gt;</span> HCI Event: LE Meta Event <span class="o">(</span>0x3e<span class="o">)</span> plen 36
+    LE Advertising Report
+      ADV_IND - Connectable undirected advertising <span class="o">(</span>0<span class="o">)</span>
+      bdaddr CE:A2:59:0E:85:C2 <span class="o">(</span>Random<span class="o">)</span>
+      Flags: 0x05
+      Unknown <span class="nb">type </span>0x16 with 4 bytes data
+      Complete <span class="nb">local </span>name: <span class="s1">'RuuviTag 85c2'</span>
+      RSSI: <span class="nt">-77</span></code></pre></figure>
+
+<p>More interesting things happening. We can see the name of the tag, its MAC address and RSI. Unforuntely we can’t see the data its advertising. I haven’t been able to find out how to do that just with <code class="highlighter-rouge">hcidump</code> but we will now turn to some javascript to get this info!</p>
+
+<ul>
+  <li>Lets install some node dependacies we will need for this. <code class="highlighter-rouge">npm install noble mqtt</code>
+    <ul>
+      <li>The <a href="https://github.com/sandeepmistry/noble">noble module</a> is pretty much where all the work happens, and we will just need the mqtt module to send messages to our openhab server</li>
+    </ul>
+  </li>
+  <li>I have also borrowed a few bits of code out of the EspruinoHub project, this made my life alot easier. We needed the config.js and attributes.js files out of the <a href="https://github.com/espruino/EspruinoHub/tree/master/lib">lib</a> folder</li>
+  <li>And here is <code class="highlighter-rouge">index.js</code>, that does the scanning and prints the data. Its still a bit of work in progress at the moment, but does exactly what I need. Although I do not have multiple RuuviTags, this solution <em>should</em> work just fine for mulitple tags.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+</pre></td><td class="code"><pre><span class="kd">var</span> <span class="nx">noble</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'noble'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">attributes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./attribute'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./config'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">mqtt</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'mqtt'</span><span class="p">);</span>
+<span class="c1">// my mqtt server needs some authentication, if you dont, you can just remove that object</span>
+<span class="kd">var</span> <span class="nx">client</span>  <span class="o">=</span> <span class="nx">mqtt</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s1">'mqtt://10.1.1.115'</span><span class="p">,</span> <span class="p">{</span> <span class="na">username</span><span class="p">:</span> <span class="s1">'Username'</span><span class="p">,</span> <span class="na">password</span><span class="p">:</span> <span class="s1">'Password'</span> <span class="p">})</span>
+<span class="kd">var</span> <span class="nx">connected</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">inRange</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">packetsReceived</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lastPacketsReceived</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">isScanning</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'stateChange'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">'poweredOn'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">startScanning</span><span class="p">([],</span> <span class="kc">true</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">noble</span><span class="p">.</span><span class="nx">stopScanning</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">connected</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">noble</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'discover'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">peripheral</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">packetsReceived</span><span class="o">++</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">addr</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">address</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">addr</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">config</span><span class="p">.</span><span class="nx">known_devices</span><span class="p">)</span>
+    <span class="nx">id</span> <span class="o">=</span> <span class="nx">config</span><span class="p">.</span><span class="nx">known_devices</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+  <span class="kd">var</span> <span class="nx">entered</span> <span class="o">=</span> <span class="o">!</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">];</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">entered</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">id</span> <span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+      <span class="na">address</span> <span class="p">:</span> <span class="nx">addr</span><span class="p">,</span>
+      <span class="na">peripheral</span><span class="p">:</span> <span class="nx">peripheral</span><span class="p">,</span>
+      <span class="na">name</span> <span class="p">:</span> <span class="s2">"?"</span><span class="p">,</span>
+      <span class="na">data</span> <span class="p">:</span> <span class="p">{}</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+  <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">lastSeen</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+  <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">rssi</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">rssi</span><span class="p">;</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'hello my local name is:'</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">t'</span> <span class="o">+</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">localName</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">serviceData</span> <span class="o">=</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">serviceData</span><span class="p">;</span>
+  <span class="c1">//If the advertising BLE device has any service data, then lets loop throught it and find out what it is</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">serviceData</span> <span class="o">&amp;&amp;</span> <span class="nx">serviceData</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">serviceData</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//If statement to limit the outgoing mqtt stream. We are checking to see if the device is already in our array we made above, and if it hasnt been seen in 60s, and that data hasnt changed</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">].</span><span class="nx">payload</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">].</span><span class="nx">time</span> <span class="o">&gt;</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="o">-</span><span class="mi">60000</span><span class="p">){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"waiting...."</span><span class="p">);</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+          <span class="c1">//Bit of debugging here so we can see whats going on</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">t</span><span class="err">\</span><span class="s1">t'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">)</span> <span class="o">+</span> <span class="s1">': '</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">'hex'</span><span class="p">)));</span>
+      <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">.</span><span class="nx">getReadableAttributeName</span><span class="p">(</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">decodeAttribute</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">))</span><span class="o">+</span><span class="s2">"</span><span class="err">\</span><span class="s2">n"</span><span class="p">);</span>
+      <span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">data</span><span class="p">[</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="na">payload</span> <span class="p">:</span> <span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="na">time</span> <span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="p">};</span>
+      <span class="kd">var</span> <span class="nx">extendedData</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">.</span><span class="nx">decodeAttribute</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="nx">serviceData</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">);</span>
+      <span class="c1">//Can only sent mqtt if its actually connected, so if connected send data. We are only sending the temp number, not the whole json string which looks like { "temp": 20 } in debug messages above</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">connected</span> <span class="o">&amp;&amp;</span> <span class="nx">extendedData</span><span class="p">.</span><span class="nx">temp</span><span class="p">)</span> <span class="nx">client</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="nx">inRange</span><span class="p">[</span><span class="nx">addr</span><span class="p">].</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span><span class="s1">'/temp'</span><span class="p">,</span> <span class="nx">extendedData</span><span class="p">.</span><span class="nx">temp</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+    <span class="p">}</span>
+   <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">manufacturerData</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">there is my manufacturer data:'</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">t</span><span class="err">\</span><span class="s1">t'</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">manufacturerData</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">'hex'</span><span class="p">)));</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">txPowerLevel</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">tmy TX power level is:'</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'</span><span class="err">\</span><span class="s1">t</span><span class="err">\</span><span class="s1">t'</span> <span class="o">+</span> <span class="nx">peripheral</span><span class="p">.</span><span class="nx">advertisement</span><span class="p">.</span><span class="nx">txPowerLevel</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">();</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>If you go ahead and run this, <code class="highlighter-rouge">nodejs index.js</code> you will see somethings being printed out to console. Once it picks up Ruuvi, it should tell you the temperature now!</p>
+<ul>
+  <li>The script is set to only re-send data on change, or ever 60 seconds. This is just so mqtt isn’t flooded with messages</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+                <span class="s2">"1809"</span>: <span class="s2">"0807"</span>
+<span class="o">{</span><span class="s2">"temp"</span>:18<span class="o">}</span>
+
+
+hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+waiting....
+
+hello my <span class="nb">local </span>name is:
+        RuuviTag 85c2
+waiting....
+
+hello my <span class="nb">local </span>name is:
+        f022cXhN
+        here is my manufacturer data:
+                <span class="s2">"0f03000276064ef39800d605020000dae480"</span></code></pre></figure>
+
+<p>Now lets go over to openhab, and makde sure its ready to receive some data</p>
+<ul>
+  <li>Pre-requisites for this is obviously having mqtt biniding installed and working</li>
+  <li><code class="highlighter-rouge">vim /etc/openhab2/items/ruuvi.items</code></li>
+  <li>Add something like this - <code class="highlighter-rouge">Number ruuvi "RuuviTag [%.2f C]" (climate) {mqtt="&lt;[mosq:cea2590e85c2/temp:state:default]"}</code>
+    <ul>
+      <li>So the node script is publishing to a mqtt topic by the ruuvitag ID, which is just the tag’s MAC address without any <code class="highlighter-rouge">:</code></li>
+    </ul>
+  </li>
+  <li>While you have the node script running, tail the openhab log to make sure things are working. <code class="highlighter-rouge">tail -f /var/log/openhab2/events.log</code></li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">2017-04-20 15:17:12.992 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeBlockedAds changed from 665 to 674
+2017-04-20 15:19:42.802 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18 to 18.25
+2017-04-20 15:20:43.626 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18.25 to 18.5
+2017-04-20 15:21:42.921 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - ruuvi changed from 18.5 to 18
+2017-04-20 15:22:16.388 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeQueries changed from 14852 to 15265
+2017-04-20 15:22:16.397 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholePercent changed from 4.5381093455427 to 4.5070422535211
+2017-04-20 15:22:16.401 <span class="o">[</span>ItemStateChangedEvent     <span class="o">]</span> - piholeBlockedAds changed from 674 to 688</code></pre></figure>
+
+<p>Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap</p>
+
+<p><img src="http://www.mrwhal3.com//img/ruuvi.png" alt="Ruuvitag chart" /></p>
+
+<p>So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a <code class="highlighter-rouge">screen</code> or something funky like that. Just put this into <code class="highlighter-rouge">/etc/systemd/system/ruuvi.service</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Ruuvi-Scanner
+
+<span class="o">[</span>Service]
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/bin/node index.js
+<span class="nv">Restart</span><span class="o">=</span>always
+<span class="nv">User</span><span class="o">=</span>pi
+<span class="nv">Group</span><span class="o">=</span>pi
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/home/pi/ruuvi
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target</code></pre></figure>
+
+<p>Now you can start and stop it with <code class="highlighter-rouge">systemctl</code></p>
+
+<p>So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room!</p>
+
+<p>I will also upload the files to github, so you can just download it from there too..</p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

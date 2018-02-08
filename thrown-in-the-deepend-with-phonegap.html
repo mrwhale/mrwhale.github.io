@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>building phonegap app for Android and iOS</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>building phonegap app for Android and iOS</h2>		
+	<time datetime="2016-10-13T10:00:00+11:00" class="by-line">13 Oct 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So I had the <del>pleasure</del> of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too</p>
+
+<p>So I had downloaded the repo, installed all the dependacies, but now I was getting this error</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ERROR <span class="k">in</span> ./src/routes/index.jsx
+ 
+Module not found: Error: Cannot resolve <span class="s1">'file'</span> or <span class="s1">'directory'</span> ./searchByKeyword <span class="k">in</span> /home/harry/Documents/work/repositories/ita-app/src/routes</code></pre></figure>
+
+<p>Spent some time looking at Google, when I came across this suggestion to use webpack to display more verbose errors <code class="highlighter-rouge">webpack --display-error-details</code>. Genius.</p>
+
+<p>This gave some more verbose output and told me that it was searching for the file, but could not find it in some directories, this helped me realise it was case sensative. The file it was looking for had a capital <code class="highlighter-rouge">S</code>, but it was looking for lower case <code class="highlighter-rouge">s</code>. Changing the name of the file to lowercase and rebuild</p>
+
+<p>And another error, but on index.jsx file this time.  Not sure why it only errored on these 2 files, probably something in the config files but I didn’t rally want to be looking through config files all day (there were alot!)
+Do the same and rename to lower. And now we get a successful build! Yay!</p>
+
+<p>The previous dev had done this on OSX but not sure why this was an issue on Linux(can understand if it was done on windows, for example)</p>
+
+<p>So now we have an Android apk, but to upload it to the store it needs to be signed (and later on it told me it also has to be zipaligned)</p>
+
+<p>Here is how to do that with command line</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#Sign the app with jarsigner (should have been installed along with android studio)</span>
+jarsigner <span class="nt">-verbose</span> <span class="nt">-sigalg</span> SHA1withRSA <span class="nt">-digestalg</span> SHA1 <span class="nt">-keystore</span> /home/george/Documents/repositories/myapp/key/myapp.keystore android-x86-release-unsigned.apk myapp</code></pre></figure>
+
+<p>Uh oh, another error</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jarsigner: Certificate chain not found for: myapp.  myapp must reference a valid KeyStore key entry containing a private key and corresponding public key certificate chain.
+</code></pre></div></div>
+
+<p>Turns out you have to specify the exact alias that is found inside the keystore with the jarsigner command. To get that, run</p>
+
+<p><code class="highlighter-rouge">keytool -keystore /home/george/Documents/repositories/myapp/key/myapp.keystore -l</code></p>
+
+<p>That will display something similar to this, where you can see the alias name. Now re run <code class="highlighter-rouge">jarsigner</code> with the correct alias and you will have a great time</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+Alias name: myapp-release
+......
+</code></pre></div></div>
+
+<p>Now we have a signed apk, but on uplaoding to the store, it errors and tells me its not zip aligned. Luckily this one was easy.
+<code class="highlighter-rouge">/home/george/Android/Sdk/build-tools/24.0.3/zipalign -v 4 android-x86-release-signed.apk android-release-signed-aligned.apk</code></p>
+
+<p><em>NOTE</em> only zip align after you have signed</p>
+
+<p>Android down, iOS to go!</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

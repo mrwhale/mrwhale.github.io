@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Owncloud</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Owncloud</h2>		
+	<time datetime="2016-04-05T10:00:00+10:00" class="by-line">05 Apr 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So I set this up a while ago, but thought I’d share it here anyway. I was looking to find a self hosted dropbox/google drive alternative. As I am starting down the path of getting things self hosted, so my data is still my data and all that. There were 2 choices with this, that would run on the raspberrypi: Owncloud, or seafile</p>
+
+<p>Seafile looked nice, and the core of it is written in C, so to me that would work well on the pi as it would be super lightweight and fast. I went for this originally, but had major issues trying to set it up for remote access</p>
+
+<p>Thats where <a href="https://owncloud.org">Owncloud</a> came to save that day! its written in php (my fav) so was super simple to setup, and get working for remote access. It was also easy to get it working on a external hard drive if need be.</p>
+
+<p>Another cool thing about it is that there a many “Apps” to go with it, so you can turn a simple file sync and share service into something that can handle your calendar, notes, passwords, mail client, rss feed agregator. Replacing pretty much all your 3rd part services, all self hosted</p>
+
+<p>Follow <a href="https://doc.owncloud.org/server/9.0/admin_manual/installation/">these</a> to get things setup. There are alot of things you can do around security which these instructions go into. Basic setup includes:</p>
+
+<ol>
+  <li>download and unpack</li>
+  <li>change ownership of files to prefered user (www-data)</li>
+  <li>create database for owncloud use</li>
+  <li>Go to owncloud URL in a browser and follow the install wizard</li>
+</ol>
+
+<p>Once setup, download the client where ever you like (mobile app, windows, mac, linux) and connect up to your instance.</p>
+
+<p>Some things to consider running this on a raspberry pi, it isn’t exactly powerful enough to be able to browse images or anything too heavy via the webclient (or the mobile client for that matter, as it downloads things as needed) But it is perfectly fine if you have a few clients hooked up and let things sync in the background. I have 3gb of photo’s up on mine and have auto-upload enabled on the mobile client and everything syncs nicely between my 2 PC’s and laptop. I also use <a href="http://www.qownnotes.org">QOwnNotes</a> to sync my markdown notes around my devices.</p>
+
+<p>The plan will be to merge everything into Owncloud, my password management, RSS feed agregator and calendar (move away from feedly, google calendar and 1password) so all my things are actually owned by me! More on those when they happen</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

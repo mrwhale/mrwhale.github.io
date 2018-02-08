@@ -1,1 +1,2 @@
-The repo for my blog. See blog.mrwhal3.com (mrwhale.github.io)
+## About
+website for mrwhal3.com built with jekyll using monocrome theme

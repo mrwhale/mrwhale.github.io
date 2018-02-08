@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Upgrading SD on the Raspberry Pi</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Upgrading SD on the Raspberry Pi</h2>		
+	<time datetime="2016-10-26T10:00:00+11:00" class="by-line">26 Oct 2016 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>I’ve been running my Raspberry Pi (V2) for almost a year and a half on a 16gb SD card, but because I run owncloud on the pi, I’ve been slowly running out of space. I know I can just add a usb drive or have owncloud store the data on an attached NAS or something, but I chose to just store everything on the SD card. Just so everything is in the one place. Anyway, I finally got around to purchasing a 32GB card, to upgrade the pi. I didn’t want to start from scratch and re-install everything from a backup, so I did a bit of searching in the raspberry pi forums, and found you can easily upgrade the SD card. And it turns out it was <em>very</em> easy. All you need is another machine (I used GNU/Linux here) and a SD card reader (which you probably have if you have a pi)</p>
+
+<p>So here are the few steps I took to upgrade the SD in the Pi, retaining the whole OS and everything I had installed on it.</p>
+
+<ul>
+  <li>Safely power off the pi
+    <ul>
+      <li>Wait about 60-90 seconds while things power off completely. You shouldn’t see the green activity led flicker anymore once its fully shut down</li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nb">sudo </span>poweroff </code></pre></figure>
+
+<ul>
+  <li>Get the SD card and plug into your other machine, making sure you un-mount it if it automounts</li>
+  <li>Find out where the sd card is
+    <ul>
+      <li>Look for your SD card in the list and note its location, for me this was <code class="highlighter-rouge">/dev/sdd</code></li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo </span>fdisk <span class="nt">-l</span></code></pre></figure>
+
+<ul>
+  <li>Take an image of the SD card with dd. This will take quite a long time, it took around 30 minutes for me, for 16gb. You can speed this up, at the risk of corruption
+    <ul>
+      <li>the <code class="highlighter-rouge">status=progress</code> is just a nice way to see how things are going without using the <code class="highlighter-rouge">pkill</code> trick</li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo dd </span><span class="nv">status</span><span class="o">=</span>progress <span class="k">if</span><span class="o">=</span>/dev/sdd <span class="nv">of</span><span class="o">=</span>/home/george/rpi-16gb.img</code></pre></figure>
+
+<ul>
+  <li>Once this is complete, <code class="highlighter-rouge">sync</code> and unmount the drive. Plug in the larger SD card now</li>
+  <li>Again, find out where its located <code class="highlighter-rouge">sudo fdisk -l</code></li>
+  <li>Using <code class="highlighter-rouge">dd</code>, lets write the image to the new disk
+    <ul>
+      <li>Notice here I use a larger block size when writing to the image, this makes it alot quicker, and is fairly safe to do. If it doesn’t work for you, decrease this to <code class="highlighter-rouge">1M</code>. This will take alot longer</li>
+    </ul>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">sudo dd </span><span class="nv">status</span><span class="o">=</span>progress <span class="nv">bs</span><span class="o">=</span>4M <span class="k">if</span><span class="o">=</span>/home/george/rpi-16gb.img <span class="nv">of</span><span class="o">=</span>/dev/sdd</code></pre></figure>
+
+<ul>
+  <li>Now we have the old image on a new SD card, time to plug it in and boot up the pi</li>
+  <li>Wait the usualy amount of time and ssh into your Pi. You should notice that nothing has changed. It even still thinks its on a 16gb sd card. Have a look at <code class="highlighter-rouge">df -h</code>. We will fix that next</li>
+  <li>Run the <code class="highlighter-rouge">raspi-config</code> tool, and choose the first option - <code class="highlighter-rouge">Expand filesystem</code>
+    <ul>
+      <li>wait some time and it will do its thing to expand the file system magically for you. Once its done, it will prompt you to reboot. Do this</li>
+    </ul>
+  </li>
+  <li>ssh back in and check out <code class="highlighter-rouge">df -h</code> you should see now it can see the rest of the new SD card!</li>
+</ul>
+
+<p>These are the steps that worked for me, and it worked first time. You may or may not find that this works straigh away. If it doesn’t, plug the HDMI in and see if there is anything strange happening at boot time, also try plugging your original SD card in and make sure that boots. If it doesn’t, you will find the image that you took of it will have the same issue (so the new one won’t boot). If it does though, try taking another <code class="highlighter-rouge">dd</code> copy of it, and checksum it against the one you took in step 4, the checksum should come back the same</p>
+
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>
