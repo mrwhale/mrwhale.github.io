@@ -18,7 +18,22 @@
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="img/favicon.png">
-
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+			google_ad_client: "ca-pub-7736525253699078",
+			enable_page_level_ads: true
+		});
+	</script>
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	
+		ga('create', 'UA-43857428-3', 'auto');
+		ga('send', 'pageview');
+	
+	</script>
 </head>
 
 
@@ -197,7 +212,7 @@ s
 <h1 id="dashboard">Dashboard</h1>
 <p>So a year or so ago, I stumbled upon <a href="https://dashing.io">Dashing</a>. At the time I used this awesome framework to build a dashboard for home, so I could view/control my automated home from a wall mounted tablet in style. Very out of date, but see <a href="https://github.com/mrwhale/dashboard">home dashboard</a></p>
 
-<p>This took a bit of tinkering to get it to display things how I wanted, and I had to learn some ruby along the way, but all part of the fun. <img src="http://www.mrwhal3.com//img/dashboard.png" alt="work dashboard" /></p>
+<p>This took a bit of tinkering to get it to display things how I wanted, and I had to learn some ruby along the way, but all part of the fun. <img src="http://localhost:4000/img/dashboard.png" alt="work dashboard" /></p>
 
 <p>To get things setup</p>
 
@@ -385,7 +400,7 @@ s
   <span class="k">end</span>
 <span class="k">end</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>And for weather info I used this <a href="https://gist.github.com/kostasdizas/8c45637dee3b1bf27e6a">forecast.io</a> dashing widget for the weather. Previously, in my home dashboard, I had used the <a href="https://gist.github.com/ysim/6768311">verbinski</a> widget, so I attempted to incorporate that initially. But I didn’t want the default of 3 columns of weather (Today, Tomorrow and weekly) and tried to change it to only be todays weather. It worked, but I wasnt able to make it match the rest of the tiles on the dashboard, and ended up looking out of place <img src="http://www.mrwhal3.com//img/failweather.png" alt="fail whale front end" /></p>
+<p>And for weather info I used this <a href="https://gist.github.com/kostasdizas/8c45637dee3b1bf27e6a">forecast.io</a> dashing widget for the weather. Previously, in my home dashboard, I had used the <a href="https://gist.github.com/ysim/6768311">verbinski</a> widget, so I attempted to incorporate that initially. But I didn’t want the default of 3 columns of weather (Today, Tomorrow and weekly) and tried to change it to only be todays weather. It worked, but I wasnt able to make it match the rest of the tiles on the dashboard, and ended up looking out of place <img src="http://localhost:4000/img/failweather.png" alt="fail whale front end" /></p>
 
 <h4 id="getting-calendar-info-into-the-dashboard">Getting calendar info into the dashboard</h4>
 <p>So because we use google calendars here (we utilise a shared calendar for leave/remote) I was able to leverage the library’s Google has created to get this info. They do have a ruby library for this, but first go I was unable to get it working (needed a new version of Ruby) So I defaulted back to use the PHP library</p>
@@ -625,7 +640,7 @@ The plan was to buy some raspberry pi’s and attach them to the TV, so we could
 	  </div>
 	    
 	    <!-- Footer -->
-	    <footer><span>&copy; 2018 Mrwhale</span></footer>
+	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="http://blog.mrwhal3.com/atom.xml" class="social-link-item"><img src=/img/rss.png/></a></span></footer>
 
 
 	    <!-- Script -->
