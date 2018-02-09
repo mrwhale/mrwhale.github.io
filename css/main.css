@@ -707,3 +707,5 @@ footer {
 
 /* Literal.Number.Integer.Long */
 /*- Custom style -*/
+pre {
+  overflow-x: scroll; }

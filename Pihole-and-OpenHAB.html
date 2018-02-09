@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>PiHole and OpenHAB</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+			google_ad_client: "ca-pub-7736525253699078",
+			enable_page_level_ads: true
+		});
+	</script>
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	
+		ga('create', 'UA-43857428-3', 'auto');
+		ga('send', 'pageview');
+	
+	</script>
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>PiHole and OpenHAB</h2>		
+	<time datetime="2018-02-08T10:00:00+11:00" class="by-line">08 Feb 2018 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>Recently I installed <a href="https://pi-hole.net/">pihole</a> on my network because I was sick of ads, and wanted an added layer of security on my network against nasty malware and the like</p>
+
+<p>There are plenty of install guides out there for pihole (see official website) so thats not what I am covering today. I installed this on a raspberry pi 1 (Model B) and it handles everything just fine!</p>
+
+<p>Becauase I am a fan of home automation, I wanted all the data that is available in the piHole web interface, avaialable to me at my openHAB interface. You know, so everything is all in the one place. Thankfully this was super easy because piHole has a simple API that you can extract this data from. This also allows you to temporailty disable piHole. Which is useful when your wife wants to clicks ads anyway, or if you know piHole is causing mischef with a particular website</p>
+
+<h4 id="pihole">piHole</h4>
+<ul>
+  <li>We need to first make sure that the webpassword is set in the piHole config. This will be used to authenticate against the API (I beleive you can turn this off if you desire)</li>
+</ul>
+
+<p><code class="highlighter-rouge">$ cat /etc/pihole/setupVars.conf</code></p>
+
+<p>Look for the line <code class="highlighter-rouge">WEBPASSWORD</code></p>
+
+<p>If its not set, then set it by adding a line in the config file, making up a random string</p>
+
+<h4 id="openhab">OpenHAB</h4>
+<p>Now lets make some items in openhab to capture the data we want, and an entry in the sitemap to display it</p>
+<ul>
+  <li><code class="highlighter-rouge">$ sudo vim /etc/openhab2/services/http.cfg</code> Set up a regular http call as a service, so it will go ahead a poll the API every so often. This is also useful because you can use this service against as many items as you want, reducing the amount of API calls you do to only as many as this service does.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre>http:pihole.url<span class="o">=</span>http://pi.hole/admin/api.php?summaryRaw
+http:pihole.updateInterval<span class="o">=</span>300000</pre></td></tr></tbody></table></code></pre></figure>
+
+<ul>
+  <li><code class="highlighter-rouge">$ sudo vim /etc/openhab2/items/pihole.items</code> Add some items for your sitemaps to use</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="code"><pre>Number piholePercent    <span class="s2">"Percent blocked [%.1f %%]"</span> &lt;pihole&gt;    <span class="o">{</span> <span class="nv">http</span><span class="o">=</span><span class="s2">"&lt;[pihole:303000:JSONPATH(</span><span class="nv">$.</span><span class="s2">ads_percentage_today)]"</span><span class="o">}</span>
+Number piholeBlockedAds <span class="s2">"Blocked ads [%d]"</span> &lt;pihole&gt;     <span class="o">(</span>pihole<span class="o">)</span>        <span class="o">{</span><span class="nv">http</span><span class="o">=</span><span class="s2">"&lt;[pihole:303000:JSONPATH(</span><span class="nv">$.</span><span class="s2">ads_blocked_today)]"</span><span class="o">}</span>
+Number  piholeQueries   <span class="s2">"DNS Queries [%d]"</span> &lt;pihole&gt;     <span class="o">(</span>pihole<span class="o">)</span>        <span class="o">{</span><span class="nv">http</span><span class="o">=</span><span class="s2">"&lt;[pihole:303000:JSONPATH(</span><span class="nv">$.</span><span class="s2">dns_queries_today)]"</span><span class="o">}</span>
+Switch piholeDisable <span class="s2">"Toggle Pi Hole"</span> <span class="o">(</span>pihole<span class="o">)</span> <span class="o">{</span><span class="nv">http</span><span class="o">=</span><span class="s2">"&gt;[OFF:GET:http://pi.hole/admin/api.php?disable=600&amp;auth=&lt;WEBPASSWORD&gt;] &gt;[ON:GET:http://pi.hole/admin/api.php?enable&amp;auth=&lt;WEBPASSWORD&gt;]"</span><span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The first 3 items use the item set in the http.cfg. you can see is uses JSONPATH to do some transformation to only get the data we want for the particular item. In the case of <code class="highlighter-rouge">piholePercent</code> we are grabbing the <code class="highlighter-rouge">ads_percentage_today</code> value out of the JSON output from the API.
+I’ve also created a switch to disable and enable piHole as needed. This API function requires you to authenticate yourself so we needed to add that in there too, this is where the WEBPASSWORD value in the piHole setting comes into play</p>
+
+<ul>
+  <li>Sitemap. Add the items to your sitemap as you see fit (Here is my example from my sitemap)</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>Frame <span class="nv">label</span><span class="o">=</span><span class="s2">"Pi Hole"</span><span class="o">{</span>
+                Text <span class="nv">item</span><span class="o">=</span>piholeQueries
+                Text <span class="nv">item</span><span class="o">=</span>piholeBlockedAds
+                Text <span class="nv">item</span><span class="o">=</span>piholePercent
+                Switch <span class="nv">item</span><span class="o">=</span>piholeDisable
+        <span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p><img src="http://localhost:4000/img/pihole.png" alt="pihole sitemap" /></p>
+
+<p><em>Optional</em> If you’d like to add an icon for the items in the sitemap further, download the graphics from piHole (png and svg) and upload them into your openhab install at <code class="highlighter-rouge">/etc/openhab2/icons/classic</code>. Then set the icon in the item using <code class="highlighter-rouge">&lt;pihole&gt;</code> (Refer to the openhab item config above). Now you will get a nice icon for the item too</p>
+
+<p>More info on the API can be found <a href="https://discourse.pi-hole.net/t/pi-hole-api/1863">here</a></p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="http://blog.mrwhal3.com/atom.xml" class="social-link-item"><img src=/img/rss.png></a></span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>
