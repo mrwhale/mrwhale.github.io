@@ -2,9 +2,9 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Mrwhale | Tech + Home automation enthusiast</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <id>http://localhost:4000</id>
- <updated>2018-02-09T15:40:05+11:00</updated>
+ <link href="http://www.mrwhal3.com//atom.xml" rel="self"/>
+ <id>http://www.mrwhal3.com/</id>
+ <updated>2018-02-09T15:56:21+11:00</updated>
  <author>
    <name>Mrwhale</name>
    <uri>http://www.mrwhal3.com/</uri>
@@ -15,8 +15,8 @@
 
  <entry>
    <title>PiHole and OpenHAB</title>
-   <link href="http://localhost:4000/Pihole-and-OpenHAB"/>
-   <id>http://localhost:4000/Pihole-and-OpenHAB</id>
+   <link href="http://www.mrwhal3.com//Pihole-and-OpenHAB"/>
+   <id>http://www.mrwhal3.com//Pihole-and-OpenHAB</id>
    <updated>2018-02-08T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Recently I installed &lt;a href=&quot;https://pi-hole.net/&quot;&gt;pihole&lt;/a&gt; on my network because I was sick of ads, and wanted an added layer of security on my network against nasty malware and the like&lt;/p&gt; &lt;p&gt;There are plenty of install guides out there for pihole (see official website) so thats not what I am covering...</content>
  </entry>
@@ -25,8 +25,8 @@
 
  <entry>
    <title>Ubuntu Live USB with persistence</title>
-   <link href="http://localhost:4000/Ubuntu-live-usb-with-persistence"/>
-   <id>http://localhost:4000/Ubuntu-live-usb-with-persistence</id>
+   <link href="http://www.mrwhal3.com//Ubuntu-live-usb-with-persistence"/>
+   <id>http://www.mrwhal3.com//Ubuntu-live-usb-with-persistence</id>
    <updated>2018-02-04T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Creating a live USB is easy, adding persistence seems to be quite hard. After lots of research, there was alot of ways to do it, but most of these tutorials were out of date so some things weren’t relevant anymore or just didn’t work&lt;/p&gt; &lt;p&gt;Here are some &lt;em&gt;hopefully&lt;/em&gt; simple steps...</content>
  </entry>
@@ -35,8 +35,8 @@
 
  <entry>
    <title>RuuviTag</title>
-   <link href="http://localhost:4000/RuuviTag"/>
-   <id>http://localhost:4000/RuuviTag</id>
+   <link href="http://www.mrwhal3.com//RuuviTag"/>
+   <id>http://www.mrwhal3.com//RuuviTag</id>
    <updated>2017-04-19T09:00:00+10:00</updated>
    <content type="html">&lt;p&gt;I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here...</content>
  </entry>
@@ -45,8 +45,8 @@
 
  <entry>
    <title>Node and systemd</title>
-   <link href="http://localhost:4000/node-and-systemd"/>
-   <id>http://localhost:4000/node-and-systemd</id>
+   <link href="http://www.mrwhal3.com//node-and-systemd"/>
+   <id>http://www.mrwhal3.com//node-and-systemd</id>
    <updated>2017-02-17T09:00:00+11:00</updated>
    <content type="html">&lt;p&gt;For a while now I’ve had my dashboard combo &lt;a href=&quot;/tv-dashboards-with-chromecasts&quot;&gt;tv and dashboard combo&lt;/a&gt;, which runs on &lt;a href=&quot;http://dashing.io&quot;&gt;dashing&lt;/a&gt; and &lt;a href=&quot;https://dashkiosk.readthedocs.io/en/latest/&quot;&gt;dashkiosk&lt;/a&gt;, running in screen sessions. This , of course, is not very managable. If something breaks, you have to ssh in and then find the screen session, re-run the...</content>
  </entry>
@@ -55,8 +55,8 @@
 
  <entry>
    <title>OneTimeSecret</title>
-   <link href="http://localhost:4000/onetimesecret"/>
-   <id>http://localhost:4000/onetimesecret</id>
+   <link href="http://www.mrwhal3.com//onetimesecret"/>
+   <id>http://www.mrwhal3.com//onetimesecret</id>
    <updated>2017-02-07T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So for those who use OnetimeSecret all the time, you can add this little function to your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or similar) So then you don’t have to openh a browser to share your secret!&lt;/p&gt; &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1 2 3 4 5 &lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;onetimesecret&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span...</content>
  </entry>
@@ -65,8 +65,8 @@
 
  <entry>
    <title>C.H.I.P, flic and openhab</title>
-   <link href="http://localhost:4000/flic-chip-and-openhab"/>
-   <id>http://localhost:4000/flic-chip-and-openhab</id>
+   <link href="http://www.mrwhal3.com//flic-chip-and-openhab"/>
+   <id>http://www.mrwhal3.com//flic-chip-and-openhab</id>
    <updated>2017-01-05T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So I finally received my &lt;a href=&quot;/C-H-I-P&quot;&gt;C.H.I.P&lt;/a&gt;, and over the break I purchased myself some &lt;a href=&quot;https://flic.io/&quot;&gt;flic bluetooth buttons&lt;/a&gt; with the plan of making some nice push buttons around the home to control openhab. This idea mostly came from usablity/speed of use of openhab. Having the dashboard in the middle...</content>
  </entry>
@@ -75,8 +75,8 @@
 
  <entry>
    <title>Openhab</title>
-   <link href="http://localhost:4000/openhab"/>
-   <id>http://localhost:4000/openhab</id>
+   <link href="http://www.mrwhal3.com//openhab"/>
+   <id>http://www.mrwhal3.com//openhab</id>
    <updated>2016-12-20T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Since the ninjablock company has run out of &lt;a href=&quot;https://discuss.ninjablocks.com/t/ninja-blocks-whats-been-happening-whats-happening-next/3608&quot;&gt;money&lt;/a&gt;, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with &lt;a href=&quot;http://openhab.org&quot;&gt;Openhab&lt;/a&gt;. At the time I adopted this, it was the only...</content>
  </entry>
@@ -85,8 +85,8 @@
 
  <entry>
    <title>Mini DLNA and bubbleUPnP</title>
-   <link href="http://localhost:4000/minidlna-and-bubbleupnp"/>
-   <id>http://localhost:4000/minidlna-and-bubbleupnp</id>
+   <link href="http://www.mrwhal3.com//minidlna-and-bubbleupnp"/>
+   <id>http://www.mrwhal3.com//minidlna-and-bubbleupnp</id>
    <updated>2016-11-18T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So ages ago I found &lt;a href=&quot;https://www.bubblesoftapps.com/bubbleupnpserver/&quot;&gt;bubbleUPnP&lt;/a&gt; (also an &lt;a href=&quot;https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&amp;amp;hl=en&quot;&gt;andoid app&lt;/a&gt;). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also...</content>
  </entry>
@@ -95,8 +95,8 @@
 
  <entry>
    <title>Upgrading SD on the Raspberry Pi</title>
-   <link href="http://localhost:4000/upgrading-sd-on-rpi"/>
-   <id>http://localhost:4000/upgrading-sd-on-rpi</id>
+   <link href="http://www.mrwhal3.com//upgrading-sd-on-rpi"/>
+   <id>http://www.mrwhal3.com//upgrading-sd-on-rpi</id>
    <updated>2016-10-26T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;I’ve been running my Raspberry Pi (V2) for almost a year and a half on a 16gb SD card, but because I run owncloud on the pi, I’ve been slowly running out of space. I know I can just add a usb drive or have owncloud store the data on...</content>
  </entry>
@@ -105,8 +105,8 @@
 
  <entry>
    <title>building phonegap app for Android and iOS</title>
-   <link href="http://localhost:4000/thrown-in-the-deepend-with-phonegap"/>
-   <id>http://localhost:4000/thrown-in-the-deepend-with-phonegap</id>
+   <link href="http://www.mrwhal3.com//thrown-in-the-deepend-with-phonegap"/>
+   <id>http://www.mrwhal3.com//thrown-in-the-deepend-with-phonegap</id>
    <updated>2016-10-13T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So I had the &lt;del&gt;pleasure&lt;/del&gt; of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That...</content>
  </entry>
@@ -115,8 +115,8 @@
 
  <entry>
    <title>Counter Strike and Pebble</title>
-   <link href="http://localhost:4000/Counter-Strike-and-Pebble"/>
-   <id>http://localhost:4000/Counter-Strike-and-Pebble</id>
+   <link href="http://www.mrwhal3.com//Counter-Strike-and-Pebble"/>
+   <id>http://www.mrwhal3.com//Counter-Strike-and-Pebble</id>
    <updated>2016-09-03T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;Hey all, it’s been a while! I’ve been busy. Combining my enthusiasm to CS and the usefulness of a pebble watch to create you &lt;a href=&quot;https://apps.getpebble.com/applications/57c24bc35e3c3db4850002af&quot;&gt;CSontheGO&lt;/a&gt;&lt;/p&gt; &lt;p&gt;Pretty cool huh? Being able to keep up to date with CS matches from your watch. I decided to do this because I:&lt;/p&gt; &lt;ol&gt;...</content>
  </entry>
@@ -125,8 +125,8 @@
 
  <entry>
    <title>C.H.I.P</title>
-   <link href="http://localhost:4000/C-H-I-P"/>
-   <id>http://localhost:4000/C-H-I-P</id>
+   <link href="http://www.mrwhal3.com//C-H-I-P"/>
+   <id>http://www.mrwhal3.com//C-H-I-P</id>
    <updated>2016-07-14T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;So I was too late to the hype of &lt;a href=&quot;https://www.raspberrypi.org/products/pi-zero/&quot;&gt;Pi Zero&lt;/a&gt;, the $5 Raspberry pi, and have not been able to get my hands on one since the launch. Everywhere has been sold out everytime I check :(&lt;/p&gt; &lt;p&gt;I can’t remember how I stumble upon them, but I found...</content>
  </entry>
@@ -135,8 +135,8 @@
 
  <entry>
    <title>Fun with cPanel</title>
-   <link href="http://localhost:4000/cpanel-fun"/>
-   <id>http://localhost:4000/cpanel-fun</id>
+   <link href="http://www.mrwhal3.com//cpanel-fun"/>
+   <id>http://www.mrwhal3.com//cpanel-fun</id>
    <updated>2016-06-17T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;Recently have had to set up a few cPanel servers, and here are some things I ran into while doing so. One isn’t necessarily cPanels fault, but it still took me a long time to find a work around for it :/&lt;/p&gt; &lt;h4 id=&quot;key-based-login-for-ssh&quot;&gt;Key based login for SSH&lt;/h4&gt; &lt;p&gt;Common practice...</content>
  </entry>
@@ -145,8 +145,8 @@
 
  <entry>
    <title>TV dashboards with chromecasts and dashing</title>
-   <link href="http://localhost:4000/tv-dashboards-with-chromecasts"/>
-   <id>http://localhost:4000/tv-dashboards-with-chromecasts</id>
+   <link href="http://www.mrwhal3.com//tv-dashboards-with-chromecasts"/>
+   <id>http://www.mrwhal3.com//tv-dashboards-with-chromecasts</id>
    <updated>2016-05-04T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;I had some time, and we had some TV’s hanging on the wall wasting space. So I decided to create a dashboard that could put some useful information on these TV’s for everyone to see&lt;/p&gt; &lt;p&gt;Previously we were utilising the chromecasts with &lt;a href=&quot;https://greenscreen.io&quot;&gt;Greenscreen&lt;/a&gt;, and it worked well, but had...</content>
  </entry>
@@ -155,8 +155,8 @@
 
  <entry>
    <title>PHP file upload to slack</title>
-   <link href="http://localhost:4000/uploading-files-to-slack-php"/>
-   <id>http://localhost:4000/uploading-files-to-slack-php</id>
+   <link href="http://www.mrwhal3.com//uploading-files-to-slack-php"/>
+   <id>http://www.mrwhal3.com//uploading-files-to-slack-php</id>
    <updated>2016-04-13T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;So I don’t know why this one took me this long to find, but I spent a long time today trying to figure out why my PHP script wasn’t uploading my file I wanted to slack. I had the string to send to slack correct, but every time I tried...</content>
  </entry>
