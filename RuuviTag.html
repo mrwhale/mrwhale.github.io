@@ -241,7 +241,7 @@
 
 <h2 id="raspberrypi-3">RaspberryPi 3</h2>
 
-<p>Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the <a href="https://f.ruuvi.com/">ruuvi forums</a> there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like <a href="https://github.com/espruino/EspruinoHub">this</a>. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (which i will upload to github soon)
+<p>Now onto the server side. I have a raspberry pi 3 running openhab. This is perfect as it has bluetooth built in. There were a few options to make this work, if you head over to the <a href="https://f.ruuvi.com/">ruuvi forums</a> there is a java and python module to scan the ruuvi’s and get their data. I was actually looking for something more like <a href="https://github.com/espruino/EspruinoHub">this</a>. This is a BLE -&gt; mqtt bridge, that will scan for data on ruuvi (or Puckjs) and then publuish that to a mqtt service. EspruinoHub didn’t quite fit my setup, it is apparently a 2 way bridge, but I only really wanted a 1 way (getting the data). I also did not want to install nodered and all the other dependancies for it. So I decided to use this as a basis and write something else (<a href="https://github.com/mrwhale/RuuviTag-Openhab-Bridge">source here</a>)
 It does esentially the same job, scans the BLE range and gets any data being advertised, and then publishes it to a mqtt stream. My openHAB server subscribes to these streams to get the data into the system. One use case I have for this is to monitor a bedroom temperature, and then if it gets to cold overnight, turn on the heating. Keep monitoring the temperature and if it gets a bit too hot, turn it off again.</p>
 
 <h4 id="setup">Setup</h4>
@@ -514,7 +514,7 @@ hello my <span class="nb">local </span>name is:
 
 <p>Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap</p>
 
-<p><img src="http://www.mrwhal3.com//img/ruuvi.png" alt="Ruuvitag chart" /></p>
+<p><img src="http://localhost:4000/img/ruuvi.png" alt="Ruuvitag chart" /></p>
 
 <p>So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a <code class="highlighter-rouge">screen</code> or something funky like that. Just put this into <code class="highlighter-rouge">/etc/systemd/system/ruuvi.service</code></p>
 
@@ -535,7 +535,7 @@ hello my <span class="nb">local </span>name is:
 
 <p>So here you have it. A RuuviTag, lots of javascript and openHAB. All working together. Now I just need to buy some more, 1 for each room!</p>
 
-<p>I will also upload the files to github, so you can just download it from there too..</p>
+<p><a href="https://github.com/mrwhale/RuuviTag-Openhab-Bridge">I will also upload the files to github, so you can just download it from there too..</a></p>
 
 		
 	</div>
@@ -551,7 +551,7 @@ hello my <span class="nb">local </span>name is:
 	  </div>
 	    
 	    <!-- Footer -->
-	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="/atom.xml" class="social-link-item"><img src=/img/rss.png></a></span></footer>
+	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="/atom.xml" class="social-link-item"><img src=/img/rss.png></a><a href="http://brave.com" target="_blank"><img src="/img/brave.gif" /></a></span></footer>
 
 
 	    <!-- Script -->
