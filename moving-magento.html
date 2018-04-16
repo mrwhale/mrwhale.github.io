@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Moving Magento</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+			google_ad_client: "ca-pub-7736525253699078",
+			enable_page_level_ads: true
+		});
+	</script>
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	
+		ga('create', 'UA-43857428-3', 'auto');
+		ga('send', 'pageview');
+	
+	</script>
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Moving Magento</h2>		
+	<time datetime="2018-04-16T10:00:00+10:00" class="by-line">16 Apr 2018 - <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>So I was asked to help finish moving a magento (1.9) installation to a new server the other day. To sum it up, it was not fun</p>
+
+<p>They had already moved the files and had everything installed and updated the database connection string, however it was still throwing an error. The plan was to set this site up on a subdomain, so we could test a few things, update some things and then go live on the new server</p>
+
+<p>After a while of trying to find the logs ( looking in <code class="highlighter-rouge">/var/log/apache</code> and <code class="highlighter-rouge">/var/www/magentoinstall/var/log</code>) I was having no luck of trying to find out what was causing the error. Until I found <code class="highlighter-rouge">/var/www/magentoinstall/var/report</code>. This folder seemed to be what I was looking for. After the fact, looking up some magento docs, <code class="highlighter-rouge">var/report</code> seems to be where magento logs uncatched errors by default <a href="https://magento.stackexchange.com/questions/58232/error-reporting-var-report-vs-var-log-exception-log">here is a nice run down</a>. Every time the site failed to load, it spat out a file into this folder, which included an interestly useful error</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">root@myserver:/var/www/magentoinstall/var/report# <span class="nb">cat </span>828704810349
+a:4:<span class="o">{</span>i:0<span class="p">;</span>s:113:<span class="s2">"SQLSTATE[HY000] [2003] Can't connect to MySQL server on 'myoldDBserver' (4)"</span><span class="p">;</span>i:1<span class="p">;</span>s:2753:<span class="s2">"#0 /var/www/magentoinstall/lib/Zend/Db/Adapter/Pdo/Mysql.php(109): Zend_Db_Adapter_Pdo_Abstract-&gt;_connect()
+#1 /var/www/magentoinstall/lib/Varien/Db/Adapter/Pdo/Mysql.php(320): Zend_Db_Adapter_Pdo_Mysql-&gt;_connect()
+#2 /var/www/magentoinstall/lib/Zend/Db/Adapter/Abstract.php(460): Varien_Db_Adapter_Pdo_Mysql-&gt;_connect()
+#3 /var/www/magentoinstall/lib/Zend/Db/Adapter/Pdo/Abstract.php(238): Zend_Db_Adapter_Abstract-&gt;query('SET NAMES utf8', Array)
+#4 /var/www/magentoinstall/lib/Varien/Db/Adapter/Pdo/Mysql.php(428): Zend_Db_Adapter_Pdo_Abstract-&gt;query('SET NAMES utf8', Array)
+#5 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource.php(169): Varien_Db_Adapter_Pdo_Mysql-&gt;query('SET NAMES utf8')
+#6 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource.php(110): Mage_Core_Model_Resource-&gt;_newConnection('pdo_mysql', Object(Mage_Core_Model_Config_Element))
+#7 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource/Db/Abstract.php(320): Mage_Core_Model_Resource-&gt;getConnection('core_write')
+#8 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource/Db/Abstract.php(350): Mage_Core_Model_Resource_Db_Abstract-&gt;_getConnection('write')
+#9 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource/Db/Abstract.php(335): Mage_Core_Model_Resource_Db_Abstract-&gt;_getWriteAdapter()
+#10 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource/Db/Abstract.php(360): Mage_Core_Model_Resource_Db_Abstract-&gt;_getReadAdapter()
+#11 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Resource/Db/Collection/Abstract.php(134): Mage_Core_Model_Resource_Db_Abstract-&gt;getReadConnection()
+#12 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Config.php(1354): Mage_Core_Model_Resource_Db_Collection_Abstract-&gt;__construct(Object(Mage_Core_Model_Resource_Website))
+#13 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Config.php(1386): Mage_Core_Model_Config-&gt;getModelInstance('core_resource/w...', Object(Mage_Core_Model_Resource_Website))
+#14 /var/www/magentoinstall/app/Mage.php(491): Mage_Core_Model_Config-&gt;getResourceModelInstance('core/website_co...', Object(Mage_Core_Model_Resource_Website))
+#15 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Abstract.php(208): Mage::getResourceModel('core/website_co...', Object(Mage_Core_Model_Resource_Website))
+#16 /var/www/magentoinstall/app/code/core/Mage/Core/Model/Abstract.php(213): Mage_Core_Model_Abstract-&gt;getResourceCollection()
+#17 /var/www/magentoinstall/app/code/core/Mage/Core/Model/App.php(608): Mage_Core_Model_Abstract-&gt;getCollection()
+#18 /var/www/magentoinstall/app/code/core/Mage/Core/Model/App.php(466): Mage_Core_Model_App-&gt;_initStores()
+#19 /var/www/magentoinstall/app/code/core/Mage/Core/Model/App.php(349): Mage_Core_Model_App-&gt;_initCurrentStore('', 'store')
+#20 /var/www/magentoinstall/app/Mage.php(684): Mage_Core_Model_App-&gt;run(Array)
+#21 /var/www/magentoinstall/index.php(153): Mage::run('', 'store')</span></code></pre></figure>
+
+<p>It was interesting as it was using the database server connections string, re-checking all the config files (everything under <code class="highlighter-rouge">/var/www/magentoinstall/app/etc</code> just to make sure) I finally resorted to doing a search for the old connection string (using <code class="highlighter-rouge">ag</code> ) in the magento instance</p>
+
+<p>Magento seems to agressively cache everything. It found a few hits of the old connection string under <code class="highlighter-rouge">/var/www/magentoinstall/var/cache</code> in <code class="highlighter-rouge">classPathCache.php</code> and a few of the <code class="highlighter-rouge">mage--xxx</code> folders. After a quick search, it was deemed OK to wipe this folder clean. Sure enough, after deleting the cache folder we had progress. No more errors, but the site was redirecting to the main domain of the website (which was not good as we wanted to set it up on a subdomain first)</p>
+
+<p>Without access to the admin interface to update the domain, modifying this via the database was the next best option. There were a few strings that we need to update to make sure nothing breaks, seems that magento tried to do an inbuild CDN style configuration so it pulls assets from varying domains/paths to speed things up</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">root@myserver:/var/www/magentoinstall# mysql <span class="nt">-u</span> root <span class="nt">-p</span> <span class="nt">-h</span> mynewDBserver
+mysql&gt; use database mymagentodb<span class="p">;</span>
+<span class="c"># Main domain
+</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'https://my.new.domain/'</span> where path <span class="o">=</span> <span class="s1">'web/secure/base_url'</span><span class="p">;</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'http://my.new.domain/'</span> where path <span class="o">=</span> <span class="s1">'web/unsecure/base_url'</span><span class="p">;</span>
+<span class="c">#Media 
+</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'http://my.new.domain/media/'</span> where path <span class="o">=</span> <span class="s1">'web/unsecure/base_media_url'</span><span class="p">;</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'https://my.new.domain/media/'</span> where path <span class="o">=</span> <span class="s1">'web/secure/base_media_url'</span><span class="p">;</span>
+<span class="c">#JS 
+</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'http://my.new.domain/js/'</span> where path <span class="o">=</span> <span class="s1">'web/unsecure/base_js_url'</span><span class="p">;</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'https://my.new.domain/js/'</span> where path <span class="o">=</span> <span class="s1">'web/secure/base_js_url'</span><span class="p">;</span>
+<span class="c">#CSS 
+</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'http://my.new.domain/css/'</span> where path <span class="o">=</span> <span class="s1">'web/unsecure/base_css_url'</span><span class="p">;</span>
+mysql&gt; update core_config_data <span class="nb">set </span>value <span class="o">=</span> <span class="s1">'https://my.new.domain/css/'</span> where path <span class="o">=</span> <span class="s1">'web/secure/base_css_url'</span><span class="p">;</span></code></pre></figure>
+
+<p>Okay great. More progress, the site is loading, but not over https. I was getting a 404 error when trying to load over https. Back to the drawing board
+This was just a config error within apache. I had to change the default SSL apache config, to point to the right folder as the document root, enable the site and restart apache</p>
+
+<p>Hooray!</p>
+
+<p>One other thing I can across in my research was that Magento 1.9 reads in all and any xml files that are located in <code class="highlighter-rouge">app/etc</code>. So if you have copied the <code class="highlighter-rouge">local.xml</code> file during development and made <code class="highlighter-rouge">local-dev.xml</code> it will still load that in and read any configuration settings that have been placed in here. This tripped alot of people up as it would load old or development database connection strings in and mess things up. So rename things to <code class="highlighter-rouge">.old</code> or <code class="highlighter-rouge">.dev</code> or something other then <code class="highlighter-rouge">.xml</code></p>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="/atom.xml" class="social-link-item"><img src=/img/rss.png></a><a href="http://brave.com" target="_blank"><img src="/img/brave.gif" /></a></span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>
