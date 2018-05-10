@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Cross compiling Litecoin Core</title>
+  <meta name="description" content="">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({
+			google_ad_client: "ca-pub-7736525253699078",
+			enable_page_level_ads: true
+		});
+	</script>
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	
+		ga('create', 'UA-43857428-3', 'auto');
+		ga('send', 'pageview');
+	
+	</script>
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	    
+	  
+	    
+	      <a href="/archive/" title="Archive">Archive</a>
+	    
+	  
+	    
+	  
+	    
+	      <a href="/categories/" title="Categories">Categories</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="/">
+        <h1>
+          <span>Mr.</span>Whale
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title="About Mrwhal3">About Mrwhal3</a>
+	      
+	    
+	      
+	        <a href="/archive/" title="Archive">Archive</a>
+	      
+	    
+	      
+	    
+	      
+	        <a href="/categories/" title="Categories">Categories</a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/mrwhale">Project on Github</a>
+
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Cross compiling Litecoin Core</h2>		
+	<time datetime="2018-05-09T10:00:00+10:00" class="by-line">09 May 2018 - <span class="read-time" title="Estimated read time">
+  
+  
+    5 mins read
+  
+</span>
+</time>
+	<time class="by-line"></time>
+
+	<div class="content">
+
+		<p>I’ve had a plan of being a good guy and contributing to the litecoin network by being a full node. I was able to do this when I got around to buying a raspberry pi 3B+ and a 2TB external hard drive. There isn’t many up-to-date guides out there on setting a full node up on a raspberry pi, but this one was the most recent, and worked every step of the way (with a few minor changes) - <a href="https://medium.com/the-litecoin-school-of-crypto/creating-a-litecoin-node-on-a-raspberry-pi-3-the-easy-way-on-windows-8e78d4da1af5">the school of litecoin</a></p>
+
+<p>I followed this guide and successfully setup a headless litecoin full node with no wallet, that stores the blockchain on an external harddrive (to hopefully save some SD card wear). I will post another, updated guide, heavily based on this one in my next post. But give that a read first as I won’t cover the basics that are covered in that medium publication. The only thing I didn’t get out of this guide was the wallet part of the node, as the wallet component requires a specific version of berkleyDB which you also have to manually compile (which isn’t covered in the guide)</p>
+
+<p>This was great, however it took ~4 hours total to get this up and running (and an extra 2 days to fully sync the node) Seeing as though I plan to keep this thing updated, I did not want to have to spend 4 hours compiling the newest version of litecoin for every release. So that is when I thought of cross compiling from my desktop, to hopefully save time. As I don’t often do this, it took my quite a bit of time and research to get it working, but will now save myself (and hopefully others) time in the future! This guide would also be useful for any cryptocurrency that is a fork of bitcoin too</p>
+
+<p>raspberrypi) and the target PC (the raspberrypi)</p>
+
+<h4 id="host-pc">Host PC</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Linux george-linux 4.4.0-98-generic #121-Ubuntu SMP Tue Oct 10 14:24:03 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+Distributor ID: neon
+Description:    KDE neon User Edition 5.12
+Release:        16.04
+Codename:       xenial
+</code></pre></div></div>
+
+<h4 id="target-pc">Target PC</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Linux georgeboy 4.14.34-v7+ #1110 SMP Mon Apr 16 15:18:51 BST 2018 armv7l GNU/Linux
+
+Distributor ID: Raspbian
+Description:    Raspbian GNU/Linux 9.4 (stretch)
+Release:        9.4
+Codename:       stretch
+</code></pre></div></div>
+<h3 id="instructions">Instructions</h3>
+
+<ul>
+  <li>Install the dependancies for cross compile, there are quite a few</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi curl g +-aarch64-linux-gnu g++-4.8-aarch64-linux-gnu gcc-4.8-aarch64-linux-gnu binutils-aarch64-linux-gnu g++-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf gcc-4.8-arm-linux-gnueabihf binutils-arm-linux-gnueabihf g++-4.8-multilib gcc-4.8-multilib binutils-gold bsdmainutils</code></pre></figure>
+
+<ul>
+  <li>Get the latest litecoin and extract (at the time I used 0.16.0rc1)</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># https://github.com/litecoin-project/litecoin/releases
+</span>
+wget https://github.com/litecoin-project/litecoin/archive/v0.16.0rc1.tar.gz
+<span class="nb">tar </span>zxvf v0.16.0rc1.tar.gz</code></pre></figure>
+
+<ul>
+  <li>make the dependancies for the architecture you are compling for. This will go and grab a whole bunch of things, but you can turn off things you do not want here by adding some arguments to the make command</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd </span>litecoin-0.16.0rc1/depends
+make <span class="nv">host</span><span class="o">=</span>arm-linux-gnueabihf <span class="nt">-j4</span> 
+<span class="c"># if you do not want wallet or gui 
+</span>
+<span class="c"># make host=arm-linux-gnueabihf -j4 NO_WALLET=1 NO_QT=1</span></code></pre></figure>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real    5m28.381s
+user    6m17.932s
+sys     0m21.860s
+</code></pre></div></div>
+<ul>
+  <li>now do the thing for litecoin</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> ..
+./autogen.sh
+./configure <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-static"</span> <span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">"-O2 --param ggc-min-expand=1 --param ggc-min-heapsize=32768"</span> <span class="nt">--enable-cxx</span> <span class="nt">--without-gui</span> <span class="nt">--disable-shared</span> <span class="nt">--with-pic</span> <span class="nt">--build</span> x86_64-pc-linux-gnu <span class="nt">--host</span> arm-linux-gnueabi <span class="nt">--prefix</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/depends/arm-linux-gnueabihf
+<span class="c"># time for ./configure
+</span>
+<span class="c"># real    0m36.008s
+</span>
+<span class="c"># user    0m30.848s
+</span>
+<span class="c"># sys     0m1.352s
+</span>
+<span class="nb">sudo </span>make <span class="nt">-j4</span>
+<span class="c"># I use sudo here as I tried make by itself but ran into an issue, see "Issues" below
+</span>
+<span class="c"># real    18m3.695s
+</span>
+<span class="c"># user    71m0.420s
+</span>
+<span class="c"># sys     0m28.704s</span></code></pre></figure>
+
+<ul>
+  <li>Now copy over to your raspberrypi and test</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">scp src/litecoind src/litecoin-cli src/litecoin-tx george@newrpi:~/
+
+george@newrpi:~ <span class="nv">$ </span>./litecoind <span class="nt">--version</span>
+Litecoin Core Daemon version v0.16.0.0-g3567effe2049
+Copyright <span class="o">(</span>C<span class="o">)</span> 2011-2018 The Litecoin Core developers
+Copyright <span class="o">(</span>C<span class="o">)</span> 2009-2018 The Bitcoin Core developers
+
+Please contribute <span class="k">if </span>you find Litecoin Core useful. Visit
+&lt;https://litecoin.org&gt; <span class="k">for </span>further information about the software.
+The <span class="nb">source </span>code is available from
+&lt;https://github.com/litecoin-project/litecoin&gt;.
+
+This is experimental software.
+Distributed under the MIT software license, see the accompanying file COPYING
+or &lt;https://opensource.org/licenses/MIT&gt;
+
+This product includes software developed by the OpenSSL Project <span class="k">for </span>use <span class="k">in </span>the
+OpenSSL Toolkit &lt;https://www.openssl.org&gt; and cryptographic software written by
+Eric Young and UPnP software written by Thomas Bernard.
+
+george@newrpi:~ <span class="nv">$ </span>./litecoin-cli <span class="nt">--version</span>
+Litecoin Core RPC client version v0.16.0.0-g3567effe2049</code></pre></figure>
+
+<p>So all up (including installing the depedancies) 30 minutes to cross compile a litecoin node (including the wallet) for your raspberry pi. Seeing that the current stable is 0.15.1, and v0.16.0 is on RC, you’ll be upgrading soon so we have already saved some time</p>
+
+<h3 id="issues-i-ran-into-along-the-way">Issues I ran into along the way</h3>
+<p>Firstly I ran <code class="highlighter-rouge">./autogen.sh</code>, <code class="highlighter-rouge">./configure</code> and <code class="highlighter-rouge">make</code> directly in the litecoin folder without first building in the depends/ folder. I soon realised I needed Berkley DB. So I downloaded it and cross compiled it for arm. Then tried <code class="highlighter-rouge">./configure</code> again using <code class="highlighter-rouge">LDFLAGS="-static -L${BDB_PREFIX}/lib/" CXXFLAGS="-I${BDB_PREFIX}/include/</code> as arguments to point to the compiled Berkley DB files. This got me further but then I started running into libboost issues with an error similar to <code class="highlighter-rouge">bitcoinserver_a error adding symbols: Archive has no index; run ranlib to add one</code> this is because of a mismatch in architecture as it was referencing the x86_64 libboost files, turns out I need the arm version of boost libraries. I attempted to install multiarch on my desktop but that did not work, and eventually I found a pre-compiled version of libboost for arm on the rasbperrypi.org forums. I downloaded that and used <code class="highlighter-rouge">--with-boost-libdir=/home/harry/lib </code> within <code class="highlighter-rouge">./configure</code> to tell it about the arm libboost files. This got me further, however of course I ran into another issue <code class="highlighter-rouge">univalue/.libs/libunivalue.a: error adding symbols: Archive has no index; run ranlib to add one</code>. This one had me stumped and I was going to throw in the towel (as this was a few hours in)</p>
+
+<p>But after researching further I stumbled across the <a href="https://github.com/bitcoin/bitcoin/tree/master/depends">/depends/ folder in the bitcoin repo</a> This had some useful information regarding cross compiling. This allowed you to get all the dependancies for whatever architecture you were targeting without having to do it yourself. I do not know why I had not come across this earlier.</p>
+
+<h3 id="sites-that-helped-me-along-the-way">Sites that helped me along the way</h3>
+<p>The following links were very helpful during this journey, so I’d just like to recognise them here too:</p>
+
+<ul>
+  <li>http://jensd.be/800/linux/cross-compiling-for-arm-with-ubuntu-16-04-lts</li>
+  <li>https://www.raspberrypi.org/forums/viewtopic.php?t=86084</li>
+  <li>https://infertux.com/posts/2016/02/23/cross-compile-bitcoin-for-arm/https://askubuntu.com/questions/484030/crosscompiling-with-libboost-for-arm-architecture#484041</li>
+  <li>https://github.com/bitcoin/bitcoin/tree/master/depends</li>
+</ul>
+
+		
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>&copy; 2018 Mrwhale</span><span><a href="/atom.xml" class="social-link-item"><img src=/img/rss.png></a><a href="http://brave.com" target="_blank"><img src="/img/brave.gif" /></a></span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

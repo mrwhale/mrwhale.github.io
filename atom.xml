@@ -4,12 +4,147 @@
  <title>Mrwhale | Tech + Home automation enthusiast</title>
  <link href="http://www.mrwhal3.com//atom.xml" rel="self"/>
  <id>http://www.mrwhal3.com/</id>
- <updated>2018-05-10T15:38:59+10:00</updated>
+ <updated>2018-05-10T15:46:12+10:00</updated>
  <author>
    <name>Mrwhale</name>
    <uri>http://www.mrwhal3.com/</uri>
    <email></email>
  </author>
+
+ 
+
+ <entry>
+   <title>Cross compiling Litecoin Core</title>
+   <link href="http://www.mrwhal3.com//cross-compiling-litecoin-core"/>
+   <id>http://www.mrwhal3.com//cross-compiling-litecoin-core</id>
+   <updated>2018-05-09T10:00:00+10:00</updated>
+   <content type="html">&lt;p&gt;I’ve had a plan of being a good guy and contributing to the litecoin network by being a full node. I was able to do this when I got around to buying a raspberry pi 3B+ and a 2TB external hard drive. There isn’t many up-to-date guides out there on setting a full node up on a raspberry pi, but this one was the most recent, and worked every step of the way (with a few minor changes) - &lt;a href=&quot;https://medium.com/the-litecoin-school-of-crypto/creating-a-litecoin-node-on-a-raspberry-pi-3-the-easy-way-on-windows-8e78d4da1af5&quot;&gt;the school of litecoin&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I followed this guide and successfully setup a headless litecoin full node with no wallet, that stores the blockchain on an external harddrive (to hopefully save some SD card wear). I will post another, updated guide, heavily based on this one in my next post. But give that a read first as I won’t cover the basics that are covered in that medium publication. The only thing I didn’t get out of this guide was the wallet part of the node, as the wallet component requires a specific version of berkleyDB which you also have to manually compile (which isn’t covered in the guide)&lt;/p&gt;
+
+&lt;p&gt;This was great, however it took ~4 hours total to get this up and running (and an extra 2 days to fully sync the node) Seeing as though I plan to keep this thing updated, I did not want to have to spend 4 hours compiling the newest version of litecoin for every release. So that is when I thought of cross compiling from my desktop, to hopefully save time. As I don’t often do this, it took my quite a bit of time and research to get it working, but will now save myself (and hopefully others) time in the future! This guide would also be useful for any cryptocurrency that is a fork of bitcoin too&lt;/p&gt;
+
+&lt;p&gt;raspberrypi) and the target PC (the raspberrypi)&lt;/p&gt;
+
+&lt;h4 id=&quot;host-pc&quot;&gt;Host PC&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Linux george-linux 4.4.0-98-generic #121-Ubuntu SMP Tue Oct 10 14:24:03 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+Distributor ID: neon
+Description:    KDE neon User Edition 5.12
+Release:        16.04
+Codename:       xenial
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;target-pc&quot;&gt;Target PC&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Linux georgeboy 4.14.34-v7+ #1110 SMP Mon Apr 16 15:18:51 BST 2018 armv7l GNU/Linux
+
+Distributor ID: Raspbian
+Description:    Raspbian GNU/Linux 9.4 (stretch)
+Release:        9.4
+Codename:       stretch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;instructions&quot;&gt;Instructions&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install the dependancies for cross compile, there are quite a few&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi curl g +-aarch64-linux-gnu g++-4.8-aarch64-linux-gnu gcc-4.8-aarch64-linux-gnu binutils-aarch64-linux-gnu g++-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf gcc-4.8-arm-linux-gnueabihf binutils-arm-linux-gnueabihf g++-4.8-multilib gcc-4.8-multilib binutils-gold bsdmainutils&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Get the latest litecoin and extract (at the time I used 0.16.0rc1)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# https://github.com/litecoin-project/litecoin/releases
+&lt;/span&gt;
+wget https://github.com/litecoin-project/litecoin/archive/v0.16.0rc1.tar.gz
+&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;zxvf v0.16.0rc1.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;make the dependancies for the architecture you are compling for. This will go and grab a whole bunch of things, but you can turn off things you do not want here by adding some arguments to the make command&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;litecoin-0.16.0rc1/depends
+make &lt;span class=&quot;nv&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;arm-linux-gnueabihf &lt;span class=&quot;nt&quot;&gt;-j4&lt;/span&gt; 
+&lt;span class=&quot;c&quot;&gt;# if you do not want wallet or gui 
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# make host=arm-linux-gnueabihf -j4 NO_WALLET=1 NO_QT=1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;real    5m28.381s
+user    6m17.932s
+sys     0m21.860s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;now do the thing for litecoin&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ..
+./autogen.sh
+./configure &lt;span class=&quot;nv&quot;&gt;LDFLAGS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-static&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;CXXFLAGS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-O2 --param ggc-min-expand=1 --param ggc-min-heapsize=32768&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--enable-cxx&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--without-gui&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--disable-shared&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--with-pic&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--build&lt;/span&gt; x86_64-pc-linux-gnu &lt;span class=&quot;nt&quot;&gt;--host&lt;/span&gt; arm-linux-gnueabi &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/depends/arm-linux-gnueabihf
+&lt;span class=&quot;c&quot;&gt;# time for ./configure
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# real    0m36.008s
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# user    0m30.848s
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# sys     0m1.352s
+&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;make &lt;span class=&quot;nt&quot;&gt;-j4&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# I use sudo here as I tried make by itself but ran into an issue, see &quot;Issues&quot; below
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# real    18m3.695s
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# user    71m0.420s
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# sys     0m28.704s&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Now copy over to your raspberrypi and test&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;scp src/litecoind src/litecoin-cli src/litecoin-tx george@newrpi:~/
+
+george@newrpi:~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./litecoind &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt;
+Litecoin Core Daemon version v0.16.0.0-g3567effe2049
+Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2011-2018 The Litecoin Core developers
+Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2009-2018 The Bitcoin Core developers
+
+Please contribute &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you find Litecoin Core useful. Visit
+&amp;lt;https://litecoin.org&amp;gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;further information about the software.
+The &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;code is available from
+&amp;lt;https://github.com/litecoin-project/litecoin&amp;gt;.
+
+This is experimental software.
+Distributed under the MIT software license, see the accompanying file COPYING
+or &amp;lt;https://opensource.org/licenses/MIT&amp;gt;
+
+This product includes software developed by the OpenSSL Project &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;use &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the
+OpenSSL Toolkit &amp;lt;https://www.openssl.org&amp;gt; and cryptographic software written by
+Eric Young and UPnP software written by Thomas Bernard.
+
+george@newrpi:~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./litecoin-cli &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt;
+Litecoin Core RPC client version v0.16.0.0-g3567effe2049&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So all up (including installing the depedancies) 30 minutes to cross compile a litecoin node (including the wallet) for your raspberry pi. Seeing that the current stable is 0.15.1, and v0.16.0 is on RC, you’ll be upgrading soon so we have already saved some time&lt;/p&gt;
+
+&lt;h3 id=&quot;issues-i-ran-into-along-the-way&quot;&gt;Issues I ran into along the way&lt;/h3&gt;
+&lt;p&gt;Firstly I ran &lt;code class=&quot;highlighter-rouge&quot;&gt;./autogen.sh&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;./configure&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; directly in the litecoin folder without first building in the depends/ folder. I soon realised I needed Berkley DB. So I downloaded it and cross compiled it for arm. Then tried &lt;code class=&quot;highlighter-rouge&quot;&gt;./configure&lt;/code&gt; again using &lt;code class=&quot;highlighter-rouge&quot;&gt;LDFLAGS=&quot;-static -L${BDB_PREFIX}/lib/&quot; CXXFLAGS=&quot;-I${BDB_PREFIX}/include/&lt;/code&gt; as arguments to point to the compiled Berkley DB files. This got me further but then I started running into libboost issues with an error similar to &lt;code class=&quot;highlighter-rouge&quot;&gt;bitcoinserver_a error adding symbols: Archive has no index; run ranlib to add one&lt;/code&gt; this is because of a mismatch in architecture as it was referencing the x86_64 libboost files, turns out I need the arm version of boost libraries. I attempted to install multiarch on my desktop but that did not work, and eventually I found a pre-compiled version of libboost for arm on the rasbperrypi.org forums. I downloaded that and used &lt;code class=&quot;highlighter-rouge&quot;&gt;--with-boost-libdir=/home/harry/lib &lt;/code&gt; within &lt;code class=&quot;highlighter-rouge&quot;&gt;./configure&lt;/code&gt; to tell it about the arm libboost files. This got me further, however of course I ran into another issue &lt;code class=&quot;highlighter-rouge&quot;&gt;univalue/.libs/libunivalue.a: error adding symbols: Archive has no index; run ranlib to add one&lt;/code&gt;. This one had me stumped and I was going to throw in the towel (as this was a few hours in)&lt;/p&gt;
+
+&lt;p&gt;But after researching further I stumbled across the &lt;a href=&quot;https://github.com/bitcoin/bitcoin/tree/master/depends&quot;&gt;/depends/ folder in the bitcoin repo&lt;/a&gt; This had some useful information regarding cross compiling. This allowed you to get all the dependancies for whatever architecture you were targeting without having to do it yourself. I do not know why I had not come across this earlier.&lt;/p&gt;
+
+&lt;h3 id=&quot;sites-that-helped-me-along-the-way&quot;&gt;Sites that helped me along the way&lt;/h3&gt;
+&lt;p&gt;The following links were very helpful during this journey, so I’d just like to recognise them here too:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;http://jensd.be/800/linux/cross-compiling-for-arm-with-ubuntu-16-04-lts&lt;/li&gt;
+  &lt;li&gt;https://www.raspberrypi.org/forums/viewtopic.php?t=86084&lt;/li&gt;
+  &lt;li&gt;https://infertux.com/posts/2016/02/23/cross-compile-bitcoin-for-arm/https://askubuntu.com/questions/484030/crosscompiling-with-libboost-for-arm-architecture#484041&lt;/li&gt;
+  &lt;li&gt;https://github.com/bitcoin/bitcoin/tree/master/depends&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
 
  
 
@@ -1481,74 +1616,6 @@ I switched over to eclipse after my trial of above had finished. Eclipse was fin
 &lt;p&gt;$9 board with wifi and GPIO pins. Means I can cheaply add any type of sensor I want to pretty much every room in the house. Easily hook this up to my OpenHAB controller (which I will make a post about soon) and create some awesome automation rules to keep things running smootly. For example, I have a few watts clever power remotes, so I could add CHIP into the master bedroom, monitor the temperature and turn the wall heater on/off as required during the night. Super useful during these cold winter months!&lt;/p&gt;
 
 &lt;p&gt;So many other things to be done. Need to decide on what I want it to do before it arrives so I can get to it straight away!&lt;/p&gt;
-
-</content>
- </entry>
-
- 
-
- <entry>
-   <title>Fun with cPanel</title>
-   <link href="http://www.mrwhal3.com//cpanel-fun"/>
-   <id>http://www.mrwhal3.com//cpanel-fun</id>
-   <updated>2016-06-17T10:00:00+10:00</updated>
-   <content type="html">&lt;p&gt;Recently have had to set up a few cPanel servers, and here are some things I ran into while doing so. One isn’t necessarily cPanels fault, but it still took me a long time to find a work around for it :/&lt;/p&gt;
-
-&lt;h4 id=&quot;key-based-login-for-ssh&quot;&gt;Key based login for SSH&lt;/h4&gt;
-
-&lt;p&gt;Common practice for most cloud provides these days is to give you a VM with password based authentication turned off. That’s cool with me as this is one of the first things I do anyway. Setting up cPanel a breeze. Create a new user, no worries. Create SSH keys and import, easy. Attempt to login server: &lt;code class=&quot;highlighter-rouge&quot;&gt;login limit exceeded for account&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Odd.. but let’s turn on verbose.&lt;/p&gt;
-
-&lt;p&gt;Ah it’s giving other keys before the one it needs. Let’s add &lt;code class=&quot;highlighter-rouge&quot;&gt;IdentitiesOnly yes&lt;/code&gt; to config file&lt;/p&gt;
-
-&lt;p&gt;Still not working. Let’s try super verbose. Still no luck. 30 odd minutes of faffing about I decide to check the server logs (Note: check these first, not after)&lt;/p&gt;
-
-&lt;p&gt;Ah there is the real problem, server is complaining about permission issues being bad on .ssh folder for user&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Chmod&lt;/code&gt; that up and fixed!&lt;/p&gt;
-
-&lt;h4 id=&quot;cpanel-and-aws-ec2&quot;&gt;cPanel and aws ec2&lt;/h4&gt;
-
-&lt;p&gt;Make sure you check NAT settings! Spun up a fresh VM, added an account but it wouldn’t work! Kept redirecting me to that default “no site here” page. Tried this that and the other, but still not working&lt;/p&gt;
-
-&lt;p&gt;Turns out cPanel hadn’t detected the NAT settings properly, so didn’t have the right elastic IP (and in fact had the wrong internal IP) in its settings. To fix run &lt;code class=&quot;highlighter-rouge&quot;&gt;/scripts/build_cpnat&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Check (settings -&amp;gt; IP) to make sure it’s all better&lt;/p&gt;
-
-&lt;h4 id=&quot;getting-custom-sites-into-cpanel&quot;&gt;Getting custom sites into cPanel&lt;/h4&gt;
-
-&lt;p&gt;Got a site that was developed by someone else, and from the looks of it was just setup on a LAMP server, nothing special, but had real trouble trying to squash this into cPanel. Site was built on the zend framework and use composer as dependency manager. Now this would have been nice to know before I started&lt;/p&gt;
-
-&lt;p&gt;Copy site files into &lt;code class=&quot;highlighter-rouge&quot;&gt;public_html&lt;/code&gt;. No thanks. Zend uses another folder &lt;code class=&quot;highlighter-rouge&quot;&gt;public&lt;/code&gt; where it stores the index.php etc. That’s cool, let’s just change document root in &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/cPanel/userdata/user/site-name&lt;/code&gt; have to do this because there are other folders on the same level as this public folder that it uses&lt;/p&gt;
-
-&lt;h5 id=&quot;note&quot;&gt;Note&lt;/h5&gt;
-&lt;p&gt;There are other ways around this, using symlinks or htaccess. Probably better practice. But php&lt;/p&gt;
-
-&lt;h4 id=&quot;composer-and-cpanel&quot;&gt;Composer and cpanel&lt;/h4&gt;
-&lt;p&gt;The next issue I ran into was getting composer running, to build and make sure dependacies are there. Composer in cPanel? Sure why not&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cd&lt;/code&gt; to your public dir, or whereever your composer.json file is, &lt;code class=&quot;highlighter-rouge&quot;&gt;wget https://getcomposer.org/download/1.1.1/composer.phar&lt;/code&gt; (or lookup the composer site to get the latest, and then &lt;code class=&quot;highlighter-rouge&quot;&gt;php composer.phar install&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Surprisingly was as simple as this!&lt;/p&gt;
-
-&lt;p&gt;All good? Almost. Get slapped with this error:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ZendMailProtocol_Exception' with message '535 Incorrect authentication data ' in /Zend/Mail/Protocol/Abstract.php:378 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;em&gt;Sigh&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Turns out Zend doesn’t play ball with exim or any other mail agent you have installed, and tried to send email by itself. So you need to enable (or disable) a setting within cpanel to get it working
-Probably not the most security best practice setting to be playing with, but I needed to get it working&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Login to WHM&lt;/li&gt;
-  &lt;li&gt;Under Server Configuration, select Tweak Settings&lt;/li&gt;
-  &lt;li&gt;Click on the Mail tab&lt;/li&gt;
-  &lt;li&gt;Scroll down to “Restrict outgoing SMTP to root, exim, and mailman (FKA SMTP Tweak)” and make sure it’s set to “OFF”&lt;/li&gt;
-  &lt;li&gt;Scroll to the bottom of the page and click Save&lt;/li&gt;
-&lt;/ol&gt;
 
 </content>
  </entry>
