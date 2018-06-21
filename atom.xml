@@ -4,7 +4,7 @@
  <title>Mrwhale | Tech + Home automation enthusiast</title>
  <link href="http://www.mrwhal3.com//atom.xml" rel="self"/>
  <id>http://www.mrwhal3.com/</id>
- <updated>2018-06-21T12:20:51+10:00</updated>
+ <updated>2018-06-21T13:40:17+10:00</updated>
  <author>
    <name>Mrwhale</name>
    <uri>http://www.mrwhal3.com/</uri>
@@ -79,9 +79,9 @@ bigimage1024.jpg: JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1
 &lt;p&gt;Just for fun, here is some tests without resizing the iamges, so you can see how powerful it is with a good comparison&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;george@GEORGE-LT&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;convert &lt;span class=&quot;nt&quot;&gt;-trim&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-quality&lt;/span&gt; 85 &lt;span class=&quot;nt&quot;&gt;-interlace&lt;/span&gt; Plane bigimage.png bigimageoptimised.jpg
-george@GEORGE-LT:/mnt/c/data/whl&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-lah&lt;/span&gt; bigimage&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rwxrwxrwx&lt;/span&gt; 1 harry harry 250K Jun 21 10:09 bigimageoptimised.jpg
-&lt;span class=&quot;nt&quot;&gt;-rwxrwxrwx&lt;/span&gt; 1 harry harry 4.0M Jun 21 09:20 bigimage.png&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+george@GEORGE-LT:&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-lah&lt;/span&gt; bigimage&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxrwx&lt;/span&gt; 1 george george 250K Jun 21 10:09 bigimageoptimised.jpg
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxrwx&lt;/span&gt; 1 george george 4.0M Jun 21 09:20 bigimage.png&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
 &lt;p&gt;So you can see that just using &lt;code class=&quot;highlighter-rouge&quot;&gt;convert&lt;/code&gt; to do all the works gives you slightly better results then the other tools. You can tweak it further to get better results, but in my trials I found that 85% quality was the best for keeping almost quality while getting the smallest file size. If you go too low in quality, you get a &lt;em&gt;much&lt;/em&gt; smaller file, but the quality starts getting noticably bad&lt;/p&gt;
@@ -157,12 +157,12 @@ wget https://github.com/litecoin-project/litecoin/archive/v0.16.0rc1.tar.gz
 make &lt;span class=&quot;nv&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;arm-linux-gnueabihf &lt;span class=&quot;nt&quot;&gt;-j4&lt;/span&gt; 
 &lt;span class=&quot;c&quot;&gt;# if you do not want wallet or gui 
 &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# make host=arm-linux-gnueabihf -j4 NO_WALLET=1 NO_QT=1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;real    5m28.381s
+&lt;span class=&quot;c&quot;&gt;# make host=arm-linux-gnueabihf -j4 NO_WALLET=1 NO_QT=1 
+&lt;/span&gt;
+real    5m28.381s
 user    6m17.932s
-sys     0m21.860s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+sys     0m21.860s&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
 &lt;ul&gt;
   &lt;li&gt;now do the thing for litecoin&lt;/li&gt;
 &lt;/ul&gt;
@@ -225,10 +225,10 @@ Litecoin Core RPC client version v0.16.0.0-g3567effe2049&lt;/code&gt;&lt;/pre&gt
 &lt;p&gt;The following links were very helpful during this journey, so I’d just like to recognise them here too:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;http://jensd.be/800/linux/cross-compiling-for-arm-with-ubuntu-16-04-lts&lt;/li&gt;
-  &lt;li&gt;https://www.raspberrypi.org/forums/viewtopic.php?t=86084&lt;/li&gt;
-  &lt;li&gt;https://infertux.com/posts/2016/02/23/cross-compile-bitcoin-for-arm/https://askubuntu.com/questions/484030/crosscompiling-with-libboost-for-arm-architecture#484041&lt;/li&gt;
-  &lt;li&gt;https://github.com/bitcoin/bitcoin/tree/master/depends&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getstarted.accelo.com/?action=view_task&amp;amp;id=20134&quot;&gt;http://jensd.be/800/linux/cross-compiling-for-arm-with-ubuntu-16-04-lts&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getstarted.accelo.com/?action=view_task&amp;amp;id=20134&quot;&gt;https://www.raspberrypi.org/forums/viewtopic.php?t=86084&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getstarted.accelo.com/?action=view_task&amp;amp;id=20134&quot;&gt;https://infertux.com/posts/2016/02/23/cross-compile-bitcoin-for-arm/https://askubuntu.com/questions/484030/crosscompiling-with-libboost-for-arm-architecture#484041&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getstarted.accelo.com/?action=view_task&amp;amp;id=20134&quot;&gt;https://github.com/bitcoin/bitcoin/tree/master/depends&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>

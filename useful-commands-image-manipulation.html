@@ -242,9 +242,9 @@ bigimage1024.jpg: JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1
 <p>Just for fun, here is some tests without resizing the iamges, so you can see how powerful it is with a good comparison</p>
 
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash">george@GEORGE-LT<span class="nv">$ </span>convert <span class="nt">-trim</span> <span class="nt">-quality</span> 85 <span class="nt">-interlace</span> Plane bigimage.png bigimageoptimised.jpg
-george@GEORGE-LT:/mnt/c/data/whl<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-lah</span> bigimage<span class="k">*</span>
-<span class="nt">-rwxrwxrwx</span> 1 harry harry 250K Jun 21 10:09 bigimageoptimised.jpg
-<span class="nt">-rwxrwxrwx</span> 1 harry harry 4.0M Jun 21 09:20 bigimage.png</code></pre></figure>
+george@GEORGE-LT:<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-lah</span> bigimage<span class="k">*</span>
+<span class="nt">-rwxrwxrwx</span> 1 george george 250K Jun 21 10:09 bigimageoptimised.jpg
+<span class="nt">-rwxrwxrwx</span> 1 george george 4.0M Jun 21 09:20 bigimage.png</code></pre></figure>
 
 <h3 id="conclusion">Conclusion</h3>
 <p>So you can see that just using <code class="highlighter-rouge">convert</code> to do all the works gives you slightly better results then the other tools. You can tweak it further to get better results, but in my trials I found that 85% quality was the best for keeping almost quality while getting the smallest file size. If you go too low in quality, you get a <em>much</em> smaller file, but the quality starts getting noticably bad</p>
