@@ -2,9 +2,9 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Mrwhale | Tech + Home automation enthusiast</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <id>http://localhost:4000</id>
- <updated>2018-06-21T10:50:36+10:00</updated>
+ <link href="http://www.mrwhal3.com//atom.xml" rel="self"/>
+ <id>http://www.mrwhal3.com/</id>
+ <updated>2018-06-21T12:20:51+10:00</updated>
  <author>
    <name>Mrwhale</name>
    <uri>http://www.mrwhal3.com/</uri>
@@ -15,8 +15,8 @@
 
  <entry>
    <title>Useful Commands - Image manipulation</title>
-   <link href="http://localhost:4000/useful-commands-image-manipulation"/>
-   <id>http://localhost:4000/useful-commands-image-manipulation</id>
+   <link href="http://www.mrwhal3.com//useful-commands-image-manipulation"/>
+   <id>http://www.mrwhal3.com//useful-commands-image-manipulation</id>
    <updated>2018-06-21T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;I often work with images to go onto e-commerce sites, so getting them as small as possbile (file size wise) is what I aim for, for performance
 There are plenty of good, paid tools out there such as &lt;a href=&quot;https://kraken.io/&quot;&gt;Kraken&lt;/a&gt; or &lt;a href=&quot;https://imageoptim.com/api&quot;&gt;ImageOptim&lt;/a&gt; and there are even some good, free (web based) tools you can use such as &lt;a href=&quot;https://tinypng.com/&quot;&gt;TinyPNG&lt;/a&gt; and &lt;a href=&quot;https://compressor.io/&quot;&gt;Compressor&lt;/a&gt; but I was looking for something a I could add into my workflow (read automated and scriptable)&lt;/p&gt;
@@ -102,8 +102,8 @@ george@GEORGE-LT:/mnt/c/data/whl&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;
 
  <entry>
    <title>Cross compiling Litecoin Core</title>
-   <link href="http://localhost:4000/cross-compiling-litecoin-core"/>
-   <id>http://localhost:4000/cross-compiling-litecoin-core</id>
+   <link href="http://www.mrwhal3.com//cross-compiling-litecoin-core"/>
+   <id>http://www.mrwhal3.com//cross-compiling-litecoin-core</id>
    <updated>2018-05-09T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;I’ve had a plan of being a good guy and contributing to the litecoin network by being a full node. I was able to do this when I got around to buying a raspberry pi 3B+ and a 2TB external hard drive. There isn’t many up-to-date guides out there on setting a full node up on a raspberry pi, but this one was the most recent, and worked every step of the way (with a few minor changes) - &lt;a href=&quot;https://medium.com/the-litecoin-school-of-crypto/creating-a-litecoin-node-on-a-raspberry-pi-3-the-easy-way-on-windows-8e78d4da1af5&quot;&gt;the school of litecoin&lt;/a&gt;&lt;/p&gt;
 
@@ -237,8 +237,8 @@ Litecoin Core RPC client version v0.16.0.0-g3567effe2049&lt;/code&gt;&lt;/pre&gt
 
  <entry>
    <title>Moving Magento</title>
-   <link href="http://localhost:4000/moving-magento"/>
-   <id>http://localhost:4000/moving-magento</id>
+   <link href="http://www.mrwhal3.com//moving-magento"/>
+   <id>http://www.mrwhal3.com//moving-magento</id>
    <updated>2018-04-16T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;So I was asked to help finish moving a magento (1.9) installation to a new server the other day. To sum it up, it was not fun&lt;/p&gt;
 
@@ -308,8 +308,8 @@ This was just a config error within apache. I had to change the default SSL apac
 
  <entry>
    <title>Useful Commands - MSSQL</title>
-   <link href="http://localhost:4000/useful-commands-mssql"/>
-   <id>http://localhost:4000/useful-commands-mssql</id>
+   <link href="http://www.mrwhal3.com//useful-commands-mssql"/>
+   <id>http://www.mrwhal3.com//useful-commands-mssql</id>
    <updated>2018-02-08T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Here is a start of a regular posting, “useful commands”
 Over the years I have saved snippets, commands and notes of things that have been useful or saved alot of time. I start off with a gathering of T-SQL commands to do useful things within a windows database. Some of these relate directly to modifying a Kentico database (the CMS of choice where I work), but may be useful anyway&lt;/p&gt;
@@ -446,8 +446,8 @@ Over the years I have saved snippets, commands and notes of things that have bee
 
  <entry>
    <title>PiHole and OpenHAB</title>
-   <link href="http://localhost:4000/Pihole-and-OpenHAB"/>
-   <id>http://localhost:4000/Pihole-and-OpenHAB</id>
+   <link href="http://www.mrwhal3.com//Pihole-and-OpenHAB"/>
+   <id>http://www.mrwhal3.com//Pihole-and-OpenHAB</id>
    <updated>2018-02-08T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Recently I installed &lt;a href=&quot;https://pi-hole.net/&quot;&gt;pihole&lt;/a&gt; on my network because I was sick of ads, and wanted an added layer of security on my network against nasty malware and the like&lt;/p&gt;
 
@@ -510,7 +510,7 @@ I’ve also created a switch to disable and enable piHole as needed. This API fu
                 Switch &lt;span class=&quot;nv&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;piholeDisable
         &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/img/pihole.png&quot; alt=&quot;pihole sitemap&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://www.mrwhal3.com//img/pihole.png&quot; alt=&quot;pihole sitemap&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Optional&lt;/em&gt; If you’d like to add an icon for the items in the sitemap further, download the graphics from piHole (png and svg) and upload them into your openhab install at &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/openhab2/icons/classic&lt;/code&gt;. Then set the icon in the item using &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;pihole&amp;gt;&lt;/code&gt; (Refer to the openhab item config above). Now you will get a nice icon for the item too&lt;/p&gt;
 
@@ -522,8 +522,8 @@ I’ve also created a switch to disable and enable piHole as needed. This API fu
 
  <entry>
    <title>Ubuntu Live USB with persistence</title>
-   <link href="http://localhost:4000/Ubuntu-live-usb-with-persistence"/>
-   <id>http://localhost:4000/Ubuntu-live-usb-with-persistence</id>
+   <link href="http://www.mrwhal3.com//Ubuntu-live-usb-with-persistence"/>
+   <id>http://www.mrwhal3.com//Ubuntu-live-usb-with-persistence</id>
    <updated>2018-02-04T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Creating a live USB is easy, adding persistence seems to be quite hard. After lots of research, there was alot of ways to do it, but most of these tutorials were out of date so some things weren’t relevant anymore or just didn’t work&lt;/p&gt;
 
@@ -635,8 +635,8 @@ label live
 
  <entry>
    <title>RuuviTag</title>
-   <link href="http://localhost:4000/RuuviTag"/>
-   <id>http://localhost:4000/RuuviTag</id>
+   <link href="http://www.mrwhal3.com//RuuviTag"/>
+   <id>http://www.mrwhal3.com//RuuviTag</id>
    <updated>2017-04-19T09:00:00+10:00</updated>
    <content type="html">&lt;p&gt;I backed Ruuvi sometime late last year for a RuuviTag, a battery powered Bluetooth LE microcontroller with an onboard temperature and humidity sensor. As soon as I saw this project I had several ideas. And because I run openHAB at home, naturally, I’d want to collate this date into here for usage in my home automation system. I finally got it in the mail last week, and what surprised me was that they had teamed up the the guy who made espruino and had him port it to the Ruuvi! Javascript on a microcontroller. Pretty impressive stuff. Me and javascript have had some okay times, so I was comfortable that they had javascript here instead of C, which is what Ruuvi natively runs&lt;/p&gt;
 
@@ -975,7 +975,7 @@ hello my &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;name is:
 
 &lt;p&gt;Excellent. We can see that we are getting updates into openhab. Now make sure you are persisting this data (I’m using the rrdj4 persistance) and you can get some pretty charts to display into your sitemap&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/img/ruuvi.png&quot; alt=&quot;Ruuvitag chart&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://www.mrwhal3.com//img/ruuvi.png&quot; alt=&quot;Ruuvitag chart&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;So lets tidy this up and manage the node script with systemd, so we don’t have to have it running in a &lt;code class=&quot;highlighter-rouge&quot;&gt;screen&lt;/code&gt; or something funky like that. Just put this into &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/systemd/system/ruuvi.service&lt;/code&gt;&lt;/p&gt;
 
@@ -1004,8 +1004,8 @@ hello my &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;name is:
 
  <entry>
    <title>Node and systemd</title>
-   <link href="http://localhost:4000/node-and-systemd"/>
-   <id>http://localhost:4000/node-and-systemd</id>
+   <link href="http://www.mrwhal3.com//node-and-systemd"/>
+   <id>http://www.mrwhal3.com//node-and-systemd</id>
    <updated>2017-02-17T09:00:00+11:00</updated>
    <content type="html">&lt;p&gt;For a while now I’ve had my dashboard combo &lt;a href=&quot;/tv-dashboards-with-chromecasts&quot;&gt;tv and dashboard combo&lt;/a&gt;, which runs on &lt;a href=&quot;http://dashing.io&quot;&gt;dashing&lt;/a&gt; and &lt;a href=&quot;https://dashkiosk.readthedocs.io/en/latest/&quot;&gt;dashkiosk&lt;/a&gt;, running in screen sessions. This , of course, is not very managable. If something breaks, you have to ssh in and then find the screen session, re-run the command. In comes systemd. This makes managing services easy! You are able to make anything a system managed service, being able to manage the service via the &lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl&lt;/code&gt; commands&lt;/p&gt;
 
@@ -1049,8 +1049,8 @@ hello my &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;name is:
 
  <entry>
    <title>OneTimeSecret</title>
-   <link href="http://localhost:4000/onetimesecret"/>
-   <id>http://localhost:4000/onetimesecret</id>
+   <link href="http://www.mrwhal3.com//onetimesecret"/>
+   <id>http://www.mrwhal3.com//onetimesecret</id>
    <updated>2017-02-07T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So for those who use OnetimeSecret all the time, you can add this little function to your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or similar) So then you don’t have to openh a browser to share your secret!&lt;/p&gt;
 
@@ -1078,8 +1078,8 @@ https://onetimesecret.com/secret/kvq9927e3ylltd83u679vlyfr942vjg&lt;/code&gt;&lt
 
  <entry>
    <title>C.H.I.P, flic and openhab</title>
-   <link href="http://localhost:4000/flic-chip-and-openhab"/>
-   <id>http://localhost:4000/flic-chip-and-openhab</id>
+   <link href="http://www.mrwhal3.com//flic-chip-and-openhab"/>
+   <id>http://www.mrwhal3.com//flic-chip-and-openhab</id>
    <updated>2017-01-05T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So I finally received my &lt;a href=&quot;/C-H-I-P&quot;&gt;C.H.I.P&lt;/a&gt;, and over the break I purchased myself some &lt;a href=&quot;https://flic.io/&quot;&gt;flic bluetooth buttons&lt;/a&gt; with the plan of making some nice push buttons around the home to control openhab. This idea mostly came from usablity/speed of use of openhab. Having the dashboard in the middle of the house is a nice idea, but if you are in another room, without your phone there isn’t too much you can do without having to go to this dashboard to interact with openhab. Flic makes it nice and convenient to do things you do often, with a click, double click or press of a button!&lt;/p&gt;
 
@@ -1345,8 +1345,8 @@ end&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
  <entry>
    <title>Openhab</title>
-   <link href="http://localhost:4000/openhab"/>
-   <id>http://localhost:4000/openhab</id>
+   <link href="http://www.mrwhal3.com//openhab"/>
+   <id>http://www.mrwhal3.com//openhab</id>
    <updated>2016-12-20T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;Since the ninjablock company has run out of &lt;a href=&quot;https://discuss.ninjablocks.com/t/ninja-blocks-whats-been-happening-whats-happening-next/3608&quot;&gt;money&lt;/a&gt;, and is not supporting the ninjablock anymore, and its cloud service is pretty unreliable (at the best of times) I decided to merge all my homeautomation items with &lt;a href=&quot;http://openhab.org&quot;&gt;Openhab&lt;/a&gt;. At the time I adopted this, it was the only major, multi-vendor supported Home automation “brain” around. Since then &lt;a href=&quot;https://home-assistant.io/&quot;&gt;home assistant&lt;/a&gt; has come around, and alot of others have picked up support for alot more “things”. If I had the money, I would probably jump on the &lt;a href=&quot;https://www.smartthings.com/&quot;&gt;Smart Things&lt;/a&gt; wagon, but I don’t :(&lt;/p&gt;
 
@@ -1360,7 +1360,7 @@ end&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;I rarely use the web based GUI to access my home, having this controller works well, plus I have the app installed on my various hand held devices too (And my watch!). So I am never too far away from any controls. I’ve never found the need to open up the web GUI when I’ve been at my desk, much quicker just to unlock my phone and start the app. The default web interface is very ugly too :/&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/img/openhab-nexus.jpg&quot; alt=&quot;Nexus 7 dashboard&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://www.mrwhal3.com//img/openhab-nexus.jpg&quot; alt=&quot;Nexus 7 dashboard&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;hardware&quot;&gt;Hardware&lt;/h4&gt;
 
@@ -1458,8 +1458,8 @@ Switch Button   &lt;span class=&quot;s2&quot;&gt;&quot;Button&quot;&lt;/span&gt;
 
  <entry>
    <title>Mini DLNA and bubbleUPnP</title>
-   <link href="http://localhost:4000/minidlna-and-bubbleupnp"/>
-   <id>http://localhost:4000/minidlna-and-bubbleupnp</id>
+   <link href="http://www.mrwhal3.com//minidlna-and-bubbleupnp"/>
+   <id>http://www.mrwhal3.com//minidlna-and-bubbleupnp</id>
    <updated>2016-11-18T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So ages ago I found &lt;a href=&quot;https://www.bubblesoftapps.com/bubbleupnpserver/&quot;&gt;bubbleUPnP&lt;/a&gt; (also an &lt;a href=&quot;https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&amp;amp;hl=en&quot;&gt;andoid app&lt;/a&gt;). I’d put this in the category of cheap plex server. I say this because the main reason I wanted to use it was for its on-the-fly transcoding to play media to the chromecast. The android app is also really nice, and you can control your media directly from your device too (Much like what plex does)&lt;/p&gt;
 
@@ -1503,8 +1503,8 @@ Switch Button   &lt;span class=&quot;s2&quot;&gt;&quot;Button&quot;&lt;/span&gt;
 
  <entry>
    <title>Upgrading SD on the Raspberry Pi</title>
-   <link href="http://localhost:4000/upgrading-sd-on-rpi"/>
-   <id>http://localhost:4000/upgrading-sd-on-rpi</id>
+   <link href="http://www.mrwhal3.com//upgrading-sd-on-rpi"/>
+   <id>http://www.mrwhal3.com//upgrading-sd-on-rpi</id>
    <updated>2016-10-26T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;I’ve been running my Raspberry Pi (V2) for almost a year and a half on a 16gb SD card, but because I run owncloud on the pi, I’ve been slowly running out of space. I know I can just add a usb drive or have owncloud store the data on an attached NAS or something, but I chose to just store everything on the SD card. Just so everything is in the one place. Anyway, I finally got around to purchasing a 32GB card, to upgrade the pi. I didn’t want to start from scratch and re-install everything from a backup, so I did a bit of searching in the raspberry pi forums, and found you can easily upgrade the SD card. And it turns out it was &lt;em&gt;very&lt;/em&gt; easy. All you need is another machine (I used GNU/Linux here) and a SD card reader (which you probably have if you have a pi)&lt;/p&gt;
 
@@ -1573,8 +1573,8 @@ Switch Button   &lt;span class=&quot;s2&quot;&gt;&quot;Button&quot;&lt;/span&gt;
 
  <entry>
    <title>building phonegap app for Android and iOS</title>
-   <link href="http://localhost:4000/thrown-in-the-deepend-with-phonegap"/>
-   <id>http://localhost:4000/thrown-in-the-deepend-with-phonegap</id>
+   <link href="http://www.mrwhal3.com//thrown-in-the-deepend-with-phonegap"/>
+   <id>http://www.mrwhal3.com//thrown-in-the-deepend-with-phonegap</id>
    <updated>2016-10-13T10:00:00+11:00</updated>
    <content type="html">&lt;p&gt;So I had the &lt;del&gt;pleasure&lt;/del&gt; of figuring out how to successfully build and publish a phonegap app, both to the Play store and Apple store. It was bad enough that I have no experience with phonegap/Cordova (or anything iOS development related), but the previous developer had left no documentation. That was fun. Here are some notes of things I ran into along the way. Hope they help someone else out too&lt;/p&gt;
 
@@ -1634,8 +1634,8 @@ Alias name: myapp-release
 
  <entry>
    <title>Counter Strike and Pebble</title>
-   <link href="http://localhost:4000/Counter-Strike-and-Pebble"/>
-   <id>http://localhost:4000/Counter-Strike-and-Pebble</id>
+   <link href="http://www.mrwhal3.com//Counter-Strike-and-Pebble"/>
+   <id>http://www.mrwhal3.com//Counter-Strike-and-Pebble</id>
    <updated>2016-09-03T10:00:00+10:00</updated>
    <content type="html">&lt;p&gt;Hey all, it’s been a while! I’ve been busy. Combining my enthusiasm to CS and the usefulness of a pebble watch to create you &lt;a href=&quot;https://apps.getpebble.com/applications/57c24bc35e3c3db4850002af&quot;&gt;CSontheGO&lt;/a&gt;&lt;/p&gt;
 
